@@ -81,6 +81,11 @@ const NVIDIA: ProviderCaps = {
   maybe: new Set(['top_k']),
 }
 
+const OPENCODE_GO: ProviderCaps = {
+  supported: set('penalties', 'json_schema'),
+  maybe: new Set(),
+}
+
 const AZURE: ProviderCaps = {
   supported: set('penalties', 'json_schema'),
   maybe: new Set(),
@@ -155,6 +160,7 @@ const BUILTIN_CAPS: Record<string, ProviderCaps> = {
   minimax: MINIMAX,
   llamacpp: LLAMACPP,
   mlx: MLX,
+  'opencode-go': OPENCODE_GO,
 }
 
 export function resolveProviderCaps(

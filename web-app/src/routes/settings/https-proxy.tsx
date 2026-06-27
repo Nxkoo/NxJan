@@ -44,7 +44,7 @@ function HTTPSProxyContent() {
     <div className="flex flex-col h-svh w-full">
       <HeaderPage>
         <div className="flex items-center gap-2 w-full">
-          <span className='font-medium text-base font-studio'>{t('common:settings')}</span>
+          <span className='font-medium text-base font-display'>{t('common:settings')}</span>
         </div>
       </HeaderPage>
       <div className="flex h-[calc(100%-60px)]">
@@ -55,7 +55,7 @@ function HTTPSProxyContent() {
             <Card
               header={
                 <div className="flex items-center justify-between">
-                  <h1 className="text-foreground font-studio font-medium text-base mb-2">
+                  <h1 className="text-foreground font-display font-medium text-base mb-2">
                     {t('settings:httpsProxy.proxy')}
                   </h1>
                   <Switch

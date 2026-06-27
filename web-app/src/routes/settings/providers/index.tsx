@@ -83,7 +83,7 @@ function ModelProviders() {
     <div className="flex flex-col h-svh w-full">
       <HeaderPage>
         <div className={cn("flex items-center justify-between w-full mr-2 pr-3", !IS_MACOS && "pr-30")}>
-          <span className='font-medium text-base font-studio'>{t('common:settings')}</span>
+          <span className='font-medium text-base font-display'>{t('common:settings')}</span>
           <AddProviderDialog onCreateProvider={createProvider}>
             <Button
               variant="outline"
@@ -104,7 +104,7 @@ function ModelProviders() {
             <Card
               header={
                 <div className="flex items-center justify-between w-full mb-6">
-                  <span className="font-medium text-base font-studio text-foreground">
+                  <span className="font-medium text-base font-display text-foreground">
                     {t('common:modelProviders')}
                   </span>
                 </div>

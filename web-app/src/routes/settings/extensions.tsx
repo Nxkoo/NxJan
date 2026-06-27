@@ -20,7 +20,7 @@ function ExtensionsContent() {
     <div className="flex flex-col h-svh w-full">
       <HeaderPage>
         <div className="flex items-center gap-2 w-full">
-          <span className='font-medium text-base font-studio'>{t('common:settings')}</span>
+          <span className='font-medium text-base font-display'>{t('common:settings')}</span>
         </div>
       </HeaderPage>
       <div className="flex h-[calc(100%-60px)]">
@@ -31,7 +31,7 @@ function ExtensionsContent() {
             <Card
               header={
                 <div className="flex items-center justify-between mb-4">
-                  <h1 className="text-foreground font-studio font-medium text-base">
+                  <h1 className="text-foreground font-display font-medium text-base">
                     {t('settings:extensions.title')}
                   </h1>
                   {/* <div className="flex items-center gap-2">
@@ -46,7 +46,7 @@ function ExtensionsContent() {
                     key={i}
                     title={
                       <div className="flex items-center gap-x-2">
-                        <h1 className="text-foreground font-studio font-medium text-base">
+                        <h1 className="text-foreground font-display font-medium text-base">
                           {item.productName ?? item.name}
                         </h1>
                         <div className="bg-foreground/10 px-1 py-0.5 rounded text-foreground/70 text-xs">

@@ -762,7 +762,7 @@ function ProviderDetail() {
     <div className="flex flex-col h-svh w-full">
       <HeaderPage>
         <div className="flex items-center gap-2 w-full">
-          <span className="font-medium text-base font-studio">
+          <span className="font-medium text-base font-display">
             {t('common:settings')}
           </span>
         </div>

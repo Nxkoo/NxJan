@@ -13,6 +13,12 @@ import { useMessageErrors } from '@/stores/message-errors'
 import { useServiceHub } from '@/hooks/useServiceHub'
 import { useTools } from '@/hooks/useTools'
 import { useAppState } from '@/hooks/useAppState'
+import {
+  CODEBASE_MEMORY_SERVER_NAME,
+  buildCodebaseSystemMessage,
+  resolveCodebaseChatState,
+  useCodebaseStore,
+} from '@/hooks/useCodebase'
 import { SESSION_STORAGE_PREFIX } from '@/constants/chat'
 import { useChat } from '@/hooks/use-chat'
 import { useModelProvider } from '@/hooks/useModelProvider'
@@ -77,6 +83,7 @@ import { Shimmer } from '@/components/ai-elements/shimmer'
 import { useMessageQueue } from '@/stores/message-queue-store'
 import { generateThreadTitle } from '@/lib/thread-title-summarizer'
 import { useAutoScroll } from '@/hooks/useAutoScroll'
+import { useMCPServers } from '@/hooks/useMCPServers'
 
 const CHAT_STATUS = {
   STREAMING: 'streaming',
@@ -176,14 +183,45 @@ function ThreadDetail() {
   const selectedProvider = useModelProvider((state) => state.selectedProvider)
   const getProviderByName = useModelProvider((state) => state.getProviderByName)
   const threadRef = useRef(thread)
-  const projectId = threadRef.current?.metadata?.project?.id
+  const projectId = thread?.metadata?.project?.id
+
+  // Look up the project's linked Codebase Memory project, if any, so the
+  // chat can be told to query the codebase through MCP tools.
+  const codebaseMetas = useCodebaseStore((state) => state.metas)
+  const mcpServers = useMCPServers((state) => state.mcpServers)
+  const mcpTools = useAppState((state) => state.tools)
+  const codebaseMeta = projectId ? codebaseMetas[projectId] ?? null : null
+  const codebaseResolution = useMemo(
+    () =>
+      resolveCodebaseChatState({
+        meta: codebaseMeta,
+        mcpServer: mcpServers[CODEBASE_MEMORY_SERVER_NAME],
+        tools: mcpTools,
+      }),
+    [codebaseMeta, mcpServers, mcpTools]
+  )
+  const codebaseAddendum = useMemo(
+    () =>
+      codebaseResolution.canInject
+        ? buildCodebaseSystemMessage(codebaseMeta)
+        : null,
+    [codebaseMeta, codebaseResolution.canInject]
+  )
 
   // Get system message from thread's assistant instructions (if thread has an assigned assistant)
-  // Only use assistant instructions if the thread was created with one (e.g., via a project)
+  // Only use assistant instructions if the thread was created with one (e.g., via a project).
+  // If the project has a linked Codebase Memory project, append a small addendum
+  // telling the model to prefer the codebase tools instead of reindexing.
   const threadAssistant = thread?.assistants?.[0]
-  const systemMessage = threadAssistant?.instructions
+  const assistantInstructions = threadAssistant?.instructions
     ? renderInstructions(threadAssistant.instructions)
     : undefined
+  const systemMessage = useMemo(() => {
+    if (assistantInstructions && codebaseAddendum) {
+      return `${codebaseAddendum}\n\n${assistantInstructions}`
+    }
+    return assistantInstructions ?? codebaseAddendum ?? undefined
+  }, [assistantInstructions, codebaseAddendum])
 
   useEffect(() => {
     threadRef.current = thread
@@ -1653,6 +1691,7 @@ function ThreadDetail() {
         <div className="py-4 mx-auto w-full md:w-4/5 xl:w-4/6">
           <ChatInput
             model={threadModel}
+            projectId={projectId}
             onSubmit={handleSubmit}
             onStop={stop}
             chatStatus={effectiveStatus}

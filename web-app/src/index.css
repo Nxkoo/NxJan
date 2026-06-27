@@ -273,6 +273,14 @@
   --sidebar-active: color-mix(in srgb, var(--sidebar) 55%, #f7f1dc 12%);
   --sidebar-border: rgb(247 241 220 / 15%);
   --sidebar-ring: #5a7ad0;
+  /* dark mode paper accents: deeper editorial tints so badges/chips stay legible */
+  --green-soft: #1f3a18;
+  --orange-soft: #3a2014;
+  --yellow-soft: #3a3014;
+  --red-soft: #3a1a14;
+  --blue-soft: #1a2548;
+  --paper-soft: #1f2d5c;
+  --paper-muted: #1a2548;
 }
 
 @layer base {

@@ -430,7 +430,7 @@ function MCPServersDesktop() {
       <div className="flex flex-col h-svh w-full">
         <HeaderPage>
           <div className={cn("flex items-center justify-between w-full mr-2 pr-3", !IS_MACOS && "pr-30")}>
-            <span className='font-medium text-base font-studio'>{t('common:settings')}</span>
+            <span className='font-medium text-base font-display'>{t('common:settings')}</span>
             <Button variant="outline" size="sm" onClick={() => handleOpenDialog()} className="relative z-50">
               <IconPlus size={18} className="text-muted-foreground" />
               {t('mcp-servers:addServer')}
@@ -446,7 +446,7 @@ function MCPServersDesktop() {
                   <div className="flex flex-col mb-4">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2">
-                        <h1 className="text-foreground font-medium text-base font-studio">
+                        <h1 className="text-foreground font-medium text-base font-display">
                           {t('mcp-servers:title')}
                         </h1>
                         <div className="text-xs bg-secondary border text-muted-foreground rounded-full py-0.5 px-2">
@@ -622,7 +622,7 @@ function MCPServersDesktop() {
                                 : 'bg-secondary'
                             )}
                           />
-                          <h1 className="text-foreground text-base capitalize font-studio">
+                          <h1 className="text-foreground text-base capitalize font-display">
                             {key}
                           </h1>
                           {config.official && (

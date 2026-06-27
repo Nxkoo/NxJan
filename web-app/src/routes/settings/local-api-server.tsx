@@ -261,7 +261,7 @@ function LocalAPIServerContent() {
             !IS_MACOS && 'pr-30'
           )}
         >
-          <span className="font-medium text-base font-studio">
+          <span className="font-medium text-base font-display">
             {t('common:settings')}
           </span>
           <Popover>
@@ -422,7 +422,7 @@ function LocalAPIServerContent() {
                 header={
                   <div className="mb-3 flex w-full items-center border-b pb-2">
                     <div className="w-full space-y-2">
-                      <h1 className="text-base font-medium text-foreground font-studio">
+                      <h1 className="text-base font-medium text-foreground font-display">
                         {t('settings:localApiServer.title')}
                       </h1>
                       <p className="text-muted-foreground mb-2">

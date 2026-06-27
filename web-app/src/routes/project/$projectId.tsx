@@ -5,14 +5,21 @@ import { useThreadManagement } from '@/hooks/useThreadManagement'
 import { useThreads } from '@/hooks/useThreads'
 import { useAssistant } from '@/hooks/useAssistant'
 import { useTranslation } from '@/i18n/react-i18next-compat'
+import { usePrompt } from '@/hooks/usePrompt'
+import {
+  normalizeCodebaseMeta,
+  normalizeCodebaseStatus,
+  useCodebaseStore,
+} from '@/hooks/useCodebase'
 
 import ChatInput from '@/containers/ChatInput'
 import HeaderPage from '@/containers/HeaderPage'
 import ThreadList from '@/containers/ThreadList'
 import { AvatarEmoji } from '@/containers/AvatarEmoji'
 
-import { FolderPenIcon, MessageCircle, MoreHorizontal, PencilIcon, Trash2 } from 'lucide-react'
+import { Code2, FolderPenIcon, MessageCircle, MoreHorizontal, PencilIcon, Trash2 } from 'lucide-react'
 import ProjectFiles from '@/containers/ProjectFiles'
+import ProjectCodebase from '@/containers/ProjectCodebase'
 import DropdownModelProvider from '@/containers/DropdownModelProvider'
 import {
   DropdownMenu,
@@ -38,6 +45,8 @@ function ProjectPageContent() {
   const threads = useThreads((state) => state.threads)
   const deleteAllThreadsByProject = useThreads((state) => state.deleteAllThreadsByProject)
   const { assistants } = useAssistant()
+  const { setPrompt } = usePrompt()
+  const codebaseMeta = useCodebaseStore((state) => state.metas[projectId])
 
   const [editDialogOpen, setEditDialogOpen] = useState(false)
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
@@ -58,6 +67,27 @@ function ProjectPageContent() {
       .filter((thread) => thread.metadata?.project?.id === projectId)
       .sort((a, b) => (b.updated || 0) - (a.updated || 0))
   }, [threads, projectId])
+
+  const hasIndexedCodebase = useMemo(() => {
+    const meta = normalizeCodebaseMeta(codebaseMeta)
+    if (!meta || meta.enabled === false || !meta.codebaseMemoryProjectName) {
+      return false
+    }
+    return normalizeCodebaseStatus(meta.status, true) === 'indexed'
+  }, [codebaseMeta])
+
+  const codebaseSuggestions = useMemo(
+    () =>
+      [
+        t('common:codebase.suggestions.whereClassUsed'),
+        t('common:codebase.suggestions.rendererClasses'),
+        t('common:codebase.suggestions.architecture'),
+        t('common:codebase.suggestions.dependencies'),
+        t('common:codebase.suggestions.callPath'),
+        t('common:codebase.suggestions.implementationFile'),
+      ].filter((value) => !value.includes('codebase.suggestions')),
+    [t]
+  )
 
   const handleSaveEdit = async (name: string, assistantId?: string) => {
     if (project) {
@@ -96,8 +126,8 @@ function ProjectPageContent() {
       <div className="h-full relative flex flex-col px-4 md:px-8 py-4 overflow-y-auto">
         <div className="mx-auto w-full md:w-4/5 xl:w-4/6">
           {/* Project Name with Dropdown */}
-          <div className="flex items-center justify-between gap-2 mb-4">
-            <h1 className="text-2xl font-semibold">
+          <div className="flex items-center justify-between gap-2 mb-6">
+            <h1 className="text-3xl font-display font-semibold">
               {project.name}
             </h1>
             <DropdownMenu>
@@ -168,23 +198,40 @@ function ProjectPageContent() {
 
           {/* Empty State */}
           {projectThreads.length === 0 && (
-            <div className="flex flex-col items-center justify-center pt-6 pb-12 text-center bg-card rounded-xl border mb-6">
-              <MessageCircle className="size-8 text-muted-foreground/50 mb-3" />
-              <h3 className="text-base font-medium text-foreground mb-1">
+            <div className="flex flex-col items-center justify-center pt-8 pb-12 text-center bg-card rounded-2xl border-2 border-dashed border-border/50 mb-6">
+              <div className="flex items-center justify-center size-14 rounded-2xl bg-secondary border-2 border-border/20 mb-4">
+                <MessageCircle className="size-7 text-muted-foreground" />
+              </div>
+              <h3 className="text-lg font-display font-semibold text-foreground mb-1">
                 {t('projects.noConversationsIn', { projectName: project.name })}
               </h3>
               <p className="text-sm text-muted-foreground">
                 {t('projects.startNewConversation', { projectName: project.name })}
               </p>
+              {hasIndexedCodebase && codebaseSuggestions.length > 0 && (
+                <div className="mt-5 grid w-full max-w-2xl grid-cols-1 gap-2 px-4 sm:grid-cols-2">
+                  {codebaseSuggestions.map((suggestion) => (
+                    <button
+                      key={suggestion}
+                      type="button"
+                      className="flex items-center gap-2 rounded-2xl border-2 border-border bg-background/50 px-3 py-2 text-left text-xs text-foreground transition-colors hover:border-primary/50 hover:bg-primary/5"
+                      onClick={() => setPrompt(suggestion)}
+                    >
+                      <Code2 className="size-3.5 shrink-0 text-primary" />
+                      <span>{suggestion}</span>
+                    </button>
+                  ))}
+                </div>
+              )}
             </div>
           )}
 
           {/* Project Settings Card */}
-          <div className="rounded-xl border border-border overflow-hidden mb-6 bg-card">
+          <div className="rounded-2xl border-2 border-border overflow-hidden mb-6 bg-card shadow-sm">
             {/* Assistant Section */}
-            <div className="flex items-center justify-between p-4 border-b border-border">
+            <div className="flex items-center justify-between p-5 border-b-2 border-dashed border-border/30">
               <div className="flex flex-col gap-1">
-                <h3 className="text-sm font-medium">{t('projects.addProjectDialog.assistant')}</h3>
+                <h3 className="text-sm font-display font-semibold">{t('projects.addProjectDialog.assistant')}</h3>
                 {projectAssistant ? (
                   <div className="flex items-center gap-1.5 mt-1">
                     {projectAssistant.avatar && (
@@ -214,6 +261,9 @@ function ProjectPageContent() {
 
             {/* Files Section */}
             <ProjectFiles projectId={projectId} lng={i18n.language} />
+
+            {/* Codebase Section */}
+            <ProjectCodebase projectId={projectId} />
           </div>
         </div>
       </div>

@@ -88,6 +88,7 @@ import {
 import JanBrowserExtensionDialog from '@/containers/dialogs/JanBrowserExtensionDialog'
 import { useJanBrowserExtension } from '@/hooks/useJanBrowserExtension'
 import { useAgentMode } from '@/hooks/useAgentMode'
+import ProjectCodebaseChip from '@/containers/ProjectCodebaseChip'
 
 type ChatInputProps = {
   className?: string
@@ -2036,6 +2037,7 @@ const ChatInput = memo(function ChatInput({
                   setSelectedAssistantId={setSelectedAssistantId}
                   updateCurrentThreadAssistant={updateCurrentThreadAssistant}
                 />
+                <ProjectCodebaseChip projectId={projectId} compact />
                 <SamplerPopover
                   providerId={selectedProvider}
                   modelId={selectedModel?.id}

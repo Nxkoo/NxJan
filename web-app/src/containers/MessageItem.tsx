@@ -43,6 +43,7 @@ import { parseCitationsFromToolOutput } from '@/lib/citation-parser'
 import type { RagCitation } from '@/components/Citations'
 import { useGroundingStore } from '@/stores/grounding-store'
 import { injectCitationMarkers } from '@/lib/grounding'
+import { formatToolCallDisplay } from '@/lib/codebase-tool-format'
 
 const CHAT_STATUS = {
   STREAMING: 'streaming',
@@ -424,18 +425,37 @@ export const MessageItem = memo(
       }
 
       const toolName = part.type.split('-').slice(1).join('-')
+      const display = formatToolCallDisplay(toolName, part.input, part.output)
+      const summaryItems = [
+        display.project ? `Project: ${display.project}` : null,
+        display.query ? `Query: ${display.query}` : null,
+        typeof display.resultCount === 'number'
+          ? `Results: ${display.resultCount}`
+          : null,
+      ].filter(Boolean)
       return (
         <Tool
           key={`${message.id}-${partIndex}`}
           state={part.state}
           toolCallId={part.toolCallId}
           messageId={message.id}
-          className="mb-1"
+          defaultOpen={false}
+          className="mb-2 rounded-2xl border-2 border-border bg-card/80 p-1 shadow-sm"
         >
           <ToolHeader
-            title={toolName}
+            title={display.title}
             type={`tool-${toolName}` as `tool-${string}`}
             state={part.state}
+            statusText={display.title}
+            summary={
+              summaryItems.length > 0 ? (
+                <span className="flex flex-wrap gap-x-3 gap-y-1 text-[11px]">
+                  {summaryItems.map((item) => (
+                    <span key={item}>{item}</span>
+                  ))}
+                </span>
+              ) : undefined
+            }
           />
           <ToolContent title={toolName}>
             {part.input && <ToolInput input={part.input} />}
