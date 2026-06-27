@@ -122,6 +122,19 @@
               window.matchMedia &&
               window.matchMedia('(prefers-color-scheme: dark)').matches)
           if (dark) document.documentElement.classList.add('dark')
+
+          // Mirror the persisted dark style so the right surface palette
+          // (Jan Blue vs Editorial paper) is in effect before first paint.
+          var interfaceRaw = localStorage.getItem('setting-appearance')
+          if (interfaceRaw) {
+            try {
+              var iface = JSON.parse(interfaceRaw)
+              var ds = iface && iface.state && iface.state.darkStyle
+              if (ds === 'jan' || ds === 'editorial') {
+                document.documentElement.setAttribute('data-dark-style', ds)
+              }
+            } catch (_) {}
+          }
         } catch (_) {}
       })()
     </script>
