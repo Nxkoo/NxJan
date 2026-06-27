@@ -49,7 +49,7 @@ const AppLayout = () => {
   } = useLeftPanel()
 
   return (
-    <div className="bg-neutral-50 dark:bg-background size-full relative">
+    <div className="bg-background size-full relative">
       <SidebarProvider
         open={isLeftPanelOpen}
         onOpenChange={setLeftPanel}
@@ -73,7 +73,7 @@ const AppLayout = () => {
         <BackendUpdater />
         <LeftSidebar />
         <SidebarInset>
-          <div className="bg-neutral-50 dark:bg-background size-full">
+          <div className="bg-background size-full">
             <Outlet />
           </div>
         </SidebarInset>
@@ -88,7 +88,7 @@ const AppLayout = () => {
 const LogsLayout = () => {
   return (
     <Fragment>
-      <main className="relative h-svh text-sm antialiased select-text bg-app">
+      <main className="relative h-svh text-sm antialiased select-text bg-background">
         <div className="flex h-full">
           {/* Main content panel */}
           <div className="h-full flex w-full">

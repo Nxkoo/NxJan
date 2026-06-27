@@ -9,9 +9,93 @@
    Set via class, not an inline style prop, so WebView2's hashed style-src
    CSP doesn't drop it. richColors typed toasts keep their semantics. */
 .toaster {
-  --normal-bg: color-mix(in oklch, var(--popover) 92%, var(--primary));
-  --normal-text: var(--popover-foreground);
-  --normal-border: color-mix(in oklch, var(--border) 55%, var(--primary));
+  --normal-bg: var(--card);
+  --normal-text: var(--card-foreground);
+  --normal-border: var(--border);
+}
+
+/* Editorial/paper toasts — paper note / desk memo, not SaaS toast. */
+.toaster [data-sonner-toast] {
+  border-radius: var(--radius-lg);
+  border: 2px solid var(--border);
+  background: var(--card);
+  color: var(--card-foreground);
+  box-shadow:
+    0 1px 0 0 color-mix(in srgb, var(--border) 30%, transparent),
+    2px 3px 0 0 color-mix(in srgb, var(--ink) 10%, transparent);
+  font-family: var(--font-sans);
+  font-size: 0.875rem;
+  line-height: 1.35;
+  gap: 0.5rem;
+  padding: 0.65rem 0.85rem;
+}
+
+.toaster [data-sonner-toast] [data-icon] {
+  color: var(--card-foreground);
+  opacity: 0.9;
+}
+
+.toaster [data-sonner-toast] [data-title] {
+  font-weight: 600;
+  font-family: var(--font-display);
+  letter-spacing: -0.01em;
+}
+
+.toaster [data-sonner-toast] [data-description] {
+  color: color-mix(in srgb, var(--card-foreground) 70%, transparent);
+  font-size: 0.8rem;
+}
+
+/* Rich states using editorial palette (paper surfaces) */
+.toaster [data-rich-colors="true"] [data-sonner-toast][data-type="success"] {
+  background: var(--green-soft);
+  color: var(--ink);
+  border-color: var(--green);
+}
+.toaster [data-rich-colors="true"] [data-sonner-toast][data-type="error"] {
+  background: var(--red-soft);
+  color: var(--ink);
+  border-color: var(--red);
+}
+.toaster [data-rich-colors="true"] [data-sonner-toast][data-type="info"] {
+  background: var(--blue-soft);
+  color: var(--ink);
+  border-color: var(--blue);
+}
+.toaster [data-rich-colors="true"] [data-sonner-toast][data-type="warning"] {
+  background: var(--yellow-soft);
+  color: var(--ink);
+  border-color: var(--yellow);
+}
+
+/* Dark toasts — ink on deep paper */
+.dark .toaster [data-sonner-toast] {
+  background: var(--card);
+  color: var(--card-foreground);
+  border-color: var(--border);
+  box-shadow:
+    0 1px 0 0 color-mix(in srgb, var(--border) 40%, transparent),
+    2px 3px 0 1px color-mix(in srgb, #000 25%, transparent);
+}
+.dark .toaster [data-rich-colors="true"] [data-sonner-toast][data-type="success"] {
+  background: color-mix(in srgb, var(--green) 22%, var(--card));
+  color: var(--card-foreground);
+  border-color: var(--green);
+}
+.dark .toaster [data-rich-colors="true"] [data-sonner-toast][data-type="error"] {
+  background: color-mix(in srgb, var(--red) 22%, var(--card));
+  color: var(--card-foreground);
+  border-color: var(--red);
+}
+.dark .toaster [data-rich-colors="true"] [data-sonner-toast][data-type="info"] {
+  background: color-mix(in srgb, var(--blue) 22%, var(--card));
+  color: var(--card-foreground);
+  border-color: var(--blue);
+}
+.dark .toaster [data-rich-colors="true"] [data-sonner-toast][data-type="warning"] {
+  background: color-mix(in srgb, var(--yellow) 22%, var(--card));
+  color: var(--card-foreground);
+  border-color: var(--yellow);
 }
 @import '@/styles/font.css';
 @import '@/styles/markdown.css';
@@ -49,6 +133,21 @@
   --color-chart-5: var(--chart-5);
   --color-sidebar: var(--sidebar);
   --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-ink: var(--ink);
+  --color-paper: var(--paper);
+  --color-paper-soft: var(--paper-soft);
+  --color-paper-card: var(--paper-card);
+  --color-paper-muted: var(--paper-muted);
+  --color-green: var(--green);
+  --color-green-soft: var(--green-soft);
+  --color-yellow: var(--yellow);
+  --color-yellow-soft: var(--yellow-soft);
+  --color-blue: var(--blue);
+  --color-blue-soft: var(--blue-soft);
+  --color-orange: var(--orange);
+  --color-orange-soft: var(--orange-soft);
+  --color-red: var(--red);
+  --color-red-soft: var(--red-soft);
   --color-sidebar-primary: var(--sidebar-primary);
   --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
   --color-sidebar-accent: var(--sidebar-accent);
@@ -56,8 +155,10 @@
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
   --animate-hue-rotate: hue-rotate 4s infinite;
-  --font-studio: "StudioFeixenSans";
-  --font-sans: "Inter", sans-serif;
+  --font-display: "StudioFeixenSans";
+  --font-display: "Fraunces", "Georgia", serif;
+  --font-sans: "Figtree", "Inter", sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
 
   /* Font scale based on --font-size-base */
   --text-xs: calc(var(--font-size-base) * 0.75); /* ~12px */
@@ -76,73 +177,102 @@
 
 }
 
-:root {
-  --radius: 0.625rem;
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.7003 0.1611 35.09);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
-  --chart-1: oklch(0.646 0.222 41.116);
-  --chart-2: oklch(0.6 0.118 184.704);
-  --chart-3: oklch(0.398 0.07 227.392);
-  --chart-4: oklch(0.828 0.189 84.429);
-  --chart-5: oklch(0.769 0.188 70.08);
-  --sidebar: #194D24;
-  --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.205 0 0);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
+@utility focus-ring {
+  @apply outline-hidden focus-visible:ring-2 focus-visible:ring-ring/90 focus-visible:ring-offset-2 focus-visible:ring-offset-background;
 }
 
+/* Storybook / Garden Desk palette
+   Warm paper surfaces, deep editorial ink, friendly accent colors. */
+:root {
+  --radius: 1rem;
+
+  /* Storybook primitives — warm editorial desk paper */
+  --paper: #fdf3d7;
+  --paper-soft: #faeac5;
+  --paper-card: #fff9e8;
+  --paper-muted: #f5e8cc;
+  --ink: #17234d;
+  --blue: #214099;
+  --blue-soft: #c4d0f3;
+  --green: #6fa642;
+  --green-soft: #dff3c4;
+  --yellow: #fbd026;
+  --yellow-soft: #f3dfc4;
+  --orange: #f97d38;
+  --orange-soft: #f3cbc4;
+  --red: #fb5c34;
+  --red-soft: #f3c4c4;
+
+  /* shadcn token mapping — light/paper theme */
+  --background: #fdf3d7;
+  --foreground: var(--ink);
+  --card: var(--paper-card);
+  --card-foreground: var(--ink);
+  --popover: var(--paper-card);
+  --popover-foreground: var(--ink);
+  --primary: var(--blue);
+  --primary-foreground: #ffffff;
+  --secondary: var(--paper-soft);
+  --secondary-foreground: var(--ink);
+  --muted: var(--paper-muted);
+  --muted-foreground: #5a6a8a;
+  --accent: var(--yellow);
+  --accent-foreground: var(--ink);
+  --destructive: var(--red);
+  --border: var(--ink);
+  --input: var(--paper-card);
+  --ring: var(--ink);
+  --chart-1: var(--blue);
+  --chart-2: var(--green);
+  --chart-3: var(--yellow);
+  --chart-4: var(--orange);
+  --chart-5: var(--red);
+  --sidebar: #faeac5;
+  --sidebar-foreground: var(--ink);
+  --sidebar-primary: var(--blue);
+  --sidebar-primary-foreground: #ffffff;
+  /* calmer sidebar states for nav (no harsh yellow) — relative to current sidebar tint */
+  --sidebar-accent: color-mix(in srgb, var(--sidebar) 80%, var(--ink) 5%);
+  --sidebar-accent-foreground: var(--ink);
+  --sidebar-active: color-mix(in srgb, var(--sidebar) 65%, var(--ink) 8%);
+  --sidebar-border: color-mix(in srgb, var(--ink) 18%, transparent);
+  --sidebar-ring: var(--ink);
+}
+
+/* Dark mode: midnight paper — deep blue editorial night desk */
 .dark {
-  --background: oklch(0.18 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.205 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.7003 0.1611 35.09);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.556 0 0);
-  --chart-1: oklch(0.488 0.243 264.376);
-  --chart-2: oklch(0.696 0.17 162.48);
-  --chart-3: oklch(0.769 0.188 70.08);
-  --chart-4: oklch(0.627 0.265 303.9);
-  --chart-5: oklch(0.645 0.246 16.439);
-  --sidebar: #194D24;
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.556 0 0);
+  --background: #0f1630;
+  --foreground: #f7f1dc;
+  --card: #17234d;
+  --card-foreground: #f7f1dc;
+  --popover: #17234d;
+  --popover-foreground: #f7f1dc;
+  --primary: var(--blue);
+  --primary-foreground: #f7f1dc;
+  --secondary: #1f2d5c;
+  --secondary-foreground: #f7f1dc;
+  --muted: #1f2d5c;
+  --muted-foreground: #a8b4d0;
+  --accent: #2a3a6a;
+  --accent-foreground: #f7f1dc;
+  --destructive: #fb5c34;
+  --border: rgb(247 241 220 / 15%);
+  --input: #1f2d5c;
+  --ring: #5a7ad0;
+  --chart-1: #5a7ad0;
+  --chart-2: #88ba42;
+  --chart-3: #fbd026;
+  --chart-4: #f97d38;
+  --chart-5: #fb5c34;
+  --sidebar: #0f1630;
+  --sidebar-foreground: #f7f1dc;
+  --sidebar-primary: #5a7ad0;
+  --sidebar-primary-foreground: #f7f1dc;
+  --sidebar-accent: color-mix(in srgb, var(--sidebar) 75%, #f7f1dc 10%);
+  --sidebar-accent-foreground: #f7f1dc;
+  --sidebar-active: color-mix(in srgb, var(--sidebar) 55%, #f7f1dc 12%);
+  --sidebar-border: rgb(247 241 220 / 15%);
+  --sidebar-ring: #5a7ad0;
 }
 
 @layer base {
@@ -152,6 +282,25 @@
   }
   body {
     @apply bg-background text-foreground font-sans text-sm antialiased overflow-hidden;
+  }
+
+  /* Subtle paper texture — lightweight dot grid that feels like notebook paper */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 9999;
+    opacity: 0.035;
+    background-image: radial-gradient(circle at center, var(--ink) 1px, transparent 1px);
+    background-size: 24px 24px;
+    mask-image: linear-gradient(to bottom, black 0%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to bottom, black 0%, transparent 100%);
+  }
+
+  .dark body::before {
+    opacity: 0.04;
+    background-image: radial-gradient(circle at center, #f7f1dc 1px, transparent 1px);
   }
 
   ::-ms-reveal {
@@ -187,6 +336,10 @@
     @apply font-mono;
   }
 
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-display);
+  }
+
   svg.lucide {
     width: 14px;
     height: 14px;
@@ -196,7 +349,7 @@
     stroke-width: 2;
   }
 
-  /* Scrollbar styles */
+  /* Scrollbar styles — warm, subtle paper scrollbars */
   ::-webkit-scrollbar {
     width: 8px;
     height: 8px;
@@ -207,30 +360,40 @@
   }
 
   ::-webkit-scrollbar-thumb {
-    background: oklch(0.708 0 0 / 30%);
+    background: color-mix(in srgb, var(--border) 26%, transparent);
+    border: 2px solid transparent;
+    background-clip: padding-box;
     border-radius: 4px;
   }
 
   ::-webkit-scrollbar-thumb:hover {
-    background: oklch(0.708 0 0 / 50%);
+    background: color-mix(in srgb, var(--border) 42%, transparent);
+    border: 2px solid transparent;
+    background-clip: padding-box;
   }
 
   .dark ::-webkit-scrollbar-thumb {
-    background: oklch(0.985 0 0 / 20%);
+    background: rgb(247 241 220 / 18%);
   }
 
   .dark ::-webkit-scrollbar-thumb:hover {
-    background: oklch(0.985 0 0 / 35%);
+    background: rgb(247 241 220 / 32%);
   }
 
   /* Firefox scrollbar */
   * {
     scrollbar-width: thin;
-    scrollbar-color: oklch(0.708 0 0 / 30%) transparent;
+    scrollbar-color: color-mix(in srgb, var(--border) 30%, transparent) transparent;
   }
 
   .dark * {
-    scrollbar-color: oklch(0.985 0 0 / 20%) transparent;
+    scrollbar-color: rgb(247 241 220 / 18%) transparent;
+  }
+
+  /* Consistent editorial focus ring for interactive elements
+     that don't define their own focus-visible treatment. */
+  :focus-visible {
+    outline: none;
   }
 
 }

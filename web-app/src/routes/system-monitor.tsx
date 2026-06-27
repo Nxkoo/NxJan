@@ -51,15 +51,15 @@ function SystemMonitorContent() {
   return (
     <div className="flex flex-col h-full bg-background overflow-y-auto p-6">
       <div className="flex items-center mb-4 gap-2">
-        <IconDeviceDesktopAnalytics className="text-muted-foreground/80 size-6" />
-        <h1 className="text-xl font-bold text-muted-foreground">
+        <IconDeviceDesktopAnalytics className="text-foreground/70 size-6" />
+        <h1 className="text-xl font-bold font-display text-foreground">
           {t('system-monitor:title')}
         </h1>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {/* CPU Usage Card */}
-        <div className="bg-secondary/50 rounded-lg p-6 shadow-sm">
+        <div className="bg-card rounded-2xl border-2 p-5 shadow-sm">
           <h2 className="text-base font-semibold mb-4">
             {t('system-monitor:cpuUsage')}
           </h2>
@@ -99,7 +99,7 @@ function SystemMonitorContent() {
         </div>
 
         {/* RAM Usage Card */}
-        <div className="bg-secondary/50 rounded-lg p-6 shadow-sm">
+        <div className="bg-card rounded-2xl border-2 p-5 shadow-sm">
           <h2 className="text-base font-semibold mb-4">
             {t('system-monitor:memoryUsage')}
           </h2>
@@ -146,7 +146,7 @@ function SystemMonitorContent() {
 
         {/* GPU Usage Card */}
         {!IS_MACOS && (
-          <div className="bg-secondary/50 rounded-lg p-6 shadow-sm">
+          <div className="bg-card rounded-2xl border-2 p-5 shadow-sm">
             <h2 className="text-base font-semibold mb-4">
               {t('system-monitor:activeGpus')}
             </h2>
@@ -161,7 +161,7 @@ function SystemMonitorContent() {
                       <span
                         className={`text-sm px-2 py-1 rounded-md ${
                           device.activated
-                            ? 'bg-green-500/20 text-green-600 dark:text-green-400'
+                            ? 'bg-[var(--green-soft)] text-[var(--green)] border border-[var(--green)]/30'
                             : 'hidden'
                         }`}
                       >

@@ -12,86 +12,51 @@ export type FontSize = '14px' | '15px' | '16px' | '18px' | '20px'
 
 export const ACCENT_COLORS = [
   {
-    name: 'Gray',
-    value: 'gray',
-    thumb: '#3F3F46',
-    primary: '#f17455',
-    sidebar: { light: '#f1f1f1', dark: '#171717' },
-  },
-  {
-    name: 'Red',
-    value: 'red',
-    thumb: '#F0614B',
-    primary: '#F0614B',
-    sidebar: { light: '#F3CBC4', dark: '#5E1308' },
-  },
-  {
-    name: 'Orange',
-    value: 'orange',
-    thumb: '#E9A23F',
-    primary: '#E9A23F',
-    sidebar: { light: '#F3DFC4', dark: '#5C3A0A' },
-  },
-  {
-    name: 'Green',
-    value: 'green',
-    thumb: '#88BA42',
-    primary: '#88BA42',
-    sidebar: { light: '#DFF3C4', dark: '#374B1B' },
-  },
-  {
-    name: 'Emerald',
-    value: 'emerald',
-    thumb: '#38AB51',
-    primary: '#38AB51',
-    sidebar: { light: '#C4F3CE', dark: '#194D24' },
-  },
-  {
-    name: 'Teal',
-    value: 'teal',
-    thumb: '#38AB8D',
-    primary: '#38AB8D',
-    sidebar: { light: '#C4F3E6', dark: '#194D3F' },
-  },
-  {
-    name: 'Cyan',
-    value: 'cyan',
-    thumb: '#45BBDE',
-    primary: '#45BBDE',
-    sidebar: { light: '#C4E8F3', dark: '#0F4657' },
+    name: 'Ink',
+    value: 'ink',
+    thumb: '#17234d',
+    primary: '#17234d',
+    sidebar: { light: '#faeac5', dark: '#0f1630' },
   },
   {
     name: 'Blue',
     value: 'blue',
-    thumb: '#456BDE',
-    primary: '#456BDE',
-    sidebar: { light: '#C4D0F3', dark: '#0F2157' },
+    thumb: '#214099',
+    primary: '#214099',
+    sidebar: { light: '#e8f0f8', dark: '#0f2157' },
   },
   {
-    name: 'Purple',
-    value: 'purple',
-    thumb: '#865EEA',
-    primary: '#865EEA',
-    sidebar: { light: '#D2C4F3', dark: '#220C5A' },
+    name: 'Green',
+    value: 'green',
+    thumb: '#6fa642',
+    primary: '#6fa642',
+    sidebar: { light: '#dff3c4', dark: '#374b1b' },
   },
   {
-    name: 'Pink',
-    value: 'pink',
-    thumb: '#D55EF3',
-    primary: '#D55EF3',
-    sidebar: { light: '#FFDAE9', dark: '#4D075F' },
+    name: 'Yellow',
+    value: 'yellow',
+    thumb: '#fbd026',
+    primary: '#fbd026',
+    sidebar: { light: '#f3dfc4', dark: '#5c3a0a' },
   },
   {
-    name: 'Rose',
-    value: 'rose',
-    thumb: '#F655B8',
-    primary: '#F655B8',
-    sidebar: { light: '#F3C4E1', dark: '#61053E' },
+    name: 'Orange',
+    value: 'orange',
+    thumb: '#f97d38',
+    primary: '#f97d38',
+    sidebar: { light: '#f3cbc4', dark: '#5e1308' },
+  },
+  {
+    name: 'Red',
+    value: 'red',
+    thumb: '#fb5c34',
+    primary: '#fb5c34',
+    sidebar: { light: '#f3c4c4', dark: '#61053e' },
   },
 ] as const
 
 export type AccentColorValue = (typeof ACCENT_COLORS)[number]['value']
-const DEFAULT_ACCENT_COLOR: AccentColorValue = 'gray'
+const DEFAULT_ACCENT_COLOR: AccentColorValue = 'ink'
 
 const applyAccentColorToDOM = (colorValue: string, isDark: boolean) => {
   const color = ACCENT_COLORS.find((c) => c.value === colorValue)

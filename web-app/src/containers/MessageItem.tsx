@@ -273,20 +273,20 @@ export const MessageItem = memo(
             <div className="flex justify-end w-full h-full text-start wrap-break-word whitespace-normal">
               <div
                 className={cn(
-                  'relative p-2 rounded-md inline-block max-w-[80%]',
+                  'relative p-3 rounded-2xl inline-block max-w-[80%] border-2',
                   coloredUserBubble
-                    ? 'bg-primary text-primary-foreground'
-                    : 'bg-secondary text-foreground'
+                    ? 'bg-primary text-primary-foreground border-primary'
+                    : 'bg-card text-foreground border-border'
                 )}
               >
                 {/* Show attached files if any */}
                 {attachedFiles.length > 0 && (
-                  <div className="flex flex-wrap gap-2 mb-3">
-                    {attachedFiles.map((file: FileMetadata, idx: number) => (
-                      <div
-                        key={`file-${idx}-${file.id}`}
-                        className="flex items-center gap-1.5 px-2 py-1 rounded-sm bg-secondary text-secondary-foreground border text-xs"
-                      >
+                        <div className="flex flex-wrap gap-2 mb-3">
+                          {attachedFiles.map((file: FileMetadata, idx: number) => (
+                            <div
+                              key={`file-${idx}-${file.id}`}
+                              className="flex items-center gap-1.5 px-2 py-1 rounded-lg bg-secondary/80 text-secondary-foreground border-2 text-xs"
+                            >
                         <IconPaperclip
                           size={14}
                           className="text-muted-foreground"
@@ -525,7 +525,7 @@ export const MessageItem = memo(
                     className="relative"
                   >
                     {partIsStreaming && (
-                      <div className="absolute top-0 left-0 right-0 h-8 bg-linear-to-br from-neutral-50 mask-t-from-98% dark:from-background to-transparent pointer-events-none z-10" />
+                      <div className="absolute top-0 left-0 right-0 h-8 bg-linear-to-br from-background mask-t-from-98% to-transparent pointer-events-none z-10" />
                     )}
                     <div
                       ref={partIsStreaming ? reasoningContainerRef : null}
@@ -547,13 +547,13 @@ export const MessageItem = memo(
                       </div>
                     </div>
                     {partIsStreaming && !isReasoningAtBottom && (
-                      <Button
-                        className="absolute bottom-2 left-[50%] translate-x-[-50%] rounded-full size-7 z-10"
-                        onClick={onReasoningScrollToBottom}
-                        size="icon"
-                        type="button"
-                        variant="outline"
-                      >
+                    <Button
+                      className="absolute bottom-2 left-[50%] translate-x-[-50%] rounded-xl size-7 z-10 border-2"
+                      onClick={onReasoningScrollToBottom}
+                      size="icon"
+                      type="button"
+                      variant="outline"
+                    >
                         <IconArrowDown className="size-3" />
                       </Button>
                     )}

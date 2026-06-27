@@ -147,15 +147,16 @@ function NavMainItemWithAnimatedIcon({
 
   const content = (
     <>
-      <AnimatedIcon ref={iconRef} className="text-foreground/70" size={16} />
-      <span>{label}</span>
+      <AnimatedIcon ref={iconRef} className="text-foreground/80" size={18} />
+      <span className="font-medium">{label}</span>
       {item.shortcut}
     </>
   )
 
   return (
     <SidebarMenuItem>
-      <SidebarMenuButton
+        <SidebarMenuButton
+        size="lg"
         asChild={!!item.url}
         isActive={item.isActive}
         onMouseEnter={() => iconRef.current?.startAnimation()}
@@ -215,21 +216,22 @@ export function NavMain() {
           return (
             <SidebarMenuItem key={item.title}>
               <SidebarMenuButton
+                size="lg"
                 asChild={!!item.url}
                 isActive={item.isActive}
                 onClick={item.onClick}
               >
                 {item.url ? (
                   <Link to={item.url}>
-                    {Icon && <Icon className="text-foreground/70" />}
-                    <span>{t(item.title)}</span>
-                    {item.shortcut}
+                {Icon && <Icon className="text-foreground/80" size={18} />}
+                <span className="font-medium">{t(item.title)}</span>
+                {item.shortcut}
                   </Link>
                 ) : (
                   <>
-                    {Icon && <Icon className="text-foreground/70" />}
-                    <span>{t(item.title)}</span>
-                    {item.shortcut}
+                {Icon && <Icon className="text-foreground/80" size={18} />}
+                <span className="font-medium">{t(item.title)}</span>
+                {item.shortcut}
                   </>
                 )}
               </SidebarMenuButton>

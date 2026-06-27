@@ -116,8 +116,8 @@ const SettingsMenu = () => {
       <div
         key={provider.provider}
         className={cn(
-          'flex px-2 items-center gap-1.5 cursor-pointer hover:bg-secondary/60 py-1 w-full rounded-sm text-foreground',
-          isRouteActive && 'bg-secondary',
+          'flex px-2 items-center gap-1.5 cursor-pointer hover:bg-[var(--sidebar-accent)] py-1.5 w-full rounded-xl text-foreground border-2 border-transparent hover:border-border/20',
+          isRouteActive && 'bg-[var(--sidebar-active)] border-border/40 font-medium',
           provider.provider === 'llama.cpp' &&
             stepSetupRemoteProvider &&
             'hidden'
@@ -231,11 +231,11 @@ const SettingsMenu = () => {
             <div key={menu.title}>
               <Link
                 to={menu.route}
-                className="block px-2 gap-1.5 cursor-pointer hover:dark:bg-secondary/60 hover:bg-secondary py-1 w-full rounded-sm [&.active]:dark:bg-secondary/80 [&.active]:bg-secondary"
+                className="block px-2 gap-1.5 cursor-pointer hover:bg-accent/60 hover:border-border/20 py-1.5 w-full rounded-xl border-2 border-transparent [&.active]:bg-accent [&.active]:border-border/30"
               >
                 <div className="flex items-center gap-2">
                   <menu.icon size={18} className="shrink-0 text-muted-foreground" />
-                  <span>{t(menu.title)}</span>
+                  <span className="font-medium">{t(menu.title)}</span>
                 </div>
               </Link>
             </div>
@@ -243,21 +243,21 @@ const SettingsMenu = () => {
 
           {/* Integrations section */}
           <div className="mt-4">
-            <span className="px-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-              {t('common:integrations')}
-              <span className="text-[11px] capitalize ml-2 font-medium px-2 py-0.5 rounded-full bg-blue-500/20 text-blue-600 dark:text-blue-400">
-                {t('common:experimental')}
-              </span>
+          <span className="px-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+            {t('common:integrations')}
+            <span className="text-[11px] capitalize ml-2 font-medium px-2 py-0.5 rounded-full bg-blue-100 text-blue-700 dark:bg-blue-500/20 dark:text-blue-300 border border-blue-200 dark:border-blue-500/30">
+              {t('common:experimental')}
             </span>
+          </span>
             <div className="mt-1 flex flex-col gap-1">
               {integrationSettings.map((menu) => (
                 <Link
                   key={menu.title}
                   to={menu.route}
-                  className="flex items-center gap-2 px-2 py-1 cursor-pointer hover:dark:bg-secondary/60 hover:bg-secondary rounded-sm [&.active]:dark:bg-secondary/80 [&.active]:bg-secondary"
+                  className="flex items-center gap-2 px-2 py-1.5 cursor-pointer hover:bg-accent/60 hover:border-border/20 rounded-xl border-2 border-transparent [&.active]:bg-accent [&.active]:border-border/30"
                 >
                   <menu.icon size={18} className="shrink-0 text-muted-foreground" />
-                  <span>{t(menu.title)}</span>
+                  <span className="font-medium">{t(menu.title)}</span>
                 </Link>
               ))}
             </div>
@@ -302,7 +302,7 @@ const SettingsMenu = () => {
               {hiddenProviders.length > 0 && (
                 <>
                   <button
-                    className="flex items-center justify-between px-2 py-1 w-full rounded-sm text-muted-foreground hover:bg-secondary/60"
+                    className="flex items-center justify-between px-2 py-1.5 w-full rounded-xl text-muted-foreground hover:bg-accent/60 border-2 border-transparent hover:border-border/20"
                     onClick={() => setExpandedProviders(!expandedProviders)}
                   >
                     <span className="text-sm">
@@ -329,8 +329,8 @@ const SettingsMenu = () => {
                         <div
                           key={provider.provider}
                           className={cn(
-                            'flex px-2 items-center gap-1.5 cursor-pointer hover:bg-secondary/60 py-1 w-full rounded-sm text-muted-foreground',
-                            isRouteActive && 'bg-secondary'
+                            'flex px-2 items-center gap-1.5 cursor-pointer hover:bg-accent/60 py-1.5 w-full rounded-xl text-muted-foreground border-2 border-transparent hover:border-border/20',
+                            isRouteActive && 'bg-accent border-border/30'
                           )}
                           onClick={() =>
                             navigate({
