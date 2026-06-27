@@ -116,7 +116,7 @@ const SettingsMenu = () => {
       <div
         key={provider.provider}
         className={cn(
-          'flex px-2 items-center gap-1.5 cursor-pointer hover:bg-[var(--sidebar-accent)] py-1.5 w-full rounded-xl text-foreground border-2 border-transparent hover:border-border/20',
+          'flex px-2 items-center gap-1.5 cursor-pointer hover:bg-[var(--sidebar-accent)] py-1.5 w-full rounded-xl text-foreground border border-transparent hover:border-border-soft',
           isRouteActive && 'bg-[var(--sidebar-active)] border-border/40 font-medium',
           provider.provider === 'llama.cpp' &&
             stepSetupRemoteProvider &&
@@ -231,7 +231,7 @@ const SettingsMenu = () => {
             <div key={menu.title}>
               <Link
                 to={menu.route}
-                className="block px-2 gap-1.5 cursor-pointer hover:bg-accent/60 hover:border-border/20 py-1.5 w-full rounded-xl border-2 border-transparent [&.active]:bg-accent [&.active]:border-border/30"
+                className="block px-2 gap-1.5 cursor-pointer hover:bg-accent/60 hover:border-border-soft py-1.5 w-full rounded-xl border border-transparent [&.active]:bg-accent [&.active]:border-border"
               >
                 <div className="flex items-center gap-2">
                   <menu.icon size={18} className="shrink-0 text-muted-foreground" />
@@ -254,7 +254,7 @@ const SettingsMenu = () => {
                 <Link
                   key={menu.title}
                   to={menu.route}
-                  className="flex items-center gap-2 px-2 py-1.5 cursor-pointer hover:bg-accent/60 hover:border-border/20 rounded-xl border-2 border-transparent [&.active]:bg-accent [&.active]:border-border/30"
+                  className="flex items-center gap-2 px-2 py-1.5 cursor-pointer hover:bg-accent/60 hover:border-border-soft rounded-xl border border-transparent [&.active]:bg-accent [&.active]:border-border"
                 >
                   <menu.icon size={18} className="shrink-0 text-muted-foreground" />
                   <span className="font-medium">{t(menu.title)}</span>
@@ -302,7 +302,7 @@ const SettingsMenu = () => {
               {hiddenProviders.length > 0 && (
                 <>
                   <button
-                    className="flex items-center justify-between px-2 py-1.5 w-full rounded-xl text-muted-foreground hover:bg-accent/60 border-2 border-transparent hover:border-border/20"
+                    className="flex items-center justify-between px-2 py-1.5 w-full rounded-xl text-muted-foreground hover:bg-accent/60 border border-transparent hover:border-border-soft"
                     onClick={() => setExpandedProviders(!expandedProviders)}
                   >
                     <span className="text-sm">
@@ -329,7 +329,7 @@ const SettingsMenu = () => {
                         <div
                           key={provider.provider}
                           className={cn(
-                            'flex px-2 items-center gap-1.5 cursor-pointer hover:bg-accent/60 py-1.5 w-full rounded-xl text-muted-foreground border-2 border-transparent hover:border-border/20',
+                            'flex px-2 items-center gap-1.5 cursor-pointer hover:bg-accent/60 py-1.5 w-full rounded-xl text-muted-foreground border border-transparent hover:border-border-soft',
                             isRouteActive && 'bg-accent border-border/30'
                           )}
                           onClick={() =>

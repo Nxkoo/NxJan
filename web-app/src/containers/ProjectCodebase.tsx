@@ -147,7 +147,7 @@ export default function ProjectCodebase({
         </div>
         <span
           className={cn(
-            'inline-flex items-center gap-1.5 rounded-full border-2 px-2.5 py-0.5 text-xs font-medium whitespace-nowrap',
+            'inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-xs font-medium whitespace-nowrap',
             statusBadge.tone === 'success' &&
               'border-[var(--green)]/70 bg-[var(--green-soft)] text-[var(--green)] dark:border-[var(--green)] dark:text-[var(--green)]',
             statusBadge.tone === 'destructive' &&
@@ -171,7 +171,7 @@ export default function ProjectCodebase({
 
       {availability && !availability.available && (
         <div
-          className="rounded-xl border-2 border-dashed border-[var(--orange)]/40 bg-[var(--orange-soft)]/40 px-3 py-2.5 text-xs text-foreground mb-3"
+          className="rounded-xl border border-dashed border-[var(--orange)]/30 bg-[var(--orange-soft)]/40 px-3 py-2.5 text-xs text-foreground mb-3"
           data-testid="codebase-cli-warning"
         >
           <p className="font-medium text-[var(--orange)] mb-0.5">
@@ -186,7 +186,7 @@ export default function ProjectCodebase({
 
       {meta && mcpServerConfigured && !mcpServerActive && (
         <div
-          className="rounded-xl border-2 border-dashed border-[var(--yellow)]/50 bg-[var(--yellow-soft)]/60 px-3 py-2.5 text-xs text-foreground mb-3"
+          className="rounded-xl border border-dashed border-[var(--yellow)]/40 bg-[var(--yellow-soft)]/60 px-3 py-2.5 text-xs text-foreground mb-3"
           data-testid="codebase-mcp-warning"
         >
           <p className="font-medium text-[var(--ink)] mb-0.5">
@@ -342,7 +342,7 @@ export default function ProjectCodebase({
         </div>
       ) : (
         <div
-          className="rounded-xl border-2 border-dashed border-border/40 bg-secondary/30 p-4 text-xs text-muted-foreground"
+          className="rounded-xl border border-dashed border-border-soft bg-secondary/30 p-4 text-xs text-muted-foreground"
           data-testid="codebase-empty"
         >
           {t('common:codebase.empty')}

@@ -149,7 +149,7 @@ export const ToolHeader = memo(
       <CollapsibleTrigger
         className={cn(
           'cursor-pointer flex w-full items-start gap-2 rounded-2xl px-3 py-2 text-sm transition-colors',
-          !isOpen && 'hover:bg-secondary/70',
+          !isOpen && 'hover:bg-surface-3',
           className
         )}
       >
@@ -196,7 +196,7 @@ export const ToolContent = memo(
       )}
       {...props}
     >
-      <div className="ml-4 space-y-3 border-l-2 border-dashed border-border/70 pl-4">
+      <div className="ml-4 space-y-3 border-l border-dashed border-border-soft pl-4">
         {children}
       </div>
     </CollapsibleContent>
@@ -236,13 +236,13 @@ export const ToolInput = memo(
           Parameters
         </h4>
         {formattedDisplay.params.length > 0 ? (
-          <div className="overflow-hidden rounded-xl border border-border/70 bg-background/40">
+          <div className="overflow-hidden rounded-xl border border-border-soft bg-surface-3">
             {formattedDisplay.params.map((row) => (
               <div
                 key={row.key}
-                className="grid grid-cols-[7rem_1fr] border-b border-border/60 last:border-b-0"
+                className="grid grid-cols-[7rem_1fr] border-b border-border-soft last:border-b-0"
               >
-                <div className="bg-secondary/50 px-2 py-1.5 font-mono text-[11px] text-muted-foreground">
+                <div className="bg-surface-2 px-2 py-1.5 font-mono text-[11px] text-muted-foreground">
                   {row.key}
                 </div>
                 <div className="min-w-0 break-words px-2 py-1.5 font-mono text-[11px] text-foreground">
@@ -253,11 +253,11 @@ export const ToolInput = memo(
           </div>
         ) : null}
         {isOpen && (
-          <details className="rounded-xl border border-border/70 bg-background/40 p-2">
+          <details className="rounded-xl border border-border-soft bg-surface-3 p-2">
             <summary className="cursor-pointer text-xs font-medium text-muted-foreground">
               Raw parameters
             </summary>
-            <pre className="mt-2 max-h-40 overflow-auto whitespace-pre-wrap break-words rounded-lg bg-secondary/40 p-2 text-[11px] text-foreground">
+            <pre className="mt-2 max-h-40 overflow-auto whitespace-pre-wrap break-words rounded-lg bg-surface-2 p-2 text-[11px] text-foreground">
               {formatted}
             </pre>
           </details>
@@ -278,7 +278,7 @@ export const ToolApprovalActions = memo(() => {
   if (!pending || !toolCallId) return null
 
   return (
-    <div className="mt-4 space-y-2 rounded-md border border-amber-500/30 bg-amber-500/5 p-3">
+    <div className="mt-4 space-y-2 rounded-md border border-amber-500/20 bg-amber-500/5 p-3">
       <div className="flex items-center gap-2 text-amber-700 dark:text-amber-300 text-xs font-medium">
         <ShieldAlertIcon className="size-4" />
         <span>{t('tools:toolApproval.needsApproval')}</span>
@@ -403,7 +403,7 @@ export const ToolOutput = memo(
       // Handle string output
       if (typeof output === 'string') {
         return (
-          <pre className="max-h-56 overflow-auto whitespace-pre-wrap break-words rounded-xl border border-border/70 bg-background/40 p-3 text-[11px] text-foreground">
+          <pre className="max-h-56 overflow-auto whitespace-pre-wrap break-words rounded-xl border border-border-soft bg-surface-3 p-3 text-[11px] text-foreground">
             {output}
           </pre>
         )
@@ -434,7 +434,7 @@ export const ToolOutput = memo(
                   {textItems.map((item, index) => (
                     <pre
                       key={index}
-                      className="max-h-56 overflow-auto whitespace-pre-wrap break-words rounded-xl border border-border/70 bg-background/40 p-3 text-[11px] text-foreground"
+                      className="max-h-56 overflow-auto whitespace-pre-wrap break-words rounded-xl border border-border-soft bg-surface-3 p-3 text-[11px] text-foreground"
                     >
                       {item.text || ''}
                     </pre>
@@ -472,7 +472,7 @@ export const ToolOutput = memo(
             return (
               <div className="space-y-4">
                 {nonImageOutput.length > 0 && (
-                  <div className="rounded-md max-h-40 overflow-auto rounded-md border ">
+                  <div className="rounded-md max-h-40 overflow-auto rounded-md border border-border-soft ">
                     <CodeBlock code={JSON.stringify(nonImageOutput, null, 2)} language="json" />
                   </div>
                 )}
@@ -494,7 +494,7 @@ export const ToolOutput = memo(
           }
 
           return (
-            <div className="rounded-xl max-h-56 overflow-auto border border-border/70 bg-background/40">
+            <div className="rounded-xl max-h-56 overflow-auto border border-border-soft bg-surface-3">
               <CodeBlock
                 code={JSON.stringify(output, null, 2)}
                 language="json"
@@ -505,7 +505,7 @@ export const ToolOutput = memo(
 
         // Handle regular object
         return (
-          <div className="rounded-xl max-h-56 overflow-auto border border-border/70 bg-background/40">
+          <div className="rounded-xl max-h-56 overflow-auto border border-border-soft bg-surface-3">
             <CodeBlock code={JSON.stringify(output, null, 2)} language="json" />
           </div>
         )
@@ -534,7 +534,7 @@ export const ToolOutput = memo(
               {formattedOutput.snippets.slice(0, 2).map((snippet, index) => (
                 <pre
                   key={`${index}-${snippet.slice(0, 20)}`}
-                  className="max-h-40 overflow-auto whitespace-pre-wrap break-words rounded-xl border border-border/70 bg-background/40 p-3 font-mono text-[11px] text-foreground"
+                  className="max-h-40 overflow-auto whitespace-pre-wrap break-words rounded-xl border border-border-soft bg-surface-3 p-3 font-mono text-[11px] text-foreground"
                 >
                   {snippet.length > 600
                     ? `${snippet.slice(0, 600)}…`
@@ -547,11 +547,11 @@ export const ToolOutput = memo(
             ? Output
             : null}
           {!errorText && isOpen && (
-            <details className="rounded-xl border border-border/70 bg-background/40 p-2">
+            <details className="rounded-xl border border-border-soft bg-surface-3 p-2">
               <summary className="cursor-pointer text-xs font-medium text-muted-foreground">
                 Raw JSON result
               </summary>
-              <pre className="mt-2 max-h-56 overflow-auto whitespace-pre-wrap break-words rounded-lg bg-secondary/40 p-2 text-[11px] text-foreground">
+              <pre className="mt-2 max-h-56 overflow-auto whitespace-pre-wrap break-words rounded-lg bg-surface-2 p-2 text-[11px] text-foreground">
                 {formattedOutput.rawOutput}
               </pre>
             </details>

@@ -198,8 +198,8 @@ function ProjectPageContent() {
 
           {/* Empty State */}
           {projectThreads.length === 0 && (
-            <div className="flex flex-col items-center justify-center pt-8 pb-12 text-center bg-card rounded-2xl border-2 border-dashed border-border/50 mb-6">
-              <div className="flex items-center justify-center size-14 rounded-2xl bg-secondary border-2 border-border/20 mb-4">
+            <div className="flex flex-col items-center justify-center pt-8 pb-12 text-center bg-card rounded-2xl border border-dashed border-border-soft mb-6">
+              <div className="flex items-center justify-center size-14 rounded-2xl bg-secondary border border-border-soft mb-4">
                 <MessageCircle className="size-7 text-muted-foreground" />
               </div>
               <h3 className="text-lg font-display font-semibold text-foreground mb-1">
@@ -214,7 +214,7 @@ function ProjectPageContent() {
                     <button
                       key={suggestion}
                       type="button"
-                      className="flex items-center gap-2 rounded-2xl border-2 border-border bg-background/50 px-3 py-2 text-left text-xs text-foreground transition-colors hover:border-primary/50 hover:bg-primary/5"
+                      className="flex items-center gap-2 rounded-2xl border border-border-soft bg-surface-3 px-3 py-2 text-left text-xs text-foreground transition-colors hover:border-primary/50 hover:bg-primary/5"
                       onClick={() => setPrompt(suggestion)}
                     >
                       <Code2 className="size-3.5 shrink-0 text-primary" />
@@ -227,9 +227,9 @@ function ProjectPageContent() {
           )}
 
           {/* Project Settings Card */}
-          <div className="rounded-2xl border-2 border-border overflow-hidden mb-6 bg-card shadow-sm">
+          <div className="rounded-2xl border border-border overflow-hidden mb-6 bg-card shadow-sm">
             {/* Assistant Section */}
-            <div className="flex items-center justify-between p-5 border-b-2 border-dashed border-border/30">
+            <div className="flex items-center justify-between p-5 border-b border-dashed border-border-soft">
               <div className="flex flex-col gap-1">
                 <h3 className="text-sm font-display font-semibold">{t('projects.addProjectDialog.assistant')}</h3>
                 {projectAssistant ? (

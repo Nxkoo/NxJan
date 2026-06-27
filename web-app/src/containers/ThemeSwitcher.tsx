@@ -41,7 +41,7 @@ export function ThemeSwitcher({
             htmlFor={item.value}
               className="cursor-pointer [&:has([data-state=checked])>div]:border-primary [&:has([data-state=checked])>div]:bg-primary/10"
             >
-              <Card className="w-full border-2 transition-colors shadow-none">
+              <Card className="w-full border transition-colors shadow-none">
               <CardContent className="flex flex-row items-center justify-start gap-4 p-4">
                 <RadioGroupItem value={item.value} id={item.value} />
                 <span className="text-sm font-medium">{item.label}</span>

@@ -56,7 +56,7 @@ describe('Textarea', () => {
     expect(textarea).toHaveClass('flex')
     expect(textarea).toHaveClass('min-h-16')
     expect(textarea).toHaveClass('w-full')
-    expect(textarea).toHaveClass('rounded-md')
+    expect(textarea).toHaveClass('rounded-xl')
     expect(textarea).toHaveClass('border')
   })
 

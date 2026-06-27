@@ -313,7 +313,7 @@ const Sidebar = React.forwardRef<
 				>
 					<div
 						data-sidebar="sidebar"
-						className="flex h-full w-full flex-col bg-sidebar group-data-[variant=floating]:rounded-2xl group-data-[variant=floating]:shadow-md group-data-[variant=floating]:border-2 group-data-[variant=floating]:border-sidebar-border"
+						className="flex h-full w-full flex-col bg-sidebar group-data-[variant=floating]:rounded-2xl group-data-[variant=floating]:shadow-md group-data-[variant=floating]:border group-data-[variant=floating]:border-sidebar-border"
 					>
 						{children}
 					</div>
@@ -438,7 +438,7 @@ const SidebarInput = React.forwardRef<
 			ref={ref}
 			data-sidebar="input"
 			className={cn(
-				"h-9 w-full rounded-xl border-2 border-sidebar-border/30 bg-background px-3 text-sm shadow-none outline-none focus-visible:border-sidebar-ring focus-visible:ring-2 focus-visible:ring-sidebar-ring/50",
+				"h-9 w-full rounded-xl border border-sidebar-border bg-background px-3 text-sm shadow-none outline-none focus-visible:border-sidebar-ring focus-visible:ring-2 focus-visible:ring-sidebar-ring/50",
 				className,
 			)}
 			{...props}
@@ -589,7 +589,7 @@ const SidebarMenu = React.forwardRef<
 	<ul
 		ref={ref}
 		data-sidebar="menu"
-		className={cn("flex w-full min-w-0 flex-col gap-1", className)}
+		className={cn("flex w-full min-w-0 flex-col gap-0.5", className)}
 		{...props}
 	/>
 ));
@@ -609,7 +609,7 @@ const SidebarMenuItem = React.forwardRef<
 SidebarMenuItem.displayName = "SidebarMenuItem";
 
 const sidebarMenuButtonVariants = cva(
-	"peer/menu-button flex w-full items-center gap-2 overflow-hidden rounded-xl p-2 text-left text-sm font-medium outline-hidden ring-sidebar-ring transition-[width,height,padding] hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:ring-2 focus-visible:ring-sidebar-ring disabled:pointer-events-none disabled:opacity-50 group-has-data-[sidebar=menu-action]/menu-item:pr-8 aria-disabled:pointer-events-none aria-disabled:opacity-50 data-[active=true]:bg-[var(--sidebar-active)] data-[active=true]:font-semibold data-[active=true]:text-sidebar-accent-foreground data-[state=open]:hover:bg-sidebar-accent data-[state=open]:hover:text-sidebar-accent-foreground group-data-[collapsible=icon]:size-8! group-data-[collapsible=icon]:p-2! [&>span:last-child]:truncate [&>svg]:size-4 [&>svg]:shrink-0 border-2 border-transparent",
+	"peer/menu-button flex w-full items-center gap-2 overflow-hidden rounded-xl p-1.5 text-left text-sm font-medium outline-hidden ring-sidebar-ring transition-[width,height,padding] hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:ring-2 focus-visible:ring-sidebar-ring disabled:pointer-events-none disabled:opacity-50 group-has-data-[sidebar=menu-action]/menu-item:pr-8 aria-disabled:pointer-events-none aria-disabled:opacity-50 data-[active=true]:bg-[var(--sidebar-active)] data-[active=true]:font-semibold data-[active=true]:text-sidebar-accent-foreground data-[state=open]:hover:bg-sidebar-accent data-[state=open]:hover:text-sidebar-accent-foreground group-data-[collapsible=icon]:size-8! group-data-[collapsible=icon]:p-2! [&>span:last-child]:truncate [&>svg]:size-4 [&>svg]:shrink-0 border border-transparent",
 	{
 		variants: {
 			variant: {
