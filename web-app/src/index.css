@@ -355,8 +355,8 @@
 .dark[data-dark-style="editorial"] {
   --sidebar-bg: #0e0d0a;
   --surface-1: #181715;
-  --surface-2: #21201d;
-  --surface-3: #21201d;
+  --surface-2: #262626;
+  --surface-3: #262626;
 
   --background: var(--surface-1);
   --foreground: #f5ecd6;
@@ -369,9 +369,9 @@
      InterfaceProvider) is overridden inside this mode. */
   --primary: #827D72 !important;
   --primary-foreground: #f5ecd6 !important;
-  --secondary: #21201d;
+  --secondary: #262626;
   --secondary-foreground: #f5ecd6;
-  --muted: #21201d;
+  --muted: #262626;
   --muted-foreground: #b3a98f;
   --accent: #2f2e2a;
   --accent-foreground: #f5ecd6;
