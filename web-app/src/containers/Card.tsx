@@ -32,7 +32,7 @@ export function CardItem({
     <>
       <div
         className={cn(
-          'flex justify-between mt-2 first:mt-0 border-b-2 border-dashed border-[var(--sidebar-border)] pb-3 last:border-none last:pb-0 gap-8',
+          'flex justify-between mt-2 first:mt-0 border-b border-dashed border-border-soft pb-3 last:border-none last:pb-0 gap-8',
           descriptionOutside && 'border-0',
           align === 'start' && 'items-start',
           align === 'center' && 'items-center',
@@ -72,7 +72,7 @@ export function CardItem({
 
 export function Card({ title, children, header }: CardProps) {
   return (
-    <div className="bg-card p-5 rounded-2xl border-2 text-muted-foreground w-full shadow-sm">
+    <div className="bg-card p-5 rounded-2xl border border-border text-muted-foreground w-full shadow-sm">
       {title && (
         <h1 className="text-foreground font-display font-semibold text-xl mb-4">
           {title}

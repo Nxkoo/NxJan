@@ -274,10 +274,10 @@ export const MessageItem = memo(
             <div className="flex justify-end w-full h-full text-start wrap-break-word whitespace-normal">
               <div
                 className={cn(
-                  'relative p-3 rounded-2xl inline-block max-w-[80%] border-2',
+                  'relative p-3 rounded-2xl inline-block max-w-[80%] border',
                   coloredUserBubble
-                    ? 'bg-primary text-primary-foreground border-primary'
-                    : 'bg-card text-foreground border-border'
+                    ? 'bg-primary text-primary-foreground dark:text-foreground border-primary'
+                    : 'bg-surface-3 text-foreground border-border-soft'
                 )}
               >
                 {/* Show attached files if any */}
@@ -286,7 +286,7 @@ export const MessageItem = memo(
                           {attachedFiles.map((file: FileMetadata, idx: number) => (
                             <div
                               key={`file-${idx}-${file.id}`}
-                              className="flex items-center gap-1.5 px-2 py-1 rounded-lg bg-secondary/80 text-secondary-foreground border-2 text-xs"
+                              className="flex items-center gap-1.5 px-2 py-1 rounded-lg bg-secondary/80 text-secondary-foreground border border-border-soft text-xs"
                             >
                         <IconPaperclip
                           size={14}
@@ -440,7 +440,12 @@ export const MessageItem = memo(
           toolCallId={part.toolCallId}
           messageId={message.id}
           defaultOpen={false}
-          className="mb-2 rounded-2xl border-2 border-border bg-card/80 p-1 shadow-sm"
+          /* The card's *weight* should come from the surface, not the
+             outline. A 1px translucent border (--border-soft) plus a
+             one-step-up background separates the card from the chat
+             without competing with the composer. The header is the only
+             thing that should "speak"; the body just sits inside. */
+          className="mb-2 rounded-2xl border border-border-soft bg-surface-2 p-1"
         >
           <ToolHeader
             title={display.title}
@@ -568,7 +573,7 @@ export const MessageItem = memo(
                     </div>
                     {partIsStreaming && !isReasoningAtBottom && (
                     <Button
-                      className="absolute bottom-2 left-[50%] translate-x-[-50%] rounded-xl size-7 z-10 border-2"
+                      className="absolute bottom-2 left-[50%] translate-x-[-50%] rounded-xl size-7 z-10 border"
                       onClick={onReasoningScrollToBottom}
                       size="icon"
                       type="button"

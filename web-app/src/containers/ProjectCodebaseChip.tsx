@@ -128,19 +128,23 @@ export default function ProjectCodebaseChip({
         <button
           type="button"
           className={cn(
-            'group inline-flex max-w-full items-center gap-2 rounded-full border-2 px-3 py-1 text-xs font-semibold leading-none transition-all',
-            'shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/60',
-            'border-[var(--ink)]/15 bg-card/80 text-foreground hover:bg-card',
+            /* Badge, not button. The outer shape is what carries the
+               outline (subtle by default, only colored when the status
+               is a non-default one). The inner status pill is small
+               enough to read like a label, not a sub-component. */
+            'group inline-flex max-w-full items-center gap-2 rounded-full border px-3 py-1 text-xs font-semibold leading-none transition-all',
+            'shadow-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/60',
+            'border-border-soft bg-surface-3 text-foreground hover:bg-paper-soft',
             tone === 'success' &&
-              'border-[var(--green)] bg-[var(--green-soft)] text-[var(--green)] hover:bg-[var(--green-soft)]',
+              'border-[var(--green)]/40 bg-[var(--green-soft)]/70 text-[var(--green)] hover:bg-[var(--green-soft)]',
             tone === 'muted' &&
-              'border-[var(--ink)]/15 bg-card/80 text-muted-foreground hover:bg-card',
+              'border-border-soft bg-surface-3 text-muted-foreground hover:bg-paper-soft',
             tone === 'warning' &&
-              'border-[var(--orange)] bg-[var(--orange-soft)] text-[var(--orange)] hover:bg-[var(--orange-soft)]',
+              'border-[var(--orange)]/40 bg-[var(--orange-soft)]/70 text-[var(--orange)] hover:bg-[var(--orange-soft)]',
             tone === 'loading' &&
-              'border-primary bg-primary/15 text-primary hover:bg-primary/20',
+              'border-primary/30 bg-primary/10 text-primary hover:bg-primary/15',
             tone === 'error' &&
-              'border-destructive bg-destructive/15 text-destructive hover:bg-destructive/20'
+              'border-destructive/30 bg-destructive/10 text-destructive hover:bg-destructive/15'
           )}
           data-testid="codebase-chat-chip"
         >
@@ -161,15 +165,15 @@ export default function ProjectCodebaseChip({
             className={cn(
               'inline-flex shrink-0 items-center gap-1 rounded-full border px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide',
               tone === 'success' &&
-                'border-[var(--green)] bg-[var(--green-soft)] text-[var(--green)]',
+                'border-[var(--green)]/40 bg-[var(--green-soft)] text-[var(--green)]',
               tone === 'muted' &&
-                'border-border/80 bg-secondary/70 text-muted-foreground',
+                'border-border-soft bg-secondary/70 text-muted-foreground',
               tone === 'warning' &&
-                'border-[var(--orange)] bg-[var(--orange-soft)] text-[var(--orange)]',
+                'border-[var(--orange)]/40 bg-[var(--orange-soft)] text-[var(--orange)]',
               tone === 'loading' &&
-                'border-primary bg-primary/20 text-primary',
+                'border-primary/40 bg-primary/15 text-primary',
               tone === 'error' &&
-                'border-destructive bg-destructive/20 text-destructive'
+                'border-destructive/40 bg-destructive/15 text-destructive'
             )}
           >
             {label}
@@ -178,9 +182,9 @@ export default function ProjectCodebaseChip({
       </PopoverTrigger>
       <PopoverContent
         align="start"
-        className="w-80 rounded-2xl border border-[var(--ink)]/15 bg-card p-0 text-card-foreground shadow-xl shadow-black/15"
+        className="w-80 rounded-2xl border border-border-soft bg-popover p-0 text-card-foreground shadow-xl shadow-black/10"
       >
-        <div className="border-b-2 border-dashed border-border/60 p-3">
+        <div className="border-b border-dashed border-border-soft p-3">
           <div className="flex items-start justify-between gap-3">
             <div className="min-w-0">
               <div className="flex items-center gap-1.5 text-sm font-display font-semibold">
@@ -224,7 +228,7 @@ export default function ProjectCodebaseChip({
           )}
         </div>
 
-        <div className="flex items-center justify-between gap-2 border-t-2 border-dashed border-border/60 p-2">
+        <div className="flex items-center justify-between gap-2 border-t border-dashed border-border-soft p-2">
           <Button
             variant="outline"
             size="sm"

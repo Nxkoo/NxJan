@@ -154,7 +154,7 @@ const ThreadItem = memo(
     return (
       <SidebarMenuItem>
         {currentProjectId ?
-          <Link to="/threads/$threadId" params={{ threadId: thread.id }} className={cn("bg-card dark:bg-secondary/20 mb-2 px-4 py-4 border-2 hover:dark:bg-secondary/30 rounded-xl block max-w-full overflow-hidden", isSelected && "border-primary")}>
+          <Link to="/threads/$threadId" params={{ threadId: thread.id }} className={cn("bg-surface-3 dark:bg-surface-3 mb-2 px-4 py-4 border border-border-soft hover:bg-paper-soft dark:hover:bg-paper-soft rounded-xl block max-w-full overflow-hidden", isSelected && "border-primary")}>
               <div className="flex items-center gap-1.5 min-w-0">
                 {isActive && (
                   <Loader2 className="size-3 shrink-0 animate-spin text-muted-foreground" />

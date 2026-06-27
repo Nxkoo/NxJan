@@ -1732,8 +1732,14 @@ const ChatInput = memo(function ChatInput({
 
           <div
             className={cn(
-              'relative z-20 px-0 pb-12 border-2 rounded-3xl border-border bg-card shadow-md',
-              isFocused && 'ring-2 ring-ring/50',
+              /* The composer is the ONE surface per region that should
+                 carry the strongest outline — it has to read as "a place
+                 to type" against the chat backdrop. The border is
+                 translucent ink (--border-strong) instead of solid black,
+                 and the focus state raises it to a real ring instead of
+                 doubling up the stroke. */
+              'relative z-20 px-0 pb-12 border rounded-3xl border-border-strong bg-surface-3 shadow-sm',
+              isFocused && 'ring-2 ring-ring/50 border-border-strong',
               isDragOver && 'ring-2 ring-ring/50 border-primary'
             )}
             data-drop-zone={dropAcceptsAnything ? 'true' : undefined}
@@ -1767,7 +1773,7 @@ const ChatInput = memo(function ChatInput({
                             <TooltipTrigger asChild>
                           <div
                             className={cn(
-                              'relative border-2 rounded-xl size-14 overflow-hidden bg-card',
+                              'relative border rounded-xl size-14 overflow-hidden bg-surface-3',
                               'flex items-center justify-center'
                             )}
                           >
@@ -1841,11 +1847,11 @@ const ChatInput = memo(function ChatInput({
                           {/* Remove button disabled while processing - outside overflow-hidden container */}
                           {!att.processing && (
                             <div
-                              className="absolute -top-1 -right-2.5 bg-destructive size-5 flex rounded-full items-center justify-center cursor-pointer border-2 border-card"
+                              className="absolute -top-1 -right-2.5 bg-destructive size-5 flex rounded-full items-center justify-center cursor-pointer border border-card"
                               onClick={() => handleRemoveAttachment(idx)}
                             >
                               <IconX
-                                className="text-primary-foreground"
+                                className="text-primary-foreground dark:text-foreground"
                                 size={14}
                               />
                             </div>
@@ -1951,7 +1957,7 @@ const ChatInput = memo(function ChatInput({
                 {!effectiveAgentMode && (
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="secondary" size="icon-sm" className='rounded-xl mr-2 mb-1 border-2'>
+                    <Button variant="secondary" size="icon-sm" className='rounded-xl mr-2 mb-1'>
                       <PlusIcon size={18} className="text-foreground" />
                     </Button>
                   </DropdownMenuTrigger>
@@ -2356,7 +2362,7 @@ const ChatInput = memo(function ChatInput({
                 <Button
                   variant="destructive"
                   size="icon-sm"
-                  className="rounded-xl mr-1 mb-1 border-2 border-destructive"
+                  className="rounded-xl mr-1 mb-1 border border-destructive"
                   onClick={() => {
                         if (!currentThreadId) return
                         const queue = useMessageQueue.getState().getQueue(currentThreadId)
@@ -2381,9 +2387,9 @@ const ChatInput = memo(function ChatInput({
                   disabled={(!prompt.trim() && !hasSendableMedia) || ingestingAny}
                   data-test-id="send-message-button"
                   onClick={() => handleSendMessage(prompt)}
-                  className="rounded-xl mr-1 mb-1 border-2"
+                  className="rounded-xl mr-1 mb-1"
                 >
-                  <ArrowRight className="text-primary-foreground" />
+                  <ArrowRight className="text-primary-foreground dark:text-foreground" />
                 </Button>
               )}
             </div>

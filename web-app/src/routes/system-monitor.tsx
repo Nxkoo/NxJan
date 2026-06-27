@@ -59,7 +59,7 @@ function SystemMonitorContent() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {/* CPU Usage Card */}
-        <div className="bg-card rounded-2xl border-2 p-5 shadow-sm">
+        <div className="bg-card rounded-2xl border p-5 shadow-sm">
           <h2 className="text-base font-semibold mb-4">
             {t('system-monitor:cpuUsage')}
           </h2>
@@ -99,7 +99,7 @@ function SystemMonitorContent() {
         </div>
 
         {/* RAM Usage Card */}
-        <div className="bg-card rounded-2xl border-2 p-5 shadow-sm">
+        <div className="bg-card rounded-2xl border p-5 shadow-sm">
           <h2 className="text-base font-semibold mb-4">
             {t('system-monitor:memoryUsage')}
           </h2>
@@ -146,7 +146,7 @@ function SystemMonitorContent() {
 
         {/* GPU Usage Card */}
         {!IS_MACOS && (
-          <div className="bg-card rounded-2xl border-2 p-5 shadow-sm">
+          <div className="bg-card rounded-2xl border p-5 shadow-sm">
             <h2 className="text-base font-semibold mb-4">
               {t('system-monitor:activeGpus')}
             </h2>

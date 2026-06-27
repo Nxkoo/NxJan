@@ -39,41 +39,37 @@ export const Route = createFileRoute(route.home as any)({
   },
 })
 
+/* Suggestion cards use the project's brand tokens (text-green,
+   bg-green-soft, border-green/40) so they read correctly in both
+   light and dark mode — the *-soft variant already has separate
+   light (paper) and dark (deep tint) values. */
 const suggestionCards = [
   {
     icon: FileText,
     title: 'Summarize',
     description: 'Summarize texts, files, and conversations quickly.',
-    color: 'text-green-700',
-    bg: 'bg-green-100',
-    border: 'border-green-200',
+    tone: 'green',
     prompt: 'Summarize this for me',
   },
   {
     icon: Lightbulb,
     title: 'Ideas',
     description: 'Brainstorm, create plans, and organize thoughts.',
-    color: 'text-yellow-700',
-    bg: 'bg-yellow-100',
-    border: 'border-yellow-200',
+    tone: 'yellow',
     prompt: 'Help me brainstorm ideas',
   },
   {
     icon: Code,
     title: 'Code',
     description: 'Explain, debug, and write code with your assistant.',
-    color: 'text-blue-700',
-    bg: 'bg-blue-100',
-    border: 'border-blue-200',
+    tone: 'blue',
     prompt: 'Help me write some code',
   },
   {
     icon: Folder,
     title: 'Projects',
     description: 'Manage your projects and files with ease.',
-    color: 'text-orange-700',
-    bg: 'bg-orange-100',
-    border: 'border-orange-200',
+    tone: 'orange',
     prompt: 'Help me organize my project',
   },
 ]
@@ -156,9 +152,13 @@ function Index() {
                 <button
                   key={card.title}
                   className={cn(
-                    'flex flex-col items-start gap-3 p-4 rounded-2xl border-2 bg-card text-left transition-all',
+                    /* Vibrant color at 12% opacity gives a subtle cartoon
+                       wash that works on both light paper and dark
+                       night-desk backgrounds — the *-soft tints alone
+                       disappear in dark mode. */
+                    'flex flex-col items-start gap-3 p-4 rounded-2xl border border-border-soft text-left transition-all',
                     'hover:-translate-y-0.5 hover:shadow-md active:translate-y-0',
-                    card.border
+                    `bg-${card.tone}/12 hover:bg-${card.tone}/18`
                   )}
                   onClick={() => {
                     setPrompt(card.prompt)
@@ -166,15 +166,14 @@ function Index() {
                 >
                   <div
                     className={cn(
-                      'flex items-center justify-center size-10 rounded-xl border-2',
-                      card.bg,
-                      card.border
+                      'flex items-center justify-center size-10 rounded-xl border bg-card',
+                      `border-${card.tone}/40`
                     )}
                   >
-                    <Icon className={cn('size-5', card.color)} />
+                    <Icon className={cn('size-5', `text-${card.tone}`)} />
                   </div>
                   <div>
-                    <span className={cn('block font-display font-semibold text-lg', card.color)}>
+                    <span className={cn('block font-display font-semibold text-lg', `text-${card.tone}`)}>
                       {card.title}
                     </span>
                     <span className="text-sm text-muted-foreground leading-snug">
@@ -188,7 +187,7 @@ function Index() {
 
           {/* Local-first trust note */}
           <div className="mt-6 flex justify-center">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-xl border-2 border-dashed border-[var(--sidebar-border)] bg-card/60 text-sm text-muted-foreground">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-xl border border-dashed border-border-soft bg-card/60 text-sm text-muted-foreground">
               <span>Your data stays on your device. You&apos;re in control.</span>
               <span className="text-green-600">🌿</span>
             </div>
