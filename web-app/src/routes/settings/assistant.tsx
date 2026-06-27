@@ -73,7 +73,7 @@ function AssistantContent() {
     <div className="flex flex-col h-svh w-full">
       <HeaderPage>
         <div className={cn("flex items-center justify-between w-full mr-2 pr-3", !IS_MACOS && "pr-30")}>
-          <span className="font-medium text-base font-studio">
+          <span className="font-medium text-base font-display">
             {t('common:settings')}
           </span>
           <Button
@@ -137,7 +137,7 @@ function AssistantContent() {
                   </DropdownMenu>
                 }
               />
-              <h1 className="text-foreground font-studio font-medium text-sm mt-4 mb-4">{t('assistants:allAssistants')}</h1>
+              <h1 className="text-foreground font-display font-medium text-sm mt-4 mb-4">{t('assistants:allAssistants')}</h1>
               {sortedAssistants.map((assistant) => (
                 <div
                   className="group flex items-center gap-3 px-3 py-3 rounded-lg my-1 bg-secondary/20 hover:bg-secondary dark:hover:bg-secondary/20 transition-colors"
@@ -154,7 +154,7 @@ function AssistantContent() {
                   </div>
                   <div className="flex flex-col min-w-0 flex-1">
                     <div className="flex items-center gap-2">
-                      <span className="text-sm font-studio font-medium truncate">
+                      <span className="text-sm font-display font-medium truncate">
                         {assistant.name}
                       </span>
                       {defaultAssistantId === assistant.id && (

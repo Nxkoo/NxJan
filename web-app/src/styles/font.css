@@ -184,3 +184,54 @@
   src: url('/fonts/StudioFeixenSans-Bold.otf') format('opentype');
   font-weight: 700;
 }
+
+/* Fraunces — editorial display serif */
+@font-face {
+  font-family: 'Fraunces';
+  font-display: swap;
+  src: url('/fonts/fraunces/Fraunces-Variable.ttf') format('truetype');
+  font-weight: 100 900;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Fraunces';
+  font-display: swap;
+  src: url('/fonts/fraunces/Fraunces-Italic-Variable.ttf') format('truetype');
+  font-weight: 100 900;
+  font-style: italic;
+}
+
+/* Figtree — rounded geometric UI sans */
+@font-face {
+  font-family: 'Figtree';
+  font-display: swap;
+  src: url('/fonts/figtree/Figtree-Variable.ttf') format('truetype');
+  font-weight: 300 900;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Figtree';
+  font-display: swap;
+  src: url('/fonts/figtree/Figtree-Italic-Variable.ttf') format('truetype');
+  font-weight: 300 900;
+  font-style: italic;
+}
+
+/* JetBrains Mono — code */
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-display: swap;
+  src: url('/fonts/jetbrains-mono/JetBrainsMono-Variable.ttf') format('truetype');
+  font-weight: 100 800;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-display: swap;
+  src: url('/fonts/jetbrains-mono/JetBrainsMono-Italic-Variable.ttf') format('truetype');
+  font-weight: 100 800;
+  font-style: italic;
+}

@@ -302,6 +302,61 @@
     "uploadingFiles": "Processando arquivos…",
     "processButton": "Adicionar"
   },
+  "codebase": {
+    "title": "Codebase",
+    "description": "Vincule uma pasta local e indexe-a com a CLI do Codebase Memory para que as conversas possam pesquisar a estrutura do projeto.",
+    "addFolder": "Adicionar pasta",
+    "changeFolder": "Alterar pasta",
+    "index": "Indexar codebase",
+    "refresh": "Atualizar status",
+    "openFolder": "Abrir pasta",
+    "remove": "Remover codebase",
+    "probeCli": "Verificar CLI novamente",
+    "openSettings": "Configurações",
+    "toggleEnabled": "Ativar Codebase Memory neste projeto",
+    "reindex": {
+      "button": "Reindexar",
+      "confirm": "Reindexar {{name}}? Isso atualiza os metadados do Codebase Memory e pode demorar."
+    },
+    "empty": "Nenhuma pasta vinculada. Escolha uma pasta do projeto para habilitar conversas sobre o código.",
+    "status": {
+      "probing": "Verificando CLI…",
+      "cliMissing": "CLI ausente",
+      "notLinked": "Não vinculado",
+      "linked": "Indexado",
+      "indexing": "Indexando",
+      "pending": "Pendente",
+      "disabled": "Desativado",
+      "mcpDisabled": "MCP off",
+      "error": "Erro"
+    },
+    "cliMissing": {
+      "title": "A CLI codebase-memory-mcp não foi encontrada",
+      "description": "Instale a CLI e garanta que ela esteja no PATH para habilitar a indexação."
+    },
+    "mcpDisabled": {
+      "title": "O servidor MCP está configurado, mas desativado",
+      "description": "Codebase Memory está indexado, mas o servidor MCP está desativado. Ative-o em Servidores MCP para permitir consultas sobre este codebase."
+    },
+    "fields": {
+      "folder": "Pasta",
+      "project": "Projeto",
+      "nodes": "Nós",
+      "edges": "Arestas",
+      "indexedAt": "Indexado",
+      "excluded": "Excluídos: {{dirs}}",
+      "lastError": "Último erro: {{error}}",
+      "notIndexedYet": "Ainda não indexado"
+    },
+    "suggestions": {
+      "whereClassUsed": "Onde essa classe é usada?",
+      "rendererClasses": "Quais classes registram renderers?",
+      "architecture": "Me explique a arquitetura deste projeto.",
+      "dependencies": "Quais classes dependem de X?",
+      "callPath": "Mostre o caminho de chamada até este método.",
+      "implementationFile": "Qual arquivo implementa X?"
+    }
+  },
   "errorDialog": {
     "titleFallback": "Algo deu errado",
     "details": "Detalhes"

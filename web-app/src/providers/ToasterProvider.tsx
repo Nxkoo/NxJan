@@ -15,9 +15,7 @@ export function ToasterProvider() {
       visibleToasts={5}
       toastOptions={{
         style: {
-          padding: '1rem 0.8rem',
           alignItems: 'start',
-          boxShadow: '0 8px 24px rgba(0, 0, 0, 0.18)',
           userSelect: 'none',
           WebkitUserSelect: 'none',
           MozUserSelect: 'none',

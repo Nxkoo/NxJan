@@ -1,6 +1,16 @@
 .markdown {
   @apply text-inherit;
 
+  /* The Streamdown / Shiki inline styles produce highly saturated token colors
+     (e.g. bright #2E7CF6 blue in dark mode, hot yellow in light mode) that
+     clash with the editorial/paper theme. Dial the saturation back so the
+     prose stays readable and on-brand while keeping the color-coded cues.
+     Skip code blocks (pre/code/Streamdown code-block) so the actual syntax
+     highlight inside a code fence keeps its full contrast. */
+  [style*="color"]:not(pre):not(code):not([data-streamdown="code-block"]) {
+    filter: saturate(0.55);
+  }
+
   &.is-user {
     p {
       line-height: 1.6;
@@ -197,4 +207,13 @@
 }
 [data-tool-call-block] + [data-tool-call-block] {
   margin-top: 16px;
+}
+
+/* Streamdown / Shiki and fzf match highlights both inject `style="color:..."`
+   on small inline spans. The tokens are tuned for raw editor themes, so they
+   look neon in our editorial/paper UI. The selector below targets any inline
+   colored span across the app while excluding actual code blocks, the
+   project card, and the tool output JSON previews. */
+:where(.markdown, [data-streamdown], [data-fzf-match], .search-highlight, [data-tool-call-block] *) :is(span, strong, em, code) [style*="color"]:not(pre *):not([data-streamdown="code-block"] *) {
+  filter: saturate(0.55);
 }

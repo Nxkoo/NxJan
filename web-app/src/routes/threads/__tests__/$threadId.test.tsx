@@ -363,6 +363,31 @@ vi.mock('@/hooks/useToolAvailable', () => ({ useToolAvailable: h.useToolAvailabl
 vi.mock('@/hooks/useToolApproval', () => ({ useToolApproval: h.useToolApprovalMock }))
 vi.mock('@/hooks/useAgentMode', () => ({ useAgentMode: h.useAgentModeMock }))
 vi.mock('@/stores/message-queue-store', () => ({ useMessageQueue: h.useMessageQueueMock }))
+vi.mock('@/hooks/useMCPServers', () => ({
+  useMCPServers: (selector: any) =>
+    selector({ mcpServers: { 'Codebase Memory': { active: true } } }),
+}))
+vi.mock('@/hooks/useCodebase', () => {
+  const metas: Record<string, unknown> = {}
+  const useCodebaseStore: any = (selector: any) =>
+    selector({ metas })
+  useCodebaseStore.getState = () => ({ metas, loadAll: () => {}, setMeta: () => {}, clearMeta: () => {} })
+  return {
+    CODEBASE_MEMORY_SERVER_NAME: 'Codebase Memory',
+    useCodebaseStore,
+    resolveCodebaseChatState: ({ meta }: any) => ({
+      state: meta?.codebaseMemoryProjectName ? 'indexed' : 'not_linked',
+      canInject: Boolean(meta?.codebaseMemoryProjectName),
+      hasLinkedCodebase: Boolean(meta),
+      hasCodebaseTools: true,
+      message: 'ok',
+    }),
+    buildCodebaseSystemMessage: (meta: any) =>
+      meta?.codebaseMemoryProjectName
+        ? `linked project: ${meta.codebaseMemoryProjectName}`
+        : null,
+  }
+})
 
 vi.mock('@/hooks/useAutoScroll', () => ({
   useAutoScroll: () => ({

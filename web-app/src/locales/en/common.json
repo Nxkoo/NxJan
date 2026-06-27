@@ -372,6 +372,61 @@
     "noProjectsFound": "No projects found",
     "tryDifferentSearch": "Try a different search term"
   },
+  "codebase": {
+    "title": "Codebase",
+    "description": "Link a local folder and index it with the Codebase Memory CLI so chats can search its structure.",
+    "addFolder": "Add Folder",
+    "changeFolder": "Change Folder",
+    "index": "Index Codebase",
+    "refresh": "Refresh status",
+    "openFolder": "Open folder",
+    "remove": "Remove codebase",
+    "probeCli": "Re-check CLI",
+    "openSettings": "Settings",
+    "toggleEnabled": "Enable Codebase Memory for this project",
+    "reindex": {
+      "button": "Reindex",
+      "confirm": "Reindex {{name}}? This refreshes Codebase Memory metadata and may take a while."
+    },
+    "empty": "No folder linked yet. Pick a project folder to enable code-aware chats.",
+    "status": {
+      "probing": "Probing CLI…",
+      "cliMissing": "CLI not found",
+      "notLinked": "Not linked",
+      "linked": "Indexed",
+      "indexing": "Indexing",
+      "pending": "Pending",
+      "disabled": "Disabled",
+      "mcpDisabled": "MCP off",
+      "error": "Error"
+    },
+    "cliMissing": {
+      "title": "codebase-memory-mcp CLI is missing",
+      "description": "Install the CLI and ensure it is on PATH to enable indexing."
+    },
+    "mcpDisabled": {
+      "title": "MCP server is configured but disabled",
+      "description": "Codebase Memory is indexed, but the MCP server is not enabled. Enable it in MCP Servers to let chats query this codebase."
+    },
+    "fields": {
+      "folder": "Folder",
+      "project": "Project",
+      "nodes": "Nodes",
+      "edges": "Edges",
+      "indexedAt": "Indexed",
+      "excluded": "Excluded: {{dirs}}",
+      "lastError": "Last error: {{error}}",
+      "notIndexedYet": "Not indexed yet"
+    },
+    "suggestions": {
+      "whereClassUsed": "Where is this class used?",
+      "rendererClasses": "Which classes register renderers?",
+      "architecture": "Explain this project's architecture.",
+      "dependencies": "Which classes depend on X?",
+      "callPath": "Show the call path to this method.",
+      "implementationFile": "Which file implements X?"
+    }
+  },
   "attachmentsIngestion": {
     "title": "Choose how to ingest attachments",
     "description": "Choose whether to include these files directly in the chat or index them as embeddings instead.",

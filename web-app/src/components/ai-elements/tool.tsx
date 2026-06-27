@@ -26,6 +26,7 @@ import { Button } from '@/components/ui/button'
 import { ShieldAlertIcon } from 'lucide-react'
 import { Citations } from '@/components/Citations'
 import { parseCitationsFromToolOutput } from '@/lib/citation-parser'
+import { formatToolCallDisplay } from '@/lib/codebase-tool-format'
 
 type ToolContextValue = {
   isOpen: boolean
@@ -112,6 +113,8 @@ export type ToolHeaderProps = {
   state: ToolUIPart['state']
   type: ToolUIPart['type']
   className?: string
+  summary?: ReactNode
+  statusText?: string
 }
 
 const getStatusText = (
@@ -135,7 +138,7 @@ const getStatusText = (
 }
 
 export const ToolHeader = memo(
-  ({ className, title, state, type }: ToolHeaderProps) => {
+  ({ className, title, state, type, summary, statusText }: ToolHeaderProps) => {
     const { isOpen, toolCallId } = useTool()
     const awaitingApproval = useToolApproval((s) =>
       toolCallId ? Boolean(s.pending[toolCallId]) : false
@@ -145,7 +148,8 @@ export const ToolHeader = memo(
     return (
       <CollapsibleTrigger
         className={cn(
-          'cursor-pointer flex w-full items-center gap-2 text-muted-foreground text-sm transition-colors capitalize', !isOpen && 'hover:bg-secondary',
+          'cursor-pointer flex w-full items-start gap-2 rounded-2xl px-3 py-2 text-sm transition-colors',
+          !isOpen && 'hover:bg-secondary/70',
           className
         )}
       >
@@ -154,12 +158,24 @@ export const ToolHeader = memo(
         ) : (
           <WrenchIcon className="size-4" />
         )}
-        <span className={cn(awaitingApproval && 'text-amber-600 dark:text-amber-400')}>
-          {getStatusText(state, toolName, awaitingApproval)}
+        <span className="min-w-0 flex-1 text-left">
+          <span
+            className={cn(
+              'block font-medium text-foreground',
+              awaitingApproval && 'text-amber-600 dark:text-amber-400'
+            )}
+          >
+            {statusText ?? getStatusText(state, toolName, awaitingApproval)}
+          </span>
+          {summary && (
+            <span className="mt-1 block normal-case text-muted-foreground">
+              {summary}
+            </span>
+          )}
         </span>
         <ChevronDownIcon
           className={cn(
-            'size-4 transition-transform',
+            'mt-0.5 size-4 shrink-0 transition-transform',
             isOpen ? 'rotate-180' : 'rotate-0'
           )}
         />
@@ -172,15 +188,15 @@ export type ToolContentProps = ComponentProps<typeof CollapsibleContent>
 
 export const ToolContent = memo(
   ({ className, children, ...props }: ToolContentProps) => (
-    <CollapsibleContent
-      className={cn(
-        'overflow-hidden text-sm relative data-[state=open]:mt-4',
+      <CollapsibleContent
+        className={cn(
+        'overflow-hidden text-sm relative data-[state=open]:mt-2',
         'data-[state=closed]:fade-out-0 data-[state=closed]:slide-out-to-top-2 data-[state=open]:slide-in-from-top-2 text-muted-foreground outline-none data-[state=closed]:animate-out data-[state=open]:animate-in',
         className
       )}
       {...props}
     >
-      <div className="ml-2 pl-4 border-l-2 border-dotted">
+      <div className="ml-4 space-y-3 border-l-2 border-dashed border-border/70 pl-4">
         {children}
       </div>
     </CollapsibleContent>
@@ -193,6 +209,11 @@ export type ToolInputProps = ComponentProps<'div'> & {
 
 export const ToolInput = memo(
   ({ className, input, ...props }: ToolInputProps) => {
+    const { isOpen } = useTool()
+    const formattedDisplay = useMemo(
+      () => formatToolCallDisplay('tool', input, undefined),
+      [input]
+    )
     const formatted = useMemo(() => {
       let value: unknown = input
       if (typeof value === 'string') {
@@ -214,9 +235,33 @@ export const ToolInput = memo(
         <h4 className="font-medium text-muted-foreground text-xs uppercase tracking-wide">
           Parameters
         </h4>
-        <div className="rounded-md max-h-40 overflow-auto border ">
-          <CodeBlock code={formatted} language="json" />
-        </div>
+        {formattedDisplay.params.length > 0 ? (
+          <div className="overflow-hidden rounded-xl border border-border/70 bg-background/40">
+            {formattedDisplay.params.map((row) => (
+              <div
+                key={row.key}
+                className="grid grid-cols-[7rem_1fr] border-b border-border/60 last:border-b-0"
+              >
+                <div className="bg-secondary/50 px-2 py-1.5 font-mono text-[11px] text-muted-foreground">
+                  {row.key}
+                </div>
+                <div className="min-w-0 break-words px-2 py-1.5 font-mono text-[11px] text-foreground">
+                  {row.value || '-'}
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : null}
+        {isOpen && (
+          <details className="rounded-xl border border-border/70 bg-background/40 p-2">
+            <summary className="cursor-pointer text-xs font-medium text-muted-foreground">
+              Raw parameters
+            </summary>
+            <pre className="mt-2 max-h-40 overflow-auto whitespace-pre-wrap break-words rounded-lg bg-secondary/40 p-2 text-[11px] text-foreground">
+              {formatted}
+            </pre>
+          </details>
+        )}
       </div>
     )
   }
@@ -330,7 +375,11 @@ export const ToolOutput = memo(
     citationOffset = 0,
     ...props
   }: ToolOutputProps) => {
-    const { messageId } = useTool()
+    const { messageId, isOpen } = useTool()
+    const formattedOutput = useMemo(
+      () => formatToolCallDisplay('tool', undefined, output),
+      [output]
+    )
     const citationPayload = useMemo(
       () => (output ? parseCitationsFromToolOutput(output) : null),
       [output]
@@ -354,9 +403,9 @@ export const ToolOutput = memo(
       // Handle string output
       if (typeof output === 'string') {
         return (
-          <div className="max-h-40 overflow-auto rounded-md border ">
-            <CodeBlock code={output} language="json" />
-          </div>
+          <pre className="max-h-56 overflow-auto whitespace-pre-wrap break-words rounded-xl border border-border/70 bg-background/40 p-3 text-[11px] text-foreground">
+            {output}
+          </pre>
         )
       }
 
@@ -383,12 +432,12 @@ export const ToolOutput = memo(
               {textItems.length > 0 && (
                 <div className="space-y-2">
                   {textItems.map((item, index) => (
-                    <div
+                    <pre
                       key={index}
-                      className="rounded-md max-h-40 overflow-auto border "
+                      className="max-h-56 overflow-auto whitespace-pre-wrap break-words rounded-xl border border-border/70 bg-background/40 p-3 text-[11px] text-foreground"
                     >
-                      <CodeBlock code={item.text || ''} language="markdown" />
-                    </div>
+                      {item.text || ''}
+                    </pre>
                   ))}
                 </div>
               )}
@@ -424,10 +473,7 @@ export const ToolOutput = memo(
               <div className="space-y-4">
                 {nonImageOutput.length > 0 && (
                   <div className="rounded-md max-h-40 overflow-auto rounded-md border ">
-                    <CodeBlock
-                      code={JSON.stringify(nonImageOutput, null, 2)}
-                      language="json"
-                    />
+                    <CodeBlock code={JSON.stringify(nonImageOutput, null, 2)} language="json" />
                   </div>
                 )}
                 {output
@@ -448,7 +494,7 @@ export const ToolOutput = memo(
           }
 
           return (
-            <div className="rounded-md max-h-40 overflow-auto border ">
+            <div className="rounded-xl max-h-56 overflow-auto border border-border/70 bg-background/40">
               <CodeBlock
                 code={JSON.stringify(output, null, 2)}
                 language="json"
@@ -459,7 +505,7 @@ export const ToolOutput = memo(
 
         // Handle regular object
         return (
-          <div className="rounded-md max-h-40 overflow-auto border ">
+          <div className="rounded-xl max-h-56 overflow-auto border border-border/70 bg-background/40">
             <CodeBlock code={JSON.stringify(output, null, 2)} language="json" />
           </div>
         )
@@ -483,7 +529,33 @@ export const ToolOutput = memo(
               {errorText}
             </div>
           )}
-          {Output}
+          {!errorText && !citationPayload && formattedOutput.snippets.length > 0 && (
+            <div className="mb-2 space-y-2">
+              {formattedOutput.snippets.slice(0, 2).map((snippet, index) => (
+                <pre
+                  key={`${index}-${snippet.slice(0, 20)}`}
+                  className="max-h-40 overflow-auto whitespace-pre-wrap break-words rounded-xl border border-border/70 bg-background/40 p-3 font-mono text-[11px] text-foreground"
+                >
+                  {snippet.length > 600
+                    ? `${snippet.slice(0, 600)}…`
+                    : snippet}
+                </pre>
+              ))}
+            </div>
+          )}
+          {Output && (citationPayload || formattedOutput.snippets.length === 0)
+            ? Output
+            : null}
+          {!errorText && isOpen && (
+            <details className="rounded-xl border border-border/70 bg-background/40 p-2">
+              <summary className="cursor-pointer text-xs font-medium text-muted-foreground">
+                Raw JSON result
+              </summary>
+              <pre className="mt-2 max-h-56 overflow-auto whitespace-pre-wrap break-words rounded-lg bg-secondary/40 p-2 text-[11px] text-foreground">
+                {formattedOutput.rawOutput}
+              </pre>
+            </details>
+          )}
         </div>
       </div>
     )

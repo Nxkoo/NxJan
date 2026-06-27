@@ -57,7 +57,7 @@ fn migrate_from_candidates(canonical: &Path, candidates: Vec<PathBuf>) -> std::i
     Ok(())
 }
 
-fn legacy_app_config_candidate_paths(app_data_dir: &Path) -> Vec<PathBuf> {
+fn legacy_app_config_candidate_paths(_app_data_dir: &Path) -> Vec<PathBuf> {
     let mut paths = Vec::new();
 
     if let Some(bundle_dir) = resolve_bundle_app_data_dir() {

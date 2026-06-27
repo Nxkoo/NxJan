@@ -140,7 +140,7 @@ function HardwareContent() {
     <div className="flex flex-col h-svh w-full">
       <HeaderPage>
         <div className={cn("flex items-center justify-between w-full mr-2 pr-3", !IS_MACOS && "pr-30")}>
-          <span className='font-medium text-base font-studio'>{t('common:settings')}</span>
+          <span className='font-medium text-base font-display'>{t('common:settings')}</span>
           <Button
             variant="outline"
             size="sm"

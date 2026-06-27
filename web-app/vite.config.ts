@@ -42,6 +42,36 @@ function injectGoogleAnalytics(gaMeasurementId?: string): Plugin {
   }
 }
 
+// Rewrite tabler named imports to direct per-icon files.
+// This completely sidesteps the giant barrel export that was causing
+// hundreds of tiny chunks + ERR_INSUFFICIENT_RESOURCES.
+function directTablerIcons(): Plugin {
+  return {
+    name: 'direct-tabler-icons',
+    transform(code, id) {
+      if (!id.includes('/src/') || !code.includes('@tabler/icons-react')) return null
+
+      const replaced = code.replace(
+        /import\s*\{([^}]+)\}\s*from\s*['"]@tabler\/icons-react['"]/g,
+        (_m, names: string) => {
+          return names
+            .split(',')
+            .map((n) => n.trim())
+            .filter(Boolean)
+            .map((spec) => {
+              // handle "IconFoo as Foo" aliases
+              const [exported, local = exported] = spec.split(/\s+as\s+/).map((s) => s.trim())
+              return `import ${local} from '@tabler/icons-react/dist/esm/icons/${exported}.mjs'`
+            })
+            .join('\n')
+        }
+      )
+
+      if (replaced !== code) return { code: replaced, map: null }
+    },
+  }
+}
+
 // https://vite.dev/config/
 export default defineConfig(({ mode }) => {
   // Load env file based on `mode` in the current working directory.
@@ -60,6 +90,7 @@ export default defineConfig(({ mode }) => {
         include: ['path'],
       }),
       injectGoogleAnalytics(env.GA_MEASUREMENT_ID),
+      directTablerIcons(),
     ],
     resolve: {
       alias: {
@@ -111,6 +142,19 @@ export default defineConfig(({ mode }) => {
     //
     // 1. prevent vite from obscuring rust errors
     clearScreen: false,
+
+    // We rewrite tabler imports to direct files (see directTablerIcons plugin below).
+    // This prevents the huge barrel from generating tons of small chunks that cause
+    // ERR_INSUFFICIENT_RESOURCES on Windows.
+    optimizeDeps: {
+      exclude: [
+        '@radix-ui/react-dialog',
+        '@radix-ui/react-tooltip',
+        '@radix-ui/react-popover',
+        '@radix-ui/react-select',
+        '@tabler/icons-react',
+      ],
+    },
     // 2. tauri expects a fixed port, fail if that port is not available
     server: {
       port: 1420,

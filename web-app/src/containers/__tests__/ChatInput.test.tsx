@@ -150,6 +150,10 @@ vi.mock('@/hooks/useAttachmentIngestionPrompt', () => ({
   useAttachmentIngestionPrompt: vi.fn(),
 }))
 
+vi.mock('@/containers/ProjectCodebaseChip', () => ({
+  default: () => null,
+}))
+
 // Message queue store — it's imported as a zustand hook and also invoked via
 // useMessageQueue.getState() for enqueue/clear/remove. Provide both.
 const queueState: Record<string, any[]> = {}

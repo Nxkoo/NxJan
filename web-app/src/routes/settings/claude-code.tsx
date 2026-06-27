@@ -208,7 +208,7 @@ function ClaudeCodeIntegration() {
     <div className="flex flex-col h-svh w-full">
       <HeaderPage>
         <div className="flex items-center gap-2 w-full">
-          <span className="font-medium text-base font-studio">
+          <span className="font-medium text-base font-display">
             {t('common:settings')}
           </span>
         </div>
@@ -238,7 +238,7 @@ function ClaudeCodeIntegration() {
                     <path d="M27 54H36V72H27V54Z" fill="#D77757" />
                     <path d="M81 54H90V72H81V54Z" fill="#D77757" />
                   </svg>
-                  <h1 className="text-foreground font-studio font-medium text-base">
+                  <h1 className="text-foreground font-display font-medium text-base">
                     Claude Code integration
                   </h1>
                 </div>

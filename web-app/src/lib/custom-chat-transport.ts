@@ -19,6 +19,11 @@ import { useThreads } from '@/hooks/useThreads'
 import { useAttachments } from '@/hooks/useAttachments'
 import { useMCPServers } from '@/hooks/useMCPServers'
 import { useAppState } from '@/hooks/useAppState'
+import {
+  CODEBASE_MEMORY_SERVER_NAME,
+  normalizeCodebaseMeta,
+  useCodebaseStore,
+} from '@/hooks/useCodebase'
 import { invoke } from '@tauri-apps/api/core'
 import { ExtensionManager } from '@/lib/extension'
 import {
@@ -726,6 +731,7 @@ export class CustomChatTransport implements ChatTransport<UIMessage> {
         const mcpService = this.serviceHub.mcp()
         let mcpTools: MCPTool[]
         const mcpSettings = useMCPServers.getState().settings
+        const mcpServers = useMCPServers.getState().mcpServers
         const routingEnabled = mcpSettings.enableSmartToolRouting
 
         if (
@@ -755,6 +761,50 @@ export class CustomChatTransport implements ChatTransport<UIMessage> {
           )
         } else {
           mcpTools = await mcpService.getTools()
+        }
+
+        const thread = this.threadId
+          ? useThreads.getState().threads[this.threadId]
+          : undefined
+        const projectId = thread?.metadata?.project?.id
+        if (projectId && Object.keys(useCodebaseStore.getState().metas).length === 0) {
+          useCodebaseStore.getState().loadAll()
+        }
+        const codebaseMeta = projectId
+          ? normalizeCodebaseMeta(useCodebaseStore.getState().metas[projectId])
+          : null
+        const shouldForceCodebaseTools = Boolean(
+          codebaseMeta?.enabled !== false &&
+            codebaseMeta?.status === 'indexed' &&
+            codebaseMeta.codebaseMemoryProjectName &&
+            mcpServers[CODEBASE_MEMORY_SERVER_NAME]?.active !== false &&
+            mcpService.getToolsForServers
+        )
+
+        if (shouldForceCodebaseTools && mcpService.getToolsForServers) {
+          try {
+            const codebaseTools = await mcpService.getToolsForServers([
+              CODEBASE_MEMORY_SERVER_NAME,
+            ])
+            const seen = new Set(mcpTools.map((tool) => `${tool.server}::${tool.name}`))
+            for (const tool of codebaseTools) {
+              const key = `${tool.server}::${tool.name}`
+              if (seen.has(key)) continue
+              // Drop noisy tools — the linked project name is already known, and
+              // reindexing is only triggered manually from the project page.
+              if (
+                tool.name === 'list_projects' ||
+                tool.name === 'index_repository'
+              ) {
+                seen.add(key)
+                continue
+              }
+              mcpTools.push(tool)
+              seen.add(key)
+            }
+          } catch (error) {
+            console.warn('Failed to force-load Codebase Memory tools:', error)
+          }
         }
 
         if (Array.isArray(mcpTools) && mcpTools.length > 0) {

@@ -212,7 +212,7 @@ function General() {
     <div className="flex flex-col h-svh w-full">
       <HeaderPage>
         <div className="flex items-center gap-2 w-full">
-          <span className='font-medium text-base font-studio'>{t('common:settings')}</span>
+          <span className='font-medium text-base font-display'>{t('common:settings')}</span>
         </div>
       </HeaderPage>
       <div className="flex h-[calc(100%-60px)]">

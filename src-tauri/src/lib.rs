@@ -88,6 +88,11 @@ macro_rules! invoke_commands_with_extras {
         core::mcp::commands::activate_mcp_server,
         core::mcp::commands::deactivate_mcp_server,
         core::mcp::commands::check_jan_browser_extension_connected,
+        // Codebase Memory CLI
+        core::codebase::commands::codebase_memory_check_available,
+        core::codebase::commands::codebase_memory_list_projects,
+        core::codebase::commands::codebase_memory_index_repository,
+        core::codebase::commands::codebase_memory_search_graph,
         // Threads
         core::threads::commands::list_threads,
         core::threads::commands::create_thread,
