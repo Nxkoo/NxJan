@@ -57,17 +57,17 @@ function InterfaceSettings() {
                 actions={<FontSizeSwitcher />}
               />
               <CardItem
-                title="Accent color"
-                description="Customize the accent color of the application."
+                title={t('settings:interface.accentColor')}
+                description={t('settings:interface.accentColorDesc')}
                 className="flex-col sm:flex-row items-start sm:items-center sm:justify-between gap-y-2"
                 actions={<AccentColorPicker />}
               />
               <CardItem
-                title="Dark mode style"
+                title={t('settings:interface.darkStyle')}
                 description={
                   isDark
-                    ? 'Jan Blue keeps the deep navy night-desk look. Editorial adapts the original Jan source palette to warm paper.'
-                    : 'Only applies to dark mode. Switch to dark to see the change.'
+                    ? t('settings:interface.darkStyleDesc')
+                    : t('settings:interface.darkStyleDescLight')
                 }
                 actions={<DarkStyleSwitcher />}
               />
