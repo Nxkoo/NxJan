@@ -50,7 +50,20 @@ vi.mock('@/containers/NotificationPositionSwitcher', () => ({
 vi.mock('@/hooks/useInterfaceSettings', () => ({
   useInterfaceSettings: () => ({
     resetInterface: vi.fn(),
+    showTokenSpeed: true,
+    setShowTokenSpeed: vi.fn(),
+    coloredUserBubble: true,
+    setColoredUserBubble: vi.fn(),
+    renderHtmlArtifacts: false,
+    setRenderHtmlArtifacts: vi.fn(),
+    darkStyle: 'jan',
+    setDarkStyle: vi.fn(),
   }),
+  DARK_STYLE_OPTIONS: [
+    { value: 'jan', label: 'Jan Blue', description: '' },
+    { value: 'editorial', label: 'Editorial', description: '' },
+  ],
+  ACCENT_COLORS: [],
 }))
 
 vi.mock('@/i18n/react-i18next-compat', () => ({

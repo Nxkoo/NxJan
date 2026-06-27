@@ -10,74 +10,153 @@ import {
 
 export type FontSize = '14px' | '15px' | '16px' | '18px' | '20px'
 
+export type DarkStyle = 'jan' | 'editorial'
+
+export const DARK_STYLE_OPTIONS: { value: DarkStyle; label: string; description: string }[] = [
+  {
+    value: 'jan',
+    label: 'Jan Blue',
+    description: 'Deep navy editorial night desk — the original Jan dark.',
+  },
+  {
+    value: 'editorial',
+    label: 'Editorial',
+    description: 'Neutral warm-paper dark, adapted from the Jan source palette.',
+  },
+]
+
 export const ACCENT_COLORS = [
   {
     name: 'Ink',
     value: 'ink',
     thumb: '#17234d',
     primary: '#17234d',
-    sidebar: { light: '#faeac5', dark: '#0f1630' },
+    /* Jan Blue dark uses a brighter "paper ink" so user bubbles,
+       send buttons and other primary surfaces stay legible on the
+       navy night-desk. Editorial overrides this with its own gray. */
+    primaryDark: '#4a5a8a',
+    /* Sidebar gets a different shade per dark style so the Jan Blue
+       mode keeps the deep-navy rail (#070b1c) and the Editorial
+       mode uses the neutral dark paper (#131313). */
+    sidebar: {
+      light: '#f5e7c2',
+      dark: '#070b1c',
+      darkEditorial: '#131313',
+    },
   },
   {
     name: 'Blue',
     value: 'blue',
     thumb: '#214099',
     primary: '#214099',
-    sidebar: { light: '#e8f0f8', dark: '#0f2157' },
+    /* Brighter blue for Jan Blue dark mode so the primary is visible
+       on the navy night-desk background. Editorial overrides this. */
+    primaryDark: '#5a7ad0',
+    sidebar: {
+      light: '#e0e8f5',
+      dark: '#070d24',
+      darkEditorial: '#131313',
+    },
   },
   {
     name: 'Green',
     value: 'green',
     thumb: '#6fa642',
     primary: '#6fa642',
-    sidebar: { light: '#dff3c4', dark: '#374b1b' },
+    sidebar: {
+      light: '#dff3c4',
+      dark: '#0d1f08',
+      darkEditorial: '#131313',
+    },
   },
   {
     name: 'Yellow',
     value: 'yellow',
     thumb: '#fbd026',
     primary: '#fbd026',
-    sidebar: { light: '#f3dfc4', dark: '#5c3a0a' },
+    sidebar: {
+      light: '#f3dfc4',
+      dark: '#231808',
+      darkEditorial: '#131313',
+    },
   },
   {
     name: 'Orange',
     value: 'orange',
     thumb: '#f97d38',
     primary: '#f97d38',
-    sidebar: { light: '#f3cbc4', dark: '#5e1308' },
+    /* The default accent — already vibrant, no dark variant needed. */
+    sidebar: {
+      light: '#f3cbc4',
+      dark: '#1f1208',
+      darkEditorial: '#131313',
+    },
   },
   {
     name: 'Red',
     value: 'red',
     thumb: '#fb5c34',
     primary: '#fb5c34',
-    sidebar: { light: '#f3c4c4', dark: '#61053e' },
+    sidebar: {
+      light: '#f3c4c4',
+      dark: '#1f0810',
+      darkEditorial: '#131313',
+    },
   },
 ] as const
 
 export type AccentColorValue = (typeof ACCENT_COLORS)[number]['value']
-const DEFAULT_ACCENT_COLOR: AccentColorValue = 'ink'
+const DEFAULT_ACCENT_COLOR: AccentColorValue = 'orange'
+const DEFAULT_DARK_STYLE: DarkStyle = 'jan'
 
-const applyAccentColorToDOM = (colorValue: string, isDark: boolean) => {
+const isDarkStyle = (value: unknown): value is DarkStyle =>
+  value === 'jan' || value === 'editorial'
+
+const applyAccentColorToDOM = (
+  colorValue: string,
+  isDark: boolean,
+  darkStyle: DarkStyle = 'jan'
+) => {
   const color = ACCENT_COLORS.find((c) => c.value === colorValue)
   if (!color) return
 
   const root = document.documentElement
-  const sidebarColor = isDark ? color.sidebar.dark : color.sidebar.light
+  /* Jan Blue keeps each accent's deep tint rail; Editorial flattens
+     the rail to a neutral dark paper so the page reads as one tone. */
+  const sidebarColor = isDark
+    ? darkStyle === 'editorial'
+      ? color.sidebar.darkEditorial
+      : color.sidebar.dark
+    : color.sidebar.light
+  /* Accents like Ink/Blue are dark by design — they vanish on the
+     navy night-desk. In Jan Blue dark, use the brighter primaryDark
+     variant so the user bubble, send button and other primary surfaces
+     stay legible. Editorial has its own gray via CSS !important so
+     we just pass the dark variant through here. */
+  let primaryColor: string = color.primary
+  if (isDark && darkStyle === 'jan' && 'primaryDark' in color) {
+    primaryColor = (color as { primaryDark: string }).primaryDark
+  }
 
   root.style.setProperty('--sidebar', sidebarColor)
-  root.style.setProperty('--primary', color.primary)
+  root.style.setProperty('--primary', primaryColor)
+}
+
+const applyDarkStyleToDOM = (style: DarkStyle) => {
+  document.documentElement.setAttribute('data-dark-style', style)
 }
 
 interface InterfaceSettingsState {
   fontSize: FontSize
   accentColor: AccentColorValue
+  darkStyle: DarkStyle
   notificationPosition: NotificationPosition
   showTokenSpeed: boolean
   coloredUserBubble: boolean
   renderHtmlArtifacts: boolean
   setFontSize: (size: FontSize) => void
   setAccentColor: (color: AccentColorValue) => void
+  setDarkStyle: (style: DarkStyle) => void
   setNotificationPosition: (position: NotificationPosition) => void
   setShowTokenSpeed: (show: boolean) => void
   setColoredUserBubble: (colored: boolean) => void
@@ -90,6 +169,7 @@ type InterfaceSettingsPersistedSlice = Omit<
   | 'resetInterface'
   | 'setFontSize'
   | 'setAccentColor'
+  | 'setDarkStyle'
   | 'setNotificationPosition'
   | 'setShowTokenSpeed'
   | 'setColoredUserBubble'
@@ -110,6 +190,7 @@ const createDefaultInterfaceValues = (): InterfaceSettingsPersistedSlice => {
   return {
     fontSize: defaultFontSize,
     accentColor: DEFAULT_ACCENT_COLOR,
+    darkStyle: DEFAULT_DARK_STYLE,
     notificationPosition: getDefaultNotificationPosition(),
     showTokenSpeed: true,
     coloredUserBubble: true,
@@ -141,13 +222,22 @@ export const useInterfaceSettings = create<InterfaceSettingsState>()(
             defaultFontSize
           )
 
+          // Reset dark style attribute first so accent picks the right
+          // sidebar variant (Jan Blue vs Editorial).
+          applyDarkStyleToDOM(DEFAULT_DARK_STYLE)
+
           // Reset accent color preset
-          applyAccentColorToDOM(DEFAULT_ACCENT_COLOR, isDark)
+          applyAccentColorToDOM(
+            DEFAULT_ACCENT_COLOR,
+            isDark,
+            DEFAULT_DARK_STYLE
+          )
 
           // Update state
           set({
             fontSize: defaultFontSize,
             accentColor: DEFAULT_ACCENT_COLOR,
+            darkStyle: DEFAULT_DARK_STYLE,
             notificationPosition: getDefaultNotificationPosition(),
             showTokenSpeed: true,
             coloredUserBubble: true,
@@ -160,8 +250,15 @@ export const useInterfaceSettings = create<InterfaceSettingsState>()(
           if (!colorExists) return
 
           const { isDark } = useTheme.getState()
-          applyAccentColorToDOM(color, isDark)
+          const { darkStyle } = useInterfaceSettings.getState()
+          applyAccentColorToDOM(color, isDark, darkStyle)
           set({ accentColor: color })
+        },
+
+        setDarkStyle: (style: DarkStyle) => {
+          if (!isDarkStyle(style)) return
+          applyDarkStyleToDOM(style)
+          set({ darkStyle: style })
         },
 
         setFontSize: (size: FontSize) => {
@@ -195,6 +292,7 @@ export const useInterfaceSettings = create<InterfaceSettingsState>()(
       partialize: (state) => ({
         fontSize: state.fontSize,
         accentColor: state.accentColor,
+        darkStyle: state.darkStyle,
         notificationPosition: state.notificationPosition,
         showTokenSpeed: state.showTokenSpeed,
         coloredUserBubble: state.coloredUserBubble,
@@ -217,9 +315,17 @@ export const useInterfaceSettings = create<InterfaceSettingsState>()(
           // Get the current theme state
           const { isDark } = useTheme.getState()
 
-          // Apply accent color preset
+          // Apply dark style — migrate old persisted state that doesn't
+          // have the field yet, defaulting to Jan Blue.
+          const darkStyleValue = isDarkStyle(state.darkStyle)
+            ? state.darkStyle
+            : DEFAULT_DARK_STYLE
+          state.darkStyle = darkStyleValue
+          applyDarkStyleToDOM(darkStyleValue)
+
+          // Apply accent color preset (uses the resolved dark style)
           const accentColorValue = state.accentColor || DEFAULT_ACCENT_COLOR
-          applyAccentColorToDOM(accentColorValue, isDark)
+          applyAccentColorToDOM(accentColorValue, isDark, darkStyleValue)
 
           if (
             !state.notificationPosition ||
@@ -253,8 +359,8 @@ let prevIsDark = useTheme.getState().isDark
 const unsubscribeTheme = useTheme.subscribe((state) => {
   if (state.isDark !== prevIsDark) {
     prevIsDark = state.isDark
-    const { accentColor } = useInterfaceSettings.getState()
-    applyAccentColorToDOM(accentColor, state.isDark)
+    const { accentColor, darkStyle } = useInterfaceSettings.getState()
+    applyAccentColorToDOM(accentColor, state.isDark, darkStyle)
   }
 })
 

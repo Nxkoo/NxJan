@@ -17,7 +17,7 @@
 /* Editorial/paper toasts — paper note / desk memo, not SaaS toast. */
 .toaster [data-sonner-toast] {
   border-radius: var(--radius-lg);
-  border: 2px solid var(--border);
+  border: 1.5px solid var(--border);
   background: var(--card);
   color: var(--card-foreground);
   box-shadow:
@@ -68,7 +68,9 @@
   border-color: var(--yellow);
 }
 
-/* Dark toasts — ink on deep paper */
+/* Dark toasts — ink on deep paper.
+   The border weight is the same regardless of the dark style (Jan / editorial)
+   so the toast feels consistent on both backgrounds. */
 .dark .toaster [data-sonner-toast] {
   background: var(--card);
   color: var(--card-foreground);
@@ -154,6 +156,16 @@
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
+  /* 3-level surface palette — used to create hierarchy by tone, not just
+     by stroke. Background is the app base, panel is cards/sidebar, and
+     elevated is the floating layer (popovers, inputs, chips). */
+  --color-surface-1: var(--surface-1);
+  --color-surface-2: var(--surface-2);
+  --color-surface-3: var(--surface-3);
+  /* Soft / strong border aliases — so components can ask for "subtle" or
+     "loud" without redefining opacity against --ink each time. */
+  --color-border-soft: var(--border-soft);
+  --color-border-strong: var(--border-strong);
   --animate-hue-rotate: hue-rotate 4s infinite;
   --font-display: "StudioFeixenSans";
   --font-display: "Fraunces", "Georgia", serif;
@@ -182,18 +194,30 @@
 }
 
 /* Storybook / Garden Desk palette
-   Warm paper surfaces, deep editorial ink, friendly accent colors. */
+   Warm paper surfaces, deep editorial ink, friendly accent colors.
+
+   Hierarchy is built from three paper surfaces:
+     --surface-1 = app background (warm cream)
+     --surface-2 = panel / card / sidebar (slightly warmer, calmer)
+     --surface-3 = elevated / popover / input (the lightest, almost ivory)
+
+   Borders are translucent ink, not solid black-ink, so they read as
+   "pencil stroke" instead of "punched-out frame". A `--border-soft` alias
+   is provided for components that should feel especially airy
+   (tool cards, chips, model selector trigger), and `--border-strong` for
+   the one or two elements per region that need to assert themselves
+   (composer, focused control, active sidebar item). */
 :root {
   --radius: 1rem;
 
   /* Storybook primitives — warm editorial desk paper */
   --paper: #fdf3d7;
-  --paper-soft: #faeac5;
-  --paper-card: #fff9e8;
-  --paper-muted: #f5e8cc;
+  --paper-soft: #f6e6c0;
+  --paper-card: #fbf2dc;
+  --paper-muted: #efe2c2;
   --ink: #17234d;
   --blue: #214099;
-  --blue-soft: #c4d0f3;
+  --blue-soft: #d6dff5;
   --green: #6fa642;
   --green-soft: #dff3c4;
   --yellow: #fbd026;
@@ -203,75 +227,116 @@
   --red: #fb5c34;
   --red-soft: #f3c4c4;
 
+  /* 3-level surface scale — the heart of the new hierarchy.
+     Components reach for these instead of stacking outlines. */
+  --surface-1: #fdf3d7;
+  --surface-2: #f5e7c2;
+  --surface-3: #fbf2dc;
+
+  /* Translucent ink borders — softer than solid --ink, but still
+     editorial. Strong border keeps the same hue at higher opacity for
+     the few surfaces that should assert themselves. */
+  --border-soft: color-mix(in srgb, var(--ink) 18%, transparent);
+  --border: color-mix(in srgb, var(--ink) 45%, transparent);
+  --border-strong: color-mix(in srgb, var(--ink) 75%, transparent);
+
   /* shadcn token mapping — light/paper theme */
-  --background: #fdf3d7;
+  --background: var(--surface-1);
   --foreground: var(--ink);
-  --card: var(--paper-card);
+  --card: var(--surface-2);
   --card-foreground: var(--ink);
-  --popover: var(--paper-card);
+  --popover: var(--surface-3);
   --popover-foreground: var(--ink);
   --primary: var(--blue);
   --primary-foreground: #ffffff;
-  --secondary: var(--paper-soft);
+  --secondary: color-mix(in srgb, var(--surface-2) 70%, var(--ink) 4%);
   --secondary-foreground: var(--ink);
   --muted: var(--paper-muted);
   --muted-foreground: #5a6a8a;
   --accent: var(--yellow);
   --accent-foreground: var(--ink);
   --destructive: var(--red);
-  --border: var(--ink);
-  --input: var(--paper-card);
-  --ring: var(--ink);
+  --input: var(--surface-3);
+  --ring: color-mix(in srgb, var(--ink) 70%, transparent);
   --chart-1: var(--blue);
   --chart-2: var(--green);
   --chart-3: var(--yellow);
   --chart-4: var(--orange);
   --chart-5: var(--red);
-  --sidebar: #faeac5;
+  --sidebar: var(--surface-2);
   --sidebar-foreground: var(--ink);
   --sidebar-primary: var(--blue);
   --sidebar-primary-foreground: #ffffff;
   /* calmer sidebar states for nav (no harsh yellow) — relative to current sidebar tint */
   --sidebar-accent: color-mix(in srgb, var(--sidebar) 80%, var(--ink) 5%);
   --sidebar-accent-foreground: var(--ink);
-  --sidebar-active: color-mix(in srgb, var(--sidebar) 65%, var(--ink) 8%);
-  --sidebar-border: color-mix(in srgb, var(--ink) 18%, transparent);
+  --sidebar-active: color-mix(in srgb, var(--sidebar) 55%, var(--ink) 12%);
+  --sidebar-border: var(--border-soft);
   --sidebar-ring: var(--ink);
 }
 
-/* Dark mode: midnight paper — deep blue editorial night desk */
+/* ──────────────────────────────────────────────────────────────────────
+   Dark mode
+
+   Two styles share the same surface / border tokens, only the hue does:
+
+     1. Default "Jan Blue" (data-dark-style="jan" or unset)
+        Deep navy editorial night desk — what the original Jan app uses
+        on the welcome / settings screens. Warm cream ink on top.
+
+     2. "Editorial" (data-dark-style="editorial")
+        Neutral warm-paper dark — adapted from the original Jan GitHub
+        dark palette. Reads as "paper at night", not "blue terminal".
+        Selected automatically when the accent is anything other than
+        blue (the user-facing "Dark mode style" setting can override).
+
+   Both share the same --ink / --paper / --* brand tokens so chip colors
+   stay legible. The visible difference is the *base hue* of surfaces.
+   ────────────────────────────────────────────────────────────────────── */
+
+/* Default dark = Jan Blue (kept as the "azulão" the user is happy with)
+   Surfaces go: --sidebar (deepest) → --background → --card → --popover
+   The sidebar is the *darkest* surface so it always reads as a separate
+   rail against the main content — same trick the original Jan uses. */
 .dark {
-  --background: #0f1630;
+  --sidebar-bg: #131313;
+  --surface-1: #0f1630;
+  --surface-2: #182552;
+  --surface-3: #141f44;
+
+  --background: var(--surface-1);
   --foreground: #f7f1dc;
-  --card: #17234d;
+  --card: var(--surface-2);
   --card-foreground: #f7f1dc;
-  --popover: #17234d;
+  --popover: var(--surface-3);
   --popover-foreground: #f7f1dc;
   --primary: var(--blue);
   --primary-foreground: #f7f1dc;
-  --secondary: #1f2d5c;
+  --secondary: #141f44;
   --secondary-foreground: #f7f1dc;
-  --muted: #1f2d5c;
+  --muted: #141f44;
   --muted-foreground: #a8b4d0;
   --accent: #2a3a6a;
   --accent-foreground: #f7f1dc;
   --destructive: #fb5c34;
-  --border: rgb(247 241 220 / 15%);
-  --input: #1f2d5c;
+  --border-soft: rgb(247 241 220 / 14%);
+  --border: rgb(247 241 220 / 24%);
+  --border-strong: rgb(247 241 220 / 45%);
+  --input: #141f44;
   --ring: #5a7ad0;
   --chart-1: #5a7ad0;
   --chart-2: #88ba42;
   --chart-3: #fbd026;
   --chart-4: #f97d38;
   --chart-5: #fb5c34;
-  --sidebar: #0f1630;
+  --sidebar: var(--sidebar-bg);
   --sidebar-foreground: #f7f1dc;
   --sidebar-primary: #5a7ad0;
   --sidebar-primary-foreground: #f7f1dc;
-  --sidebar-accent: color-mix(in srgb, var(--sidebar) 75%, #f7f1dc 10%);
+  --sidebar-accent: color-mix(in srgb, var(--sidebar) 60%, #f7f1dc 8%);
   --sidebar-accent-foreground: #f7f1dc;
-  --sidebar-active: color-mix(in srgb, var(--sidebar) 55%, #f7f1dc 12%);
-  --sidebar-border: rgb(247 241 220 / 15%);
+  --sidebar-active: color-mix(in srgb, var(--sidebar) 35%, #f7f1dc 14%);
+  --sidebar-border: rgb(247 241 220 / 14%);
   --sidebar-ring: #5a7ad0;
   /* dark mode paper accents: deeper editorial tints so badges/chips stay legible */
   --green-soft: #1f3a18;
@@ -279,8 +344,65 @@
   --yellow-soft: #3a3014;
   --red-soft: #3a1a14;
   --blue-soft: #1a2548;
-  --paper-soft: #1f2d5c;
+  --paper-soft: #141f44;
   --paper-muted: #1a2548;
+}
+
+/* Editorial dark — closer to the original Jan app (gray palette, visible
+   card borders, sidebar darker than main bg). Uses a slight warm tint
+   so the paper/editorial language still reads, but the page doesn't
+   look like a "blue terminal" the way the navy variant does. */
+.dark[data-dark-style="editorial"] {
+  --sidebar-bg: #0e0d0a;
+  --surface-1: #181715;
+  --surface-2: #21201d;
+  --surface-3: #21201d;
+
+  --background: var(--surface-1);
+  --foreground: #f5ecd6;
+  --card: var(--surface-2);
+  --card-foreground: #f5ecd6;
+  --popover: var(--surface-3);
+  --popover-foreground: #f5ecd6;
+  /* Editorial built-in accent — warm paper gray, paired with the
+     cream foreground so the user's chosen accent color (set by
+     InterfaceProvider) is overridden inside this mode. */
+  --primary: #827D72 !important;
+  --primary-foreground: #f5ecd6 !important;
+  --secondary: #21201d;
+  --secondary-foreground: #f5ecd6;
+  --muted: #21201d;
+  --muted-foreground: #b3a98f;
+  --accent: #2f2e2a;
+  --accent-foreground: #f5ecd6;
+  --destructive: #fb5c34;
+  --border-soft: rgb(245 236 214 / 14%);
+  --border: rgb(245 236 214 / 26%);
+  --border-strong: rgb(245 236 214 / 46%);
+  --input: var(--surface-3);
+  --ring: #8a7e5e;
+  --chart-1: #e8765a;
+  --chart-2: #88ba42;
+  --chart-3: #fbd026;
+  --chart-4: #f97d38;
+  --chart-5: #fb5c34;
+  --sidebar: var(--sidebar-bg);
+  --sidebar-foreground: #f5ecd6;
+  --sidebar-primary: #e8765a;
+  --sidebar-primary-foreground: #181715;
+  --sidebar-accent: color-mix(in srgb, var(--sidebar) 60%, #f5ecd6 8%);
+  --sidebar-accent-foreground: #f5ecd6;
+  --sidebar-active: color-mix(in srgb, var(--sidebar) 35%, #f5ecd6 14%);
+  --sidebar-border: rgb(245 236 214 / 14%);
+  --sidebar-ring: #e8765a;
+  /* editorial dark: paper tints lean warm/brown instead of blue */
+  --green-soft: #1f2e16;
+  --orange-soft: #3a1f12;
+  --yellow-soft: #3a2f14;
+  --red-soft: #3a1a14;
+  --blue-soft: #1c2540;
+  --paper-soft: #21201d;
+  --paper-muted: #221d14;
 }
 
 @layer base {
@@ -292,14 +414,16 @@
     @apply bg-background text-foreground font-sans text-sm antialiased overflow-hidden;
   }
 
-  /* Subtle paper texture — lightweight dot grid that feels like notebook paper */
+  /* Subtle paper texture — lightweight dot grid that feels like notebook paper.
+     Lowered opacity in dark mode so the texture doesn't compete with the
+     border contrast. */
   body::before {
     content: '';
     position: fixed;
     inset: 0;
     pointer-events: none;
     z-index: 9999;
-    opacity: 0.035;
+    opacity: 0.025;
     background-image: radial-gradient(circle at center, var(--ink) 1px, transparent 1px);
     background-size: 24px 24px;
     mask-image: linear-gradient(to bottom, black 0%, transparent 100%);
@@ -307,8 +431,12 @@
   }
 
   .dark body::before {
-    opacity: 0.04;
+    opacity: 0.035;
     background-image: radial-gradient(circle at center, #f7f1dc 1px, transparent 1px);
+  }
+
+  .dark[data-dark-style="editorial"] body::before {
+    background-image: radial-gradient(circle at center, #f5ecd6 1px, transparent 1px);
   }
 
   ::-ms-reveal {
@@ -368,14 +496,14 @@
   }
 
   ::-webkit-scrollbar-thumb {
-    background: color-mix(in srgb, var(--border) 26%, transparent);
+    background: color-mix(in srgb, var(--border) 40%, transparent);
     border: 2px solid transparent;
     background-clip: padding-box;
     border-radius: 4px;
   }
 
   ::-webkit-scrollbar-thumb:hover {
-    background: color-mix(in srgb, var(--border) 42%, transparent);
+    background: color-mix(in srgb, var(--border) 60%, transparent);
     border: 2px solid transparent;
     background-clip: padding-box;
   }
@@ -388,14 +516,26 @@
     background: rgb(247 241 220 / 32%);
   }
 
+  .dark[data-dark-style="editorial"] ::-webkit-scrollbar-thumb {
+    background: rgb(245 236 214 / 16%);
+  }
+
+  .dark[data-dark-style="editorial"] ::-webkit-scrollbar-thumb:hover {
+    background: rgb(245 236 214 / 30%);
+  }
+
   /* Firefox scrollbar */
   * {
     scrollbar-width: thin;
-    scrollbar-color: color-mix(in srgb, var(--border) 30%, transparent) transparent;
+    scrollbar-color: color-mix(in srgb, var(--border) 40%, transparent) transparent;
   }
 
   .dark * {
     scrollbar-color: rgb(247 241 220 / 18%) transparent;
+  }
+
+  .dark[data-dark-style="editorial"] * {
+    scrollbar-color: rgb(245 236 214 / 16%) transparent;
   }
 
   /* Consistent editorial focus ring for interactive elements
