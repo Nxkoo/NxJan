@@ -33,7 +33,7 @@ export function NavChats() {
   }
 
   return (
-    <SidebarGroup className="group-data-[collapsible=icon]:hidden">
+    <SidebarGroup className="group-data-[collapsible=icon]:hidden py-2">
       <SidebarGroupLabel>{t('common:chats')}</SidebarGroupLabel>
       {threadsWithoutProject.length > 1 && 
         <DropdownMenu open={dropdownOpen} onOpenChange={setDropdownOpen}>

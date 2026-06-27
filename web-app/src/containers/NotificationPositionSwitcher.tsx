@@ -50,8 +50,8 @@ export function NotificationPositionSwitcher() {
           <DropdownMenuItem
             key={value}
             className={cn(
-              'cursor-pointer my-0.5',
-              notificationPosition === value && 'bg-secondary-foreground/8'
+              'cursor-pointer my-0.5 rounded-lg',
+              notificationPosition === value && 'bg-accent/60'
             )}
             onClick={() => setNotificationPosition(value)}
           >

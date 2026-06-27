@@ -1731,8 +1731,8 @@ const ChatInput = memo(function ChatInput({
 
           <div
             className={cn(
-              'relative z-20 px-0 pb-10 border rounded-3xl border-input bg-white dark:bg-input/30',
-              isFocused && 'ring-1 ring-ring/50',
+              'relative z-20 px-0 pb-12 border-2 rounded-3xl border-border bg-card shadow-md',
+              isFocused && 'ring-2 ring-ring/50',
               isDragOver && 'ring-2 ring-ring/50 border-primary'
             )}
             data-drop-zone={dropAcceptsAnything ? 'true' : undefined}
@@ -1764,12 +1764,12 @@ const ChatInput = memo(function ChatInput({
                         >
                           <Tooltip>
                             <TooltipTrigger asChild>
-                              <div
-                                className={cn(
-                                  'relative border rounded-xl size-14 overflow-hidden',
-                                  'flex items-center justify-center'
-                                )}
-                              >
+                          <div
+                            className={cn(
+                              'relative border-2 rounded-xl size-14 overflow-hidden bg-card',
+                              'flex items-center justify-center'
+                            )}
+                          >
                                 {isImage && att.dataUrl ? (
                                   <img
                                     className="object-cover w-full h-full"
@@ -1840,11 +1840,11 @@ const ChatInput = memo(function ChatInput({
                           {/* Remove button disabled while processing - outside overflow-hidden container */}
                           {!att.processing && (
                             <div
-                              className="absolute -top-1 -right-2.5 bg-destructive size-5 flex rounded-full items-center justify-center cursor-pointer"
+                              className="absolute -top-1 -right-2.5 bg-destructive size-5 flex rounded-full items-center justify-center cursor-pointer border-2 border-card"
                               onClick={() => handleRemoveAttachment(idx)}
                             >
                               <IconX
-                                className="text-neutral-200"
+                                className="text-primary-foreground"
                                 size={14}
                               />
                             </div>
@@ -1937,12 +1937,12 @@ const ChatInput = memo(function ChatInput({
           </div>
         </div>
 
-        <div className="absolute z-20 bg-transparent bottom-0 w-full p-2 ">
+        <div className="absolute z-20 bg-transparent bottom-0 w-full p-2.5 ">
           <div className="flex justify-between items-center w-full">
-            <div className="px-1 flex items-center gap-1 flex-1 min-w-0">
+            <div className="px-1 flex items-center gap-1.5 flex-1 min-w-0">
               <div
                 className={cn(
-                  'px-1 flex items-center w-full gap-1',
+                  'px-1 flex items-center w-full gap-1.5',
                   isStreaming && 'opacity-50 pointer-events-none'
                 )}
               >
@@ -1950,14 +1950,14 @@ const ChatInput = memo(function ChatInput({
                 {!effectiveAgentMode && (
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="secondary" size="icon-sm" className='rounded-full mr-2 mb-1'>
-                      <PlusIcon size={18} className="text-muted-foreground" />
+                    <Button variant="secondary" size="icon-sm" className='rounded-xl mr-2 mb-1 border-2'>
+                      <PlusIcon size={18} className="text-foreground" />
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="start">
                     {hasMmproj && (
                       <DropdownMenuItem onClick={() => void openImagePicker()}>
-                        <IconPhoto size={18} className="text-muted-foreground" />
+                        <IconPhoto size={18} className="text-foreground/80" />
                         <span>Add Images</span>
                         <input
                           type="file"
@@ -1970,7 +1970,7 @@ const ChatInput = memo(function ChatInput({
                     )}
                     {audioSupported && (
                       <DropdownMenuItem onClick={() => void openAudioPicker()}>
-                        <IconMusic size={18} className="text-muted-foreground" />
+                        <IconMusic size={18} className="text-foreground/80" />
                         <span>Add Audio</span>
                         <input
                           type="file"
@@ -1984,7 +1984,7 @@ const ChatInput = memo(function ChatInput({
                     )}
                     {videoSupported && (
                       <DropdownMenuItem onClick={() => void openVideoPicker()}>
-                        <IconVideo size={18} className="text-muted-foreground" />
+                        <IconVideo size={18} className="text-foreground/80" />
                         <span>Add Video</span>
                         <input
                           type="file"
@@ -2004,12 +2004,12 @@ const ChatInput = memo(function ChatInput({
                       {ingestingDocs ? (
                         <IconLoader2
                           size={18}
-                          className="text-muted-foreground animate-spin"
+                          className="text-foreground/80 animate-spin"
                         />
                       ) : (
                         <IconPaperclip
                           size={18}
-                          className="text-muted-foreground"
+                          className="text-foreground/80"
                         />
                       )}
                       <span>
@@ -2351,11 +2351,11 @@ const ChatInput = memo(function ChatInput({
               {isStreaming ? (
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <Button
-                      variant="destructive"
-                      size="icon-sm"
-                      className="rounded-full mr-1 mb-1"
-                      onClick={() => {
+                <Button
+                  variant="destructive"
+                  size="icon-sm"
+                  className="rounded-xl mr-1 mb-1 border-2 border-destructive"
+                  onClick={() => {
                         if (!currentThreadId) return
                         const queue = useMessageQueue.getState().getQueue(currentThreadId)
                         if (queue.length > 0) {
@@ -2379,9 +2379,9 @@ const ChatInput = memo(function ChatInput({
                   disabled={(!prompt.trim() && !hasSendableMedia) || ingestingAny}
                   data-test-id="send-message-button"
                   onClick={() => handleSendMessage(prompt)}
-                  className="rounded-full mr-1 mb-1"
+                  className="rounded-xl mr-1 mb-1 border-2"
                 >
-                  <ArrowRight className="text-primary-fg" />
+                  <ArrowRight className="text-primary-foreground" />
                 </Button>
               )}
             </div>

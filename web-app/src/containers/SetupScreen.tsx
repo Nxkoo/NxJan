@@ -405,7 +405,7 @@ function SetupScreen() {
         <div className="flex h-[calc(100%-60px)] items-center">
           <div className="shrink-0 px-10 w-[480px] mx-auto overflow-auto pb-10 pointer-events-auto -mt-20">
             <div className="mb-4">
-              <h1 className="font-studio font-medium text-2xl mb-1">
+              <h1 className="font-display font-medium text-2xl mb-1">
                 {isDownloading ?  'Sit tight, Jan is getting ready...' : 'Hey, welcome to Jan!'}
               </h1>
               <p className='text-muted-foreground leading-normal w-full mt-1'>{isDownloading ? 'This may take a few minutes.' : 'Jan needs a model to begin. Let’s set it up.'}</p>

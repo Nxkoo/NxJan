@@ -195,8 +195,8 @@ describe('Button', () => {
     const button = screen.getByRole('button')
     expect(button).toHaveClass(
       'focus-visible:border-ring',
-      'focus-visible:ring-[3px]',
-      'focus-visible:ring-ring/50'
+      'focus-visible:ring-2',
+      'focus-visible:ring-ring/90'
     )
   })
 })

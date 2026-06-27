@@ -469,7 +469,7 @@ const DropdownModelProvider = memo(function DropdownModelProvider({
   return (
     <Popover open={open} onOpenChange={onOpenChange}>
         <PopoverTrigger asChild>
-          <div className="border relative z-20 px-4 py-1.5 flex items-center gap-1.5 rounded-full">
+          <div className="border-2 border-border/70 bg-card relative z-20 px-3.5 py-1.5 flex items-center gap-1.5 rounded-xl shadow-none transition-colors hover:bg-[var(--paper-soft)]">
             <button
               type="button"
               className="font-medium cursor-pointer flex items-center gap-1.5 relative z-20 min-w-0"

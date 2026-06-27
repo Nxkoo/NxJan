@@ -154,12 +154,12 @@ const ThreadItem = memo(
     return (
       <SidebarMenuItem>
         {currentProjectId ?
-          <Link to="/threads/$threadId" params={{ threadId: thread.id }} className={cn("bg-card dark:bg-secondary/20 mb-2 px-4 py-4 border hover:dark:bg-secondary/30 rounded-lg block max-w-full overflow-hidden", isSelected && "border-primary")}>
+          <Link to="/threads/$threadId" params={{ threadId: thread.id }} className={cn("bg-card dark:bg-secondary/20 mb-2 px-4 py-4 border-2 hover:dark:bg-secondary/30 rounded-xl block max-w-full overflow-hidden", isSelected && "border-primary")}>
               <div className="flex items-center gap-1.5 min-w-0">
                 {isActive && (
                   <Loader2 className="size-3 shrink-0 animate-spin text-muted-foreground" />
                 )}
-                <span className={cn("block truncate", isSelected && "font-medium text-primary")} title={thread.title || t('common:newThread')}>{thread.title || t('common:newThread')}</span>
+                <span className={cn("block truncate font-medium", isSelected && "font-semibold text-primary")} title={thread.title || t('common:newThread')}>{thread.title || t('common:newThread')}</span>
               </div>
               {currentProjectId && lastUserMessageText && (
                 <div className="text-muted-foreground text-xs mt-1 line-clamp-1 pr-10">
@@ -173,7 +173,7 @@ const ThreadItem = memo(
               {isActive && (
                 <Loader2 className="size-3 shrink-0 animate-spin text-muted-foreground" />
               )}
-              <span className={cn("block truncate", isSelected && "font-medium")} title={thread.title || t('common:newThread')}>{thread.title || t('common:newThread')}</span>
+              <span className={cn("block truncate font-medium", isSelected && "font-semibold")} title={thread.title || t('common:newThread')}>{thread.title || t('common:newThread')}</span>
             </Link>
           </SidebarMenuButton>
         }

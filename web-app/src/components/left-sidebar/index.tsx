@@ -24,20 +24,20 @@ export function LeftSidebar() {
   return (
     <div className='relative z-50'>
       <Sidebar variant="floating" collapsible="offcanvas">
-        <SidebarHeader className="flex px-1">
+        <SidebarHeader className="flex px-2 pt-3">
           <div className={cn("flex items-center w-full justify-between", reserveLeft && "justify-end")}>
-            {!reserveLeft && <span className="ml-2 font-medium font-studio">Jan</span>}
+            {!reserveLeft && <span className="ml-2 font-semibold font-display text-xl text-foreground">Jan</span>}
             <div className="flex items-center">
               {controlsOnLeft && (
-                <span className="mr-2 font-medium font-studio">Jan</span>
+                <span className="mr-2 font-semibold font-display text-xl text-foreground">Jan</span>
               )}
               {isLeftPanelOpen && <DownloadManagement />}
-              <SidebarTrigger className="text-muted-foreground rounded-full hover:bg-sidebar-foreground/8! -mt-0.5 relative z-50 ml-0.5" />
+              <SidebarTrigger className="text-muted-foreground rounded-xl hover:bg-sidebar-accent hover:text-sidebar-accent-foreground -mt-0.5 relative z-50 ml-0.5" />
             </div>
           </div>
           <NavMain />
         </SidebarHeader>
-        <SidebarContent className="mask-b-from-95% mask-t-from-98%">
+        <SidebarContent className="mask-b-from-95% mask-t-from-98% px-2">
           <NavProjects />
           <NavChats />
         </SidebarContent>

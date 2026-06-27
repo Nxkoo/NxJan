@@ -39,7 +39,7 @@ const HeaderPage = memo(function HeaderPage({ children }: HeaderPageProps) {
             <Button
               variant="ghost"
               size="icon-sm"
-              className='rounded-full relative z-50'
+              className='rounded-xl relative z-50 border-2 border-transparent hover:border-border/30'
               onClick={() => setLeftPanel(!open)}
               aria-label="Toggle sidebar"
             >
