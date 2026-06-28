@@ -117,7 +117,7 @@
   "noAssistant": "No assistant",
   "customAvatar": "Custom avatar",
   "editAssistant": "Edit Assistant",
-  "jan": "Jan",
+  "jan": "NxJan",
   "metadata": "Metadata",
   "regenerate": "Regenerate",
   "threadImage": "Thread image",
@@ -151,7 +151,7 @@
   "confirm": "Confirm",
   "continue": "Continue",
   "loading": "Loading...",
-  "settingUpJan": "Booting up Jan…",
+  "settingUpJan": "Booting up NxJan…",
   "registeringExtensions": "Registering extensions…",
   "loadingExtensions": "Loading extensions… ({{done}}/{{total}})",
   "error": "Error",
@@ -401,8 +401,8 @@
       "error": "Error"
     },
     "cliMissing": {
-      "title": "codebase-memory-mcp CLI is missing",
-      "description": "Install the CLI and ensure it is on PATH to enable indexing."
+      "title": "codebase-memory-mcp is missing from this build",
+      "description": "Jan bundles the Codebase Memory engine — reinstall Jan or set CODEBASE_MEMORY_MCP_PATH to a custom binary to enable indexing."
     },
     "mcpDisabled": {
       "title": "MCP server is configured but disabled",
