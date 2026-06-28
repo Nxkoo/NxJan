@@ -75,9 +75,73 @@ fn push_windows_script_candidates(candidates: &mut Vec<String>, dir: PathBuf) {
     push_existing_candidate(candidates, dir.join("codebase-memory-mcp.bat"));
 }
 
+/// Filename of the bundled `codebase-memory-mcp` binary alongside the Jan
+/// executable. Centralised so the test suite and the runtime resolver stay
+/// in lockstep with the bundling rules in `tauri.{windows,macos,linux}.conf.json`.
+fn bundled_cli_filename() -> &'static str {
+    if cfg!(windows) {
+        "codebase-memory-mcp.exe"
+    } else {
+        "codebase-memory-mcp"
+    }
+}
+
+/// Resolve the on-disk path of the binary bundled inside the Jan app.
+///
+/// The bundling rules (see `tauri.{windows,macos,linux}.conf.json`) place the
+/// `codebase-memory-mcp` static binary under `resources/bin/` of the app
+/// resources. The exact location relative to `std::env::current_exe()` differs
+/// per platform:
+///
+/// - **Windows / Linux:** the bundle is laid out flat — the executable and
+///   `resources/bin/` are siblings, so we only need `exe.parent()`.
+/// - **macOS .app:** the executable lives in `Contents/MacOS/` while the
+///   resources live in `Contents/Resources/`, so we have to walk one extra
+///   directory up. The function tries both layouts so dev mode, portable
+///   builds, and standard installers all resolve correctly.
+///
+/// Returning paths even when the file is absent keeps the function pure and
+/// easy to test; the caller filters out missing paths via
+/// `push_existing_candidate`.
+fn bundled_cli_paths() -> Vec<PathBuf> {
+    let mut out = Vec::new();
+    let Ok(exe) = std::env::current_exe() else {
+        return out;
+    };
+    let Some(exe_dir) = exe.parent() else {
+        return out;
+    };
+    let bin_name = bundled_cli_filename();
+
+    // Windows / Linux flat layout.
+    out.push(exe_dir.join("resources").join("bin").join(bin_name));
+    // macOS .app layout: Contents/Resources/resources/bin/.
+    if let Some(contents_dir) = exe_dir.parent() {
+        out.push(
+            contents_dir
+                .join("Resources")
+                .join("resources")
+                .join("bin")
+                .join(bin_name),
+        );
+    }
+    // Portable / extracted archive layouts (e.g. AppImage unpacked to a
+    // user-chosen directory): the resources may sit one level up from the
+    // executable in case the binary itself lives inside `bin/`.
+    if let Some(parent) = exe_dir.parent() {
+        out.push(parent.join("resources").join("bin").join(bin_name));
+    }
+    out
+}
+
 /// Candidate executable locations. GUI apps on Windows may not inherit the
 /// exact PATH a user sees in PowerShell, so we probe the known Python/npm user
 /// bin directories in addition to `where`/`which` and the bare command name.
+///
+/// The bundled binary that ships with the Jan installer takes priority over
+/// user-installed locations so a fresh install works out of the box; the
+/// `CODEBASE_MEMORY_MCP_PATH` env var and `where`/`which` both still win so
+/// power users and developers can override.
 fn cli_candidates() -> Vec<String> {
     let mut candidates = Vec::new();
 
@@ -90,6 +154,13 @@ fn cli_candidates() -> Vec<String> {
 
     if let Some(path) = find_cli_path() {
         candidates.push(path.to_string_lossy().to_string());
+    }
+
+    // Bundled with the app. We try every layout (`exe_dir/resources/bin/`,
+    // `Contents/Resources/resources/bin/`, etc.) so the same code works for
+    // dev runs, MSI/NSIS, .app bundles, and AppImages.
+    for path in bundled_cli_paths() {
+        push_existing_candidate(&mut candidates, path);
     }
 
     #[cfg(target_os = "windows")]
@@ -206,7 +277,7 @@ pub async fn check_available() -> CodebaseMemoryAvailability {
         path: find_cli_path().map(|p| p.to_string_lossy().to_string()),
         exit_code: None,
         error: Some(last_error.unwrap_or_else(|| {
-            "codebase-memory-mcp CLI was not found. Install it and restart Jan, or launch Jan from a terminal where `codebase-memory-mcp --version` works."
+            "codebase-memory-mcp is missing from this Jan build. Reinstall Jan, or set CODEBASE_MEMORY_MCP_PATH to a custom binary to enable indexing."
                 .to_string()
         })),
     }
@@ -317,7 +388,7 @@ async fn resolve_binary() -> Result<String, String> {
         }
     }
     Err(last_error.unwrap_or_else(|| {
-        "codebase-memory-mcp CLI was not found. Install it and restart Jan, or launch Jan from a terminal where `codebase-memory-mcp --version` works."
+        "codebase-memory-mcp is missing from this Jan build. Reinstall Jan, or set CODEBASE_MEMORY_MCP_PATH to a custom binary to enable indexing."
             .to_string()
     }))
 }
@@ -666,5 +737,66 @@ mod tests {
         let escaped = escape_json_string(s);
         assert!(escaped.contains(r#"\""#));
         assert!(escaped.contains(r"\\"));
+    }
+
+    #[test]
+    fn bundled_cli_filename_matches_platform() {
+        // Keep the filename in lockstep with the bundling rules in
+        // tauri.{windows,macos,linux}.conf.json so the test fails loudly if
+        // someone renames the binary in one place and not the other.
+        let name = bundled_cli_filename();
+        if cfg!(windows) {
+            assert_eq!(name, "codebase-memory-mcp.exe");
+        } else {
+            assert_eq!(name, "codebase-memory-mcp");
+        }
+    }
+
+    #[test]
+    fn bundled_cli_paths_are_well_formed() {
+        // The function is best-effort: it returns a small list of well-known
+        // layouts. It must always include at least the flat `resources/bin/`
+        // candidate next to the executable, and every candidate must end in
+        // the platform-correct binary filename. We don't assume the bundled
+        // file actually exists in the test sandbox.
+        let paths = bundled_cli_paths();
+        assert!(!paths.is_empty(), "expected at least one bundled layout");
+        for path in &paths {
+            let last = path
+                .file_name()
+                .expect("path must end in a file name")
+                .to_string_lossy()
+                .to_string();
+            assert_eq!(last, bundled_cli_filename());
+            // Every candidate must point under a `bin/` ancestor.
+            let has_bin_ancestor = path.ancestors().any(|p| {
+                p.file_name()
+                    .and_then(|n| n.to_str())
+                    .map(|n| n == "bin")
+                    .unwrap_or(false)
+            });
+            assert!(
+                has_bin_ancestor,
+                "expected path to include a `bin/` ancestor: {path:?}"
+            );
+        }
+    }
+
+    #[test]
+    fn push_existing_candidate_dedupes() {
+        // Sanity check: the dedup helper that `cli_candidates` relies on
+        // never produces duplicates, which keeps the resolution order
+        // observable and the spawned-process count predictable.
+        let tmp = tempfile::Builder::new()
+            .prefix("cbm-dedup-")
+            .suffix(if cfg!(windows) { ".exe" } else { "" })
+            .tempfile()
+            .expect("tempfile");
+        let path = tmp.path().to_path_buf();
+        let mut candidates: Vec<String> = Vec::new();
+        push_existing_candidate(&mut candidates, path.clone());
+        push_existing_candidate(&mut candidates, path.clone());
+        push_existing_candidate(&mut candidates, path);
+        assert_eq!(candidates.len(), 1);
     }
 }
