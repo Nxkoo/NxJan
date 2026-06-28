@@ -1,8 +1,8 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
-  "productName": "Jan",
-  "version": "0.8.3",
-  "identifier": "jan.ai.app",
+  "productName": "NxJan",
+  "version": "0.8.3+1",
+  "identifier": "dev.nxkoo.nxjan",
   "build": {
     "frontendDist": "../web-app/dist",
     "devUrl": "http://localhost:1420",
@@ -57,7 +57,7 @@
     }
   },
   "bundle": {
-    "publisher": "Menlo Research Pte. Ltd.",
+    "publisher": "Nxkoo",
     "active": true,
     "createUpdaterArtifacts": false,
     "icon": [
@@ -67,6 +67,6 @@
       "icons/icon.icns",
       "icons/icon.ico"
     ],
-    "resources": ["resources/pre-install/**/*", "resources/LICENSE"]
+    "resources": ["resources/pre-install/**/*", "resources/LICENSE", "resources/NOTICE"]
   }
 }

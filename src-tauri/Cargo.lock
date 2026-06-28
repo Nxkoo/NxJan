@@ -3,78 +3,6 @@
 version = 3
 
 [[package]]
-name = "Jan"
-version = "0.8.3"
-dependencies = [
- "async-trait",
- "base64 0.22.1",
- "chrono",
- "clap",
- "console",
- "dialoguer",
- "dirs",
- "ed25519-dalek",
- "env",
- "env_logger",
- "fix-path-env",
- "flate2",
- "futures",
- "futures-util",
- "glob",
- "gtk",
- "hex",
- "hmac",
- "hostname",
- "http-body-util",
- "hyper",
- "hyper-util",
- "indicatif",
- "jan-utils",
- "libc",
- "libloading 0.8.9",
- "log",
- "nix",
- "once_cell",
- "rand 0.8.5",
- "reqwest",
- "rfd",
- "rmcp",
- "serde",
- "serde_json",
- "serde_yaml",
- "sha2",
- "sqlx",
- "tar",
- "tauri",
- "tauri-build",
- "tauri-plugin-deep-link",
- "tauri-plugin-dialog",
- "tauri-plugin-hardware",
- "tauri-plugin-http",
- "tauri-plugin-llamacpp",
- "tauri-plugin-log",
- "tauri-plugin-mlx",
- "tauri-plugin-opener",
- "tauri-plugin-os",
- "tauri-plugin-rag",
- "tauri-plugin-shell",
- "tauri-plugin-single-instance",
- "tauri-plugin-store",
- "tauri-plugin-updater",
- "tauri-plugin-vector-db",
- "tempfile",
- "thiserror 2.0.17",
- "tokio",
- "tokio-stream",
- "tokio-util",
- "url",
- "uuid",
- "windows-sys 0.60.2",
- "zbus",
- "zip 0.6.6",
-]
-
-[[package]]
 name = "addr2line"
 version = "0.25.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -3611,6 +3539,78 @@ dependencies = [
 ]
 
 [[package]]
+name = "nxjan"
+version = "0.8.3+1"
+dependencies = [
+ "async-trait",
+ "base64 0.22.1",
+ "chrono",
+ "clap",
+ "console",
+ "dialoguer",
+ "dirs",
+ "ed25519-dalek",
+ "env",
+ "env_logger",
+ "fix-path-env",
+ "flate2",
+ "futures",
+ "futures-util",
+ "glob",
+ "gtk",
+ "hex",
+ "hmac",
+ "hostname",
+ "http-body-util",
+ "hyper",
+ "hyper-util",
+ "indicatif",
+ "jan-utils",
+ "libc",
+ "libloading 0.8.9",
+ "log",
+ "nix",
+ "once_cell",
+ "rand 0.8.5",
+ "reqwest",
+ "rfd",
+ "rmcp",
+ "serde",
+ "serde_json",
+ "serde_yaml",
+ "sha2",
+ "sqlx",
+ "tar",
+ "tauri",
+ "tauri-build",
+ "tauri-plugin-deep-link",
+ "tauri-plugin-dialog",
+ "tauri-plugin-hardware",
+ "tauri-plugin-http",
+ "tauri-plugin-llamacpp",
+ "tauri-plugin-log",
+ "tauri-plugin-mlx",
+ "tauri-plugin-opener",
+ "tauri-plugin-os",
+ "tauri-plugin-rag",
+ "tauri-plugin-shell",
+ "tauri-plugin-single-instance",
+ "tauri-plugin-store",
+ "tauri-plugin-updater",
+ "tauri-plugin-vector-db",
+ "tempfile",
+ "thiserror 2.0.17",
+ "tokio",
+ "tokio-stream",
+ "tokio-util",
+ "url",
+ "uuid",
+ "windows-sys 0.60.2",
+ "zbus",
+ "zip 0.6.6",
+]
+
+[[package]]
 name = "objc"
 version = "0.2.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -6390,7 +6390,7 @@ dependencies = [
 
 [[package]]
 name = "tauri-plugin-hardware"
-version = "0.8.3"
+version = "0.8.3+1"
 dependencies = [
  "ash",
  "libc",
@@ -6431,7 +6431,7 @@ dependencies = [
 
 [[package]]
 name = "tauri-plugin-llamacpp"
-version = "0.8.3"
+version = "0.8.3+1"
 dependencies = [
  "base64 0.22.1",
  "byteorder",
@@ -6478,7 +6478,7 @@ dependencies = [
 
 [[package]]
 name = "tauri-plugin-mlx"
-version = "0.8.3"
+version = "0.8.3+1"
 dependencies = [
  "jan-utils",
  "log",
