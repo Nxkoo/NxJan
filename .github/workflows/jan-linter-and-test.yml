@@ -106,6 +106,13 @@ jobs:
           for bin in uv bun; do
             touch "src-tauri/resources/bin/${bin}-${TRIPLE}"
           done
+          # `codebase-memory-mcp` is bundled on every host so the production
+          # runtime never asks the user to install it. CI builds don't pull
+          # the real binary; stubs keep the Tauri build script happy.
+          case "$TRIPLE" in
+            *windows*) touch "src-tauri/resources/bin/codebase-memory-mcp-${TRIPLE}.exe" ;;
+            *)         touch "src-tauri/resources/bin/codebase-memory-mcp-${TRIPLE}" ;;
+          esac
           # Icons are gitignored; generate_context!() requires them at compile time
           for icon in 32x32.png 128x128.png 128x128@2x.png icon.icns icon.ico; do
             [ -f "src-tauri/icons/$icon" ] || cp src-tauri/icons/icon.png "src-tauri/icons/$icon"

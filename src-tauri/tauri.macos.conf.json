@@ -3,7 +3,7 @@
     "windows": [
       {
         "label": "main",
-        "title": "Jan",
+        "title": "NxJan",
         "width": 1200,
         "minWidth": 1024,
         "height": 800,
@@ -30,7 +30,14 @@
   },
   "bundle": {
     "targets": ["app", "dmg"],
-    "resources": ["resources/pre-install/**/*", "resources/LICENSE", "resources/bin/mlx-server", "resources/bin/mlx-swift_Cmlx.bundle", "resources/bin/jan-cli"],
+    "resources": [
+      "resources/pre-install/**/*",
+      "resources/LICENSE",
+      "resources/bin/mlx-server",
+      "resources/bin/mlx-swift_Cmlx.bundle",
+      "resources/bin/jan-cli",
+      "resources/bin/codebase-memory-mcp"
+    ],
     "externalBin": ["resources/bin/bun", "resources/bin/uv"],
     "macOS": {
       "entitlements": "./Entitlements.plist"

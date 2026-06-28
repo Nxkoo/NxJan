@@ -3,7 +3,7 @@
     "windows": [
       {
         "label": "main",
-        "title": "Jan",
+        "title": "NxJan",
         "width": 1200,
         "minWidth": 1024,
         "height": 800,
@@ -20,7 +20,12 @@
   },
   "bundle": {
     "targets": ["deb", "appimage"],
-    "resources": ["resources/pre-install/**/*", "resources/LICENSE", "resources/bin/jan-cli"],
+    "resources": [
+      "resources/pre-install/**/*",
+      "resources/LICENSE",
+      "resources/bin/jan-cli",
+      "resources/bin/codebase-memory-mcp"
+    ],
     "externalBin": ["resources/bin/uv"],
     "linux": {
       "appimage": {
@@ -29,7 +34,8 @@
       },
       "deb": {
         "files": {
-          "usr/bin/bun": "resources/bin/bun"
+          "usr/bin/bun": "resources/bin/bun",
+          "usr/bin/codebase-memory-mcp": "resources/bin/codebase-memory-mcp"
         }
       }
     }

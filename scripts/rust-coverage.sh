@@ -14,6 +14,14 @@ for bin in uv bun; do
   stub="src-tauri/resources/bin/${bin}-${TRIPLE}"
   [ -f "$stub" ] || touch "$stub"
 done
+# `codebase-memory-mcp` is bundled with the app, so stub it too so the Tauri
+# build script doesn't error when running coverage on a host that didn't run
+# `yarn download:bin`.
+case "$TRIPLE" in
+  *windows*) cbm_stub="src-tauri/resources/bin/codebase-memory-mcp-${TRIPLE}.exe" ;;
+  *)         cbm_stub="src-tauri/resources/bin/codebase-memory-mcp-${TRIPLE}" ;;
+esac
+[ -f "$cbm_stub" ] || touch "$cbm_stub"
 # Icons are gitignored; generate_context!() requires them at compile time
 for icon in 32x32.png 128x128.png 128x128@2x.png icon.icns icon.ico; do
   [ -f "src-tauri/icons/$icon" ] || cp src-tauri/icons/icon.png "src-tauri/icons/$icon"
