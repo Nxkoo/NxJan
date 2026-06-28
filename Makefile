@@ -226,6 +226,49 @@ else
 	cp src-tauri/target/release/jan-cli src-tauri/resources/bin/jan-cli
 endif
 
+# Bundle the static `codebase-memory-mcp` CLI from upstream GitHub releases.
+# Without this, end users would have to install the binary themselves — Jan
+# is supposed to ship a working codebase graph out of the box. The download
+# itself lives in scripts/download-bin.mjs (run via `yarn download:bin`); this
+# target just guarantees a re-download and the macOS code-signing step.
+build-codebase-memory-mcp:
+ifeq ($(DETECTED_OS),Darwin)
+	@if [ ! -f "src-tauri/resources/bin/codebase-memory-mcp" ]; then \
+		echo "codebase-memory-mcp not found in src-tauri/resources/bin, running yarn download:bin"; \
+		yarn download:bin; \
+	else \
+		echo "codebase-memory-mcp already present at src-tauri/resources/bin/codebase-memory-mcp"; \
+	fi
+	@if [ ! -x "src-tauri/resources/bin/codebase-memory-mcp" ]; then \
+		chmod +x src-tauri/resources/bin/codebase-memory-mcp; \
+	fi
+	SIGNING_IDENTITY=$$(security find-identity -v -p codesigning | grep "Developer ID Application" | head -1 | sed 's/.*"\(.*\)".*/\1/'); \
+	if [ -n "$$SIGNING_IDENTITY" ]; then \
+		echo "Signing codebase-memory-mcp with identity: $$SIGNING_IDENTITY"; \
+		codesign --force --options runtime --timestamp --sign "$$SIGNING_IDENTITY" src-tauri/resources/bin/codebase-memory-mcp; \
+		echo "Code signing completed successfully"; \
+	else \
+		echo "Warning: No Developer ID Application identity found. Skipping code signing (Gatekeeper will block first launch)."; \
+	fi
+else ifeq ($(DETECTED_OS),Windows)
+	@if [ ! -f "src-tauri/resources/bin/codebase-memory-mcp.exe" ]; then \
+		echo "codebase-memory-mcp.exe not found, running yarn download:bin"; \
+		yarn download:bin; \
+	else \
+		echo "codebase-memory-mcp.exe already present at src-tauri/resources/bin/codebase-memory-mcp.exe"; \
+	fi
+else
+	@if [ ! -f "src-tauri/resources/bin/codebase-memory-mcp" ]; then \
+		echo "codebase-memory-mcp not found, running yarn download:bin"; \
+		yarn download:bin; \
+	else \
+		echo "codebase-memory-mcp already present at src-tauri/resources/bin/codebase-memory-mcp"; \
+	fi
+	@if [ ! -x "src-tauri/resources/bin/codebase-memory-mcp" ]; then \
+		chmod +x src-tauri/resources/bin/codebase-memory-mcp; \
+	fi
+endif
+
 # Debug build for local dev (faster, native arch only)
 build-cli-dev:
 	$(call MKDIR,'src-tauri/resources/bin')	

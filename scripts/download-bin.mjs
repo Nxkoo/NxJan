@@ -129,26 +129,34 @@ function getPlatformArch() {
   const platform = os.platform() // 'darwin', 'linux', 'win32'
   const arch = os.arch() // 'x64', 'arm64', etc.
 
-  let bunPlatform, uvPlatform
+  let bunPlatform, uvPlatform, cbmPlatform
 
   if (platform === 'darwin') {
     bunPlatform = arch === 'arm64' ? 'darwin-aarch64' : 'darwin-x64'
     uvPlatform =
       arch === 'arm64' ? 'aarch64-apple-darwin' : 'x86_64-apple-darwin'
+    // `codebase-memory-mcp` release assets use the `amd64`/`arm64` arch tags
+    // (matching the project's own naming), not Rust-style triples.
+    cbmPlatform = arch === 'arm64' ? 'darwin-arm64' : 'darwin-amd64'
   } else if (platform === 'linux') {
     bunPlatform = arch === 'arm64' ? 'linux-aarch64' : 'linux-x64'
     uvPlatform =
       arch === 'arm64'
         ? 'aarch64-unknown-linux-gnu'
         : 'x86_64-unknown-linux-gnu'
+    cbmPlatform = arch === 'arm64' ? 'linux-arm64' : 'linux-amd64'
   } else if (platform === 'win32') {
     bunPlatform = 'windows-x64' // Bun has limited Windows support
     uvPlatform = 'x86_64-pc-windows-msvc'
+    // The project only ships an x86_64 Windows asset. Windows ARM64 hosts
+    // (e.g. Snapdragon X Elite) can still run it through x64 emulation, so
+    // we ship the same binary for every Windows arch.
+    cbmPlatform = 'windows-amd64'
   } else {
     throw new Error(`Unsupported platform: ${platform}`)
   }
 
-  return { bunPlatform, uvPlatform }
+  return { bunPlatform, uvPlatform, cbmPlatform }
 }
 
 async function main() {
@@ -158,8 +166,10 @@ async function main() {
   }
   console.log('Starting main function')
   const platform = os.platform()
-  const { bunPlatform, uvPlatform } = getPlatformArch()
-  console.log(`bunPlatform: ${bunPlatform}, uvPlatform: ${uvPlatform}`)
+  const { bunPlatform, uvPlatform, cbmPlatform } = getPlatformArch()
+  console.log(
+    `bunPlatform: ${bunPlatform}, uvPlatform: ${uvPlatform}, cbmPlatform: ${cbmPlatform}`
+  )
 
   const binDir = 'src-tauri/resources/bin'
   const tempBinDir = 'scripts/dist'
@@ -168,6 +178,10 @@ async function main() {
   if (platform === 'win32') {
     uvPath = `${tempBinDir}/uv-${uvPlatform}.zip`
   }
+  // `codebase-memory-mcp` archives: `.tar.gz` on Unix, `.zip` on Windows.
+  const cbmArchiveExt = platform === 'win32' ? 'zip' : 'tar.gz'
+  const cbmArchiveName = `codebase-memory-mcp-${cbmPlatform}.${cbmArchiveExt}`
+  const cbmArchivePath = `${tempBinDir}/${cbmArchiveName}`
   try {
     mkdirSync('scripts/dist')
   } catch (err) {
@@ -334,6 +348,104 @@ async function main() {
     // Expect EEXIST error
   }
   console.log('UV downloaded.')
+
+  // ----- codebase-memory-mcp (bundled with the app, no user install required) -----
+  // `codebase-memory-mcp` is a single static binary published on the
+  // DeusData/codebase-memory-mcp GitHub releases. Bundling it means a fresh
+  // Jan install works out of the box without the user having to `pip install
+  // codebase-memory-mcp` or set anything on PATH.
+  try {
+    const isWindows = platform === 'win32'
+    const finalName = isWindows ? 'codebase-memory-mcp.exe' : 'codebase-memory-mcp'
+    const finalPath = path.join(binDir, finalName)
+    const stagedName = isWindows
+      ? 'codebase-memory-mcp.exe'
+      : 'codebase-memory-mcp'
+
+    if (fs.existsSync(finalPath)) {
+      console.log(`codebase-memory-mcp already present at ${finalPath}`)
+    } else {
+      const cbmUrl = `https://github.com/DeusData/codebase-memory-mcp/releases/latest/download/${cbmArchiveName}`
+      console.log(`Downloading codebase-memory-mcp from ${cbmUrl}...`)
+      await download(cbmUrl, cbmArchivePath)
+      await decompress(cbmArchivePath, tempBinDir)
+
+      // The archive is laid out either as `codebase-memory-mcp/...` or a flat
+      // directory of a single binary. Walk the extracted tree to find the
+      // first executable that matches the expected name.
+      const candidates = []
+      function walk(dir) {
+        for (const entry of fs.readdirSync(dir)) {
+          const full = path.join(dir, entry)
+          let stat
+          try {
+            stat = fs.statSync(full)
+          } catch {
+            continue
+          }
+          if (stat.isDirectory()) walk(full)
+          else if (entry === stagedName) candidates.push(full)
+        }
+      }
+      walk(tempBinDir)
+
+      if (candidates.length === 0) {
+        throw new Error(
+          `Could not find ${stagedName} inside the extracted archive`
+        )
+      }
+
+      fs.copyFileSync(candidates[0], finalPath)
+      if (!isWindows) {
+        try {
+          fs.chmodSync(finalPath, 0o755)
+        } catch (err) {
+          console.log('Add execution permission failed!', err)
+        }
+      }
+      console.log(`codebase-memory-mcp installed at ${finalPath}`)
+
+      // Mirror the platform-triple suffix that other bundled binaries use so
+      // dev builds and CI stubs can find a familiar name (e.g. the GitHub
+      // workflow stubs create `bun-${TRIPLE}` next to the unsuffixed binary).
+      const tripleSuffixes = []
+      if (platform === 'darwin') {
+        tripleSuffixes.push(
+          arch === 'arm64'
+            ? 'aarch64-apple-darwin'
+            : 'x86_64-apple-darwin'
+        )
+      } else if (platform === 'linux') {
+        tripleSuffixes.push(
+          arch === 'arm64'
+            ? 'aarch64-unknown-linux-gnu'
+            : 'x86_64-unknown-linux-gnu'
+        )
+      } else if (platform === 'win32') {
+        tripleSuffixes.push('x86_64-pc-windows-msvc')
+      }
+      for (const triple of tripleSuffixes) {
+        const tripleName = isWindows
+          ? `codebase-memory-mcp-${triple}.exe`
+          : `codebase-memory-mcp-${triple}`
+        const triplePath = path.join(binDir, tripleName)
+        try {
+          fs.copyFileSync(finalPath, triplePath)
+          if (!isWindows) {
+            try {
+              fs.chmodSync(triplePath, 0o755)
+            } catch {
+              // best-effort
+            }
+          }
+        } catch (err) {
+          console.log(`Failed to create triple-suffixed copy: ${err}`)
+        }
+      }
+    }
+  } catch (err) {
+    console.log('codebase-memory-mcp download step failed (non-fatal):', err)
+  }
 
   // ----- sqlite-vec (optional, ANN acceleration) -----
   try {

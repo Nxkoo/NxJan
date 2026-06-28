@@ -3,7 +3,7 @@
     "windows": [
       {
         "label": "main",
-        "title": "Jan",
+        "title": "NxJan",
         "width": 1200,
         "minWidth": 1024,
         "height": 800,
@@ -30,7 +30,12 @@
   },
   "bundle": {
     "targets": ["nsis", "msi"],
-    "resources": ["resources/pre-install/**/*", "resources/LICENSE", "resources/bin/jan-cli.exe"],
+    "resources": [
+      "resources/pre-install/**/*",
+      "resources/LICENSE",
+      "resources/bin/jan-cli.exe",
+      "resources/bin/codebase-memory-mcp.exe"
+    ],
     "externalBin": ["resources/bin/bun", "resources/bin/uv"],
     "windows": {
       "webviewInstallMode": {
