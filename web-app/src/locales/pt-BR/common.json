@@ -97,7 +97,7 @@
   "noModels": "Nenhum modelo encontrado",
   "customAvatar": "Avatar personalizado",
   "editAssistant": "Editar Assistente",
-  "jan": "Jan",
+  "jan": "NxJan",
   "metadata": "Metadados",
   "regenerate": "Regenerar",
   "threadImage": "Imagem da conversa",
@@ -331,8 +331,8 @@
       "error": "Erro"
     },
     "cliMissing": {
-      "title": "A CLI codebase-memory-mcp não foi encontrada",
-      "description": "Instale a CLI e garanta que ela esteja no PATH para habilitar a indexação."
+      "title": "codebase-memory-mcp ausente nesta build",
+      "description": "Jan empacota o motor do Codebase Memory — reinstale o Jan ou defina CODEBASE_MEMORY_MCP_PATH apontando para um binário próprio para habilitar a indexação."
     },
     "mcpDisabled": {
       "title": "O servidor MCP está configurado, mas desativado",
