@@ -12,5 +12,14 @@
   "embeddings": {
     "title": "Preparing your documents",
     "description": "Indexing the attached files so they can be searched and cited. This may take a moment for large documents."
+  },
+  "sources": {
+    "button": "Sources",
+    "buttonWithCount": "Sources · {{count}}",
+    "title": "Sources",
+    "empty": "No sources for this response",
+    "emptyHint": "Try asking a question that needs RAG or web search.",
+    "documents": "Documents",
+    "web": "Web"
   }
 }
