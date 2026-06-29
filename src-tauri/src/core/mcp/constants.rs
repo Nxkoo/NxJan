@@ -61,6 +61,13 @@ pub const DEFAULT_MCP_CONFIG: &str = r#"{
       "args": ["-y", "@modelcontextprotocol/server-sequential-thinking"],
       "env": {},
       "active": false
+    },
+    "Codebase Memory": {
+      "command": "codebase-memory-mcp",
+      "args": [],
+      "env": {},
+      "active": true,
+      "official": true
     }
   },
   "mcpSettings": {

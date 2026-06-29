@@ -212,11 +212,27 @@ pub fn migrate_mcp_servers(
     }
     if mcp_version < 3 {
         log::info!("Migrating MCP schema version 3: Updating Exa to streamable HTTP");
-        if let Err(e) = migrate_exa_to_http(app_handle) {
+        if let Err(e) = migrate_exa_to_http(app_handle.clone()) {
             log::error!("Failed to migrate Exa to HTTP: {e}");
         }
     }
-    store.set("mcp_version", 3);
+    if mcp_version < 4 {
+        log::info!("Migrating MCP schema version 4: Adding Codebase Memory MCP");
+        if let Err(e) = add_server_config(
+            app_handle.clone(),
+            "Codebase Memory".to_string(),
+            serde_json::json!({
+                "command": "codebase-memory-mcp",
+                "args": [],
+                "env": {},
+                "active": true,
+                "official": true
+            }),
+        ) {
+            log::error!("Failed to add Codebase Memory server config: {e}");
+        }
+    }
+    store.set("mcp_version", 4);
     store.save().expect("Failed to save store");
     Ok(())
 }

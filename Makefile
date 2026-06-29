@@ -231,10 +231,15 @@ endif
 # is supposed to ship a working codebase graph out of the box. The download
 # itself lives in scripts/download-bin.mjs (run via `yarn download:bin`); this
 # target just guarantees a re-download and the macOS code-signing step.
+#
+# We use `-s` (file exists AND is non-empty) instead of `-f` so a 0-byte stub
+# from a previous failed download is correctly treated as missing and forces
+# a re-download. Without this guard, a broken stub would silently slip through
+# and ship in the installer.
 build-codebase-memory-mcp:
 ifeq ($(DETECTED_OS),Darwin)
-	@if [ ! -f "src-tauri/resources/bin/codebase-memory-mcp" ]; then \
-		echo "codebase-memory-mcp not found in src-tauri/resources/bin, running yarn download:bin"; \
+	@if [ ! -s "src-tauri/resources/bin/codebase-memory-mcp" ]; then \
+		echo "codebase-memory-mcp missing or empty in src-tauri/resources/bin, running yarn download:bin"; \
 		yarn download:bin; \
 	else \
 		echo "codebase-memory-mcp already present at src-tauri/resources/bin/codebase-memory-mcp"; \
@@ -251,15 +256,15 @@ ifeq ($(DETECTED_OS),Darwin)
 		echo "Warning: No Developer ID Application identity found. Skipping code signing (Gatekeeper will block first launch)."; \
 	fi
 else ifeq ($(DETECTED_OS),Windows)
-	@if [ ! -f "src-tauri/resources/bin/codebase-memory-mcp.exe" ]; then \
-		echo "codebase-memory-mcp.exe not found, running yarn download:bin"; \
+	@if [ ! -s "src-tauri/resources/bin/codebase-memory-mcp.exe" ]; then \
+		echo "codebase-memory-mcp.exe missing or empty, running yarn download:bin"; \
 		yarn download:bin; \
 	else \
 		echo "codebase-memory-mcp.exe already present at src-tauri/resources/bin/codebase-memory-mcp.exe"; \
 	fi
 else
-	@if [ ! -f "src-tauri/resources/bin/codebase-memory-mcp" ]; then \
-		echo "codebase-memory-mcp not found, running yarn download:bin"; \
+	@if [ ! -s "src-tauri/resources/bin/codebase-memory-mcp" ]; then \
+		echo "codebase-memory-mcp missing or empty, running yarn download:bin"; \
 		yarn download:bin; \
 	else \
 		echo "codebase-memory-mcp already present at src-tauri/resources/bin/codebase-memory-mcp"; \
