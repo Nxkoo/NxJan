@@ -55,11 +55,11 @@ vi.mock('@tanstack/react-router', () => ({
   createFileRoute: () => () => null,
 }))
 
-vi.mock('@/containers/ThreadList', () => ({
-  default: ({ threads }: any) => (
-    <div data-testid="thread-list">
+vi.mock('../ProjectThreadList', () => ({
+  ProjectThreadList: ({ threads }: any) => (
+    <div data-testid='project-thread-list'>
       {threads.map((t: any) => (
-        <div key={t.id} data-testid="thread-item">
+        <div key={t.id} data-testid='project-thread-item'>
           {t.title}
         </div>
       ))}
@@ -121,7 +121,7 @@ describe('NavProjects', () => {
     const expandButton = screen.getByLabelText('common:projects.expandProject')
     fireEvent.click(expandButton)
 
-    expect(screen.getByTestId('thread-list')).toBeInTheDocument()
+    expect(screen.getByTestId('project-thread-list')).toBeInTheDocument()
     expect(screen.getByText('Thread One')).toBeInTheDocument()
   })
 

@@ -44,7 +44,7 @@ import { useTranslation } from '@/i18n/react-i18next-compat'
 import type { ThreadFolder } from "@/services/projects/types"
 import AddProjectDialog from "@/containers/dialogs/AddProjectDialog"
 import { DeleteProjectDialog } from "@/containers/dialogs/DeleteProjectDialog"
-import ThreadList from "@/containers/ThreadList"
+import { ProjectThreadList } from "./ProjectThreadList"
 import { route } from "@/constants/routes"
 
 const EXPANDED_PROJECTS_KEY = 'jan:expanded-projects'
@@ -190,7 +190,7 @@ function ProjectItem({
         <CollapsibleContent>
           <SidebarMenuSub>
             {projectThreads.length > 0 ? (
-              <ThreadList threads={projectThreads} currentProjectId={item.id} />
+              <ProjectThreadList threads={projectThreads} projectId={item.id} projectName={item.name} isMobile={isMobile} />
             ) : null}
             <SidebarMenuSubItem>
               <SidebarMenuSubButton
