@@ -35,8 +35,6 @@ import {
 import { useThreadManagement } from "@/hooks/useThreadManagement"
 import { useThreads } from "@/hooks/useThreads"
 import { useAssistant } from "@/hooks/useAssistant"
-import { useModelProvider } from "@/hooks/useModelProvider"
-import { defaultModel } from "@/lib/models"
 import { Link, useNavigate } from "@tanstack/react-router"
 
 import { useCallback, useMemo, useState } from "react"
@@ -87,8 +85,6 @@ function ProjectItem({
   const navigate = useNavigate()
   const { t } = useTranslation()
   const { assistants, setCurrentAssistant } = useAssistant()
-  const { selectedModel, selectedProvider } = useModelProvider()
-  const createThread = useThreads((state) => state.createThread)
   const threads = useThreads((state) => state.threads)
 
   const projectThreads = useMemo(() => {
@@ -97,42 +93,21 @@ function ProjectItem({
       .sort((a, b) => (b.updated || 0) - (a.updated || 0))
   }, [threads, item.id])
 
-  const handleNewConversation = useCallback(async () => {
+  const handleNewConversation = useCallback(() => {
     const projectAssistant = item.assistantId
       ? assistants.find((a) => a.id === item.assistantId)
       : undefined
-
-    const projectMetadata = {
-      id: item.id,
-      name: item.name,
-      updated_at: item.updated_at,
-    }
 
     if (projectAssistant) {
       setCurrentAssistant(projectAssistant)
     }
 
-    const newThread = await createThread(
-      {
-        id: selectedModel?.id ?? defaultModel(selectedProvider),
-        provider: selectedProvider,
-      },
-      undefined,
-      projectAssistant,
-      projectMetadata
-    )
-
-    navigate({ to: route.threadsDetail, params: { threadId: newThread.id } })
+    navigate({ to: route.home, search: { projectId: item.id } })
   }, [
     assistants,
-    createThread,
     item.assistantId,
     item.id,
-    item.name,
-    item.updated_at,
     navigate,
-    selectedModel,
-    selectedProvider,
     setCurrentAssistant,
   ])
 

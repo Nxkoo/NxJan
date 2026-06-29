@@ -125,13 +125,11 @@ describe('NavProjects', () => {
     expect(screen.getByText('Thread One')).toBeInTheDocument()
   })
 
-  it('creates a new conversation when the new conversation button is clicked', async () => {
+  it('navigates to home with projectId when the new conversation button is clicked', async () => {
     foldersStore = [
       { id: 'project-1', name: 'Project Alpha', updated_at: 1, assistantId: 'assistant-1' },
     ]
     threadsStore = {}
-
-    createThreadMock.mockResolvedValue({ id: 'thread-new' })
 
     renderWithSidebar(<NavProjects />)
 
@@ -144,15 +142,10 @@ describe('NavProjects', () => {
       fireEvent.click(newConversationButton)
     })
 
-    expect(createThreadMock).toHaveBeenCalledWith(
-      expect.objectContaining({ id: 'model-a', provider: 'llamacpp' }),
-      undefined,
-      undefined,
-      expect.objectContaining({ id: 'project-1', name: 'Project Alpha' })
-    )
+    expect(createThreadMock).not.toHaveBeenCalled()
     expect(navigateMock).toHaveBeenCalledWith({
-      to: '/threads/$threadId',
-      params: { threadId: 'thread-new' },
+      to: '/',
+      search: { projectId: 'project-1' },
     })
   })
 })
