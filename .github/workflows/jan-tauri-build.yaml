@@ -3,6 +3,11 @@ name: Tauri Builder - Tag
 on:
   push:
     tags: ["v*"]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Tag to build (e.g. v0.8.3+2). Leave empty to use the latest pushed tag."
+        required: false
 
 concurrency:
   group: tauri-tag-${{ github.ref }}
