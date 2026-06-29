@@ -42,7 +42,15 @@ export type CitationsPayload =
 const formatScore = (s: number | undefined) =>
   typeof s === 'number' ? s.toFixed(2) : ''
 
-const RagCitationItem = memo(
+const cardBase = cn(
+  'group/cit relative rounded-2xl border-2 border-[var(--ink)]',
+  'bg-[var(--card)] text-foreground',
+  'shadow-[2px_2px_0_0_var(--ink)]',
+  'transition-all duration-150 ease-out',
+  'hover:-translate-y-0.5 hover:shadow-[3px_3px_0_0_var(--ink)]'
+)
+
+export const RagCitationItem = memo(
   ({
     c,
     index,
@@ -57,33 +65,43 @@ const RagCitationItem = memo(
   return (
     <li
       id={anchorId}
-      className="scroll-mt-16 rounded-md border bg-card/40 px-3 py-2 text-xs target:ring-2 target:ring-primary/60"
+      className={cn(
+        cardBase,
+        'scroll-mt-16 px-3 py-2 text-xs target:ring-2 target:ring-[var(--blue)]/60'
+      )}
     >
       <button
         type="button"
         onClick={() => setExpanded((v) => !v)}
         className="flex w-full items-center gap-2 text-left"
       >
-        <span className="inline-flex size-5 shrink-0 items-center justify-center rounded bg-muted font-mono text-[10px] text-muted-foreground">
+        <span className="inline-flex size-6 shrink-0 items-center justify-center rounded-lg border-2 border-[var(--ink)] bg-[var(--blue)] text-[var(--paper)] font-extrabold tabular-nums shadow-[1px_1px_0_0_var(--ink)]">
           {index + 1}
         </span>
-        <FileTextIcon className="size-3.5 shrink-0 text-muted-foreground" />
-        <span className="truncate font-medium">{name}</span>
+        <FileTextIcon
+          className="size-3.5 shrink-0 text-muted-foreground"
+          strokeWidth={2.5}
+        />
+        <span className="truncate font-semibold">{name}</span>
         {typeof c.chunk_file_order === 'number' && (
           <span className="text-muted-foreground">#{c.chunk_file_order}</span>
         )}
-        <span className="ml-auto rounded bg-muted px-1.5 py-0.5 font-mono text-[10px] text-muted-foreground">
+        <span className="ml-auto rounded-md border border-[var(--border)] bg-[var(--paper-muted)] px-1.5 py-0.5 font-mono text-[10px] tabular-nums text-foreground/80 font-bold">
           {formatScore(c.score)}
         </span>
         <ChevronRightIcon
           className={cn(
-            'size-3 shrink-0 text-muted-foreground transition-transform',
+            'size-3.5 shrink-0 text-foreground/70 transition-transform duration-200',
             expanded && 'rotate-90'
           )}
+          strokeWidth={2.5}
         />
       </button>
       {expanded && c.text && (
-        <p className="mt-2 whitespace-pre-wrap text-muted-foreground leading-relaxed">
+        <p
+          className="mt-2.5 ml-8 rounded-xl border-2 border-[var(--border)] bg-[var(--paper-muted)]/60 px-3 py-2 text-[11.5px] leading-relaxed text-foreground/85 whitespace-pre-wrap"
+          style={{ fontFamily: 'Fraunces, Georgia, serif' }}
+        >
           {c.text}
         </p>
       )}
@@ -93,7 +111,7 @@ const RagCitationItem = memo(
 )
 RagCitationItem.displayName = 'RagCitationItem'
 
-const WebCitationItem = memo(({ c }: { c: WebCitation }) => {
+export const WebCitationItem = memo(({ c }: { c: WebCitation }) => {
   const [expanded, setExpanded] = useState(false)
   let host = ''
   try {
@@ -102,27 +120,33 @@ const WebCitationItem = memo(({ c }: { c: WebCitation }) => {
     host = c.url
   }
   return (
-    <li className="rounded-md border bg-card/40 px-3 py-2 text-xs">
+    <li className={cn(cardBase, 'px-3 py-2 text-xs')}>
       <div className="flex items-center gap-2">
         {c.favicon ? (
-          <img src={c.favicon} alt="" className="size-3.5 rounded-sm" />
+          <img
+            src={c.favicon}
+            alt=""
+            className="size-5 rounded-md border border-[var(--border)] bg-[var(--paper)] p-0.5"
+          />
         ) : (
-          <GlobeIcon className="size-3.5 shrink-0 text-muted-foreground" />
+          <span className="inline-flex size-6 shrink-0 items-center justify-center rounded-lg border-2 border-[var(--ink)] bg-[var(--green)] text-[var(--paper)] shadow-[1px_1px_0_0_var(--ink)]">
+            <GlobeIcon size={12} strokeWidth={2.75} />
+          </span>
         )}
         <a
           href={c.url}
           target="_blank"
           rel="noreferrer noopener"
-          className="truncate font-medium hover:underline"
+          className="truncate font-semibold text-foreground hover:underline"
           title={c.url}
         >
           {c.title || host}
         </a>
-        <span className="ml-auto truncate text-[10px] text-muted-foreground">
+        <span className="ml-auto truncate text-[10px] text-muted-foreground/80 font-mono">
           {host}
         </span>
         {typeof c.score === 'number' && (
-          <span className="rounded bg-muted px-1.5 py-0.5 font-mono text-[10px] text-muted-foreground">
+          <span className="rounded-md border border-[var(--border)] bg-[var(--paper-muted)] px-1.5 py-0.5 font-mono text-[10px] tabular-nums text-foreground/80 font-bold">
             {formatScore(c.score)}
           </span>
         )}
@@ -130,20 +154,24 @@ const WebCitationItem = memo(({ c }: { c: WebCitation }) => {
           <button
             type="button"
             onClick={() => setExpanded((v) => !v)}
-            className="text-muted-foreground"
+            className="inline-flex size-5 items-center justify-center rounded-md text-foreground/70 hover:bg-[var(--paper-muted)]"
             aria-label="toggle snippet"
           >
             <ChevronRightIcon
               className={cn(
-                'size-3 transition-transform',
+                'size-3.5 transition-transform duration-200',
                 expanded && 'rotate-90'
               )}
+              strokeWidth={2.5}
             />
           </button>
         )}
       </div>
       {expanded && c.text && (
-        <p className="mt-2 whitespace-pre-wrap text-muted-foreground leading-relaxed">
+        <p
+          className="mt-2.5 ml-8 rounded-xl border-2 border-[var(--border)] bg-[var(--paper-muted)]/60 px-3 py-2 text-[11.5px] leading-relaxed text-foreground/85 whitespace-pre-wrap"
+          style={{ fontFamily: 'Fraunces, Georgia, serif' }}
+        >
           {c.text}
         </p>
       )}
@@ -205,10 +233,16 @@ export const Citations = memo(
 
   return (
     <div className="mt-4 space-y-2">
-      <h4 className="font-medium text-muted-foreground text-xs uppercase tracking-wide">
+      <h4
+        className="font-extrabold text-muted-foreground text-xs uppercase tracking-wider"
+        style={{ fontFamily: 'var(--font-sans)' }}
+      >
         {heading}
         {payload.query && (
-          <span className="ml-2 normal-case font-normal text-muted-foreground/70">
+          <span
+            className="ml-2 normal-case font-normal text-muted-foreground/70 italic"
+            style={{ fontFamily: 'Fraunces, Georgia, serif' }}
+          >
             for &ldquo;{payload.query}&rdquo;
           </span>
         )}
