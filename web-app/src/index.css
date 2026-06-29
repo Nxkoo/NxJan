@@ -79,7 +79,7 @@
   height: 1.625rem;
   margin-top: 0.05rem;
   border-radius: 0.5rem;
-  border: 2px solid var(--ink);
+  border: 1.5px solid var(--ink);
   background: var(--surface-2);
   color: var(--card-foreground);
   box-shadow: 1.5px 1.5px 0 0 var(--ink);
