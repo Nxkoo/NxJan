@@ -42,8 +42,8 @@
   "reportAnIssueDesc": "Hai trovato un bug? Aiutaci aprendo una segnalazione su GitHub.",
   "reportIssue": "Segnala problema",
   "credits": "Crediti",
-  "creditsDesc1": "👋 Jan è sviluppato con ❤️ dal team di Menlo Research.",
-  "creditsDesc2": "Un ringraziamento speciale alle nostre dipendenze open-source — in particolare llama.cpp e Tauri — e alla nostra straordinaria community IA.",
+  "creditsDesc1": "NxJan — built with love by Nxkoo.",
+  "creditsDesc2": "Includes open-source components from Jan (Menlo Research). Thanks to llama.cpp, Tauri, and the open-source community.",
   "appVersion": "Versione app",
   "dataFolder": {
     "appData": "Dati dell'app",
@@ -271,8 +271,8 @@
     "reportAnIssueDesc": "Hai trovato un bug? Aiutaci aprendo una segnalazione su GitHub.",
     "reportIssue": "Segnala problema",
     "credits": "Crediti",
-    "creditsDesc1": "👋 Jan è sviluppato con ❤️ dal team di Menlo Research.",
-    "creditsDesc2": "Un ringraziamento speciale alle nostre dipendenze open-source — in particolare llama.cpp e Tauri — e alla nostra straordinaria community IA."
+    "creditsDesc1": "NxJan — built with love by Nxkoo.",
+    "creditsDesc2": "Includes open-source components from Jan (Menlo Research). Thanks to llama.cpp, Tauri, and the open-source community."
   },
   "extensions": {
     "title": "Estensioni"

@@ -1,0 +1,152 @@
+---
+pid: 21636
+cwd: "C:\Users\nykoo\OneDrive\Documentos\jan"
+command: "yarn dev"
+started_at: 2026-06-28T15:45:40.851Z
+running_for_ms: 880007   
+---
+        Appx Creating StoreLogo.png
+        Appx Creating Square30x30Logo.png
+        Appx Creating Square44x44Logo.png
+        Appx Creating Square71x71Logo.png
+        Appx Creating Square89x89Logo.png
+        Appx Creating Square107x107Logo.png
+        Appx Creating Square142x142Logo.png
+        Appx Creating Square150x150Logo.png
+        Appx Creating Square284x284Logo.png
+        Appx Creating Square310x310Logo.png
+        ICNS Creating icon.icns
+         ICO Creating icon.ico
+         PNG Creating 32x32.png
+         PNG Creating 64x64.png
+         PNG Creating 128x128.png
+         PNG Creating 128x128@2x.png
+         PNG Creating icon.png
+         PNG Creating mipmap-hdpi/ic_launcher_foreground.png
+         PNG Creating mipmap-hdpi/ic_launcher_round.png
+         PNG Creating mipmap-hdpi/ic_launcher.png
+         PNG Creating mipmap-mdpi/ic_launcher_foreground.png
+         PNG Creating mipmap-mdpi/ic_launcher_round.png
+         PNG Creating mipmap-mdpi/ic_launcher.png
+         PNG Creating mipmap-xhdpi/ic_launcher_foreground.png
+         PNG Creating mipmap-xhdpi/ic_launcher_round.png
+         PNG Creating mipmap-xhdpi/ic_launcher.png
+         PNG Creating mipmap-xxhdpi/ic_launcher_foreground.png
+         PNG Creating mipmap-xxhdpi/ic_launcher_round.png
+         PNG Creating mipmap-xxhdpi/ic_launcher.png
+         PNG Creating mipmap-xxxhdpi/ic_launcher_foreground.png
+         PNG Creating mipmap-xxxhdpi/ic_launcher_round.png
+         PNG Creating mipmap-xxxhdpi/ic_launcher.png
+         iOS Creating AppIcon-20x20@2x-1.png
+         iOS Creating AppIcon-20x20@1x.png
+         iOS Creating AppIcon-20x20@2x.png
+         iOS Creating AppIcon-20x20@3x.png
+         iOS Creating AppIcon-29x29@2x-1.png
+         iOS Creating AppIcon-29x29@1x.png
+         iOS Creating AppIcon-29x29@2x.png
+         iOS Creating AppIcon-29x29@3x.png
+         iOS Creating AppIcon-40x40@2x-1.png
+         iOS Creating AppIcon-40x40@1x.png
+         iOS Creating AppIcon-40x40@2x.png
+         iOS Creating AppIcon-40x40@3x.png
+         iOS Creating AppIcon-60x60@2x.png
+         iOS Creating AppIcon-60x60@3x.png
+         iOS Creating AppIcon-76x76@1x.png
+         iOS Creating AppIcon-76x76@2x.png
+         iOS Creating AppIcon-83.5x83.5@2x.png
+         iOS Creating AppIcon-512@2x.png
+     Running BeforeDevCommand (`cross-env IS_TAURI=true IS_DEV=true yarn dev:web`)
+     Running DevCommand (`cargo  run --no-default-features --features tauri/wry,tauri/common-controls-v6,tauri/x11,tauri/protocol-asset,tauri/macos-private-api,tauri/tray-icon,tauri/test,desktop --color always --`)
+        Info Watching C:\Users\nykoo\OneDrive\Documentos\jan\src-tauri for changes...
+   Compiling Jan v0.8.3 (C:\Users\nykoo\OneDrive\Documentos\jan\src-tauri)
+    Building [=======================> ] 694/697: Jan(bui…    Building [=======================> ] 695/697: Jan         Building [=======================> ] 696/697: Jan(bin)                                                                Finished `dev` profile [unoptimized + debuginfo] target(s) in 27.70s
+     Running `target\debug\Jan.exe`
+[baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
+[0628/124702.974:ERROR:ui\gfx\win\window_impl.cc:172] Failed to unregister class Chrome_WidgetWin_0. Error = 1412
+
+  VITE v6.3.2  ready in 2696 ms
+
+  ➜  Local:   http://localhost:1420/
+[2026-06-28][15:46:19][app_lib::core::setup][INFO] Installing extensions. Clean up: true
+[2026-06-28][15:46:21][app_lib::core::setup][INFO] Installed extension to "C:\\Users\\nykoo\\AppData\\Roaming\\Jan\\data\\extensions\\@janhq/assistant-extension"
+[2026-06-28][15:46:21][app_lib::core::setup][INFO] Installed extension to "C:\\Users\\nykoo\\AppData\\Roaming\\Jan\\data\\extensions\\@janhq/conversational-extension"
+[2026-06-28][15:46:21][app_lib::core::setup][INFO] Installed extension to "C:\\Users\\nykoo\\AppData\\Roaming\\Jan\\data\\extensions\\@janhq/download-extension"
+[2026-06-28][15:46:21][app_lib::core::setup][INFO] Installed extension to "C:\\Users\\nykoo\\AppData\\Roaming\\Jan\\data\\extensions\\@janhq/llamacpp-extension"
+[2026-06-28][15:46:21][app_lib::core::setup][INFO] Installed extension to "C:\\Users\\nykoo\\AppData\\Roaming\\Jan\\data\\extensions\\@janhq/rag-extension"
+[2026-06-28][15:46:21][app_lib::core::setup][INFO] Installed extension to "C:\\Users\\nykoo\\AppData\\Roaming\\Jan\\data\\extensions\\@janhq/vector-db-extension"
+[2026-06-28][15:46:22][app_lib::core::setup][DEBUG] jan CLI already on PATH — skipping reinstall
+[2026-06-28][15:46:25][app_lib::core::extensions::commands][INFO] get jan extensions, path: "C:\\Users\\nykoo\\AppData\\Roaming\\Jan\\data\\extensions\\extensions.json"
+[2026-06-28][15:46:25][app_lib::core::extensions::commands][INFO] get jan extensions, path: "C:\\Users\\nykoo\\AppData\\Roaming\\Jan\\data\\extensions\\extensions.json"
+[VectorDB] Checking ANN availability...
+[VectorDB] Checking ANN availability...
+[VectorDB] Trying 3 bundled paths...
+[VectorDB]   Trying: ./src-tauri/resources/bin/sqlite-vec
+[VectorDB] Trying 3 bundled paths...
+[VectorDB]   Trying: ./src-tauri/resources/bin/sqlite-vec
+[VectorDB]   Trying: ./resources/bin/sqlite-vec
+[VectorDB]   Trying: ./resources/bin/sqlite-vec
+[VectorDB] ✓ sqlite-vec loaded from: ./resources/bin/sqlite-vec
+[VectorDB] ANN status: AVAILABLE ✓
+[VectorDB] ✓ sqlite-vec loaded from: ./resources/bin/sqlite-vec
+[VectorDB] ANN status: AVAILABLE ✓
+[2026-06-28][15:46:26][tauri_plugin_hardware::vendor::nvidia][DEBUG] Unable to initialize NVML: a libloading error occurred: LoadLibraryExW failed
+[2026-06-28][15:46:26][tauri_plugin_hardware::vendor::nvidia][DEBUG] NVML not available
+[2026-06-28][15:46:27][app_lib::core::mcp::helpers][INFO] Starting MCP server exa (Initial attempt)
+[2026-06-28][15:46:27][app_lib::core::mcp::helpers][INFO] Starting MCP server Codebase Memory (Initial attempt)
+[2026-06-28][15:46:27][reqwest::connect][DEBUG] starting new connection: https://mcp.exa.ai/
+[2026-06-28][15:46:27][app_lib::core::mcp::helpers][INFO] MCP server Codebase Memory spawned with PID 25412
+[2026-06-28][15:46:27][app_lib::core::mcp::helpers][INFO] Server Codebase Memory started successfully.
+[2026-06-28][15:46:27][app_lib::core::mcp::helpers][INFO] [mcp-stderr:Codebase Memory] level=info msg=mem.init budget_mb=16205 total_ram_mb=32410
+[2026-06-28][15:46:27][app_lib::core::mcp::helpers][INFO] [mcp-stderr:Codebase Memory] The system cannot find the path specified.
+[2026-06-28][15:46:27][reqwest::connect][DEBUG] starting new connection: https://api.github.com/
+[2026-06-28][15:46:27][app_lib::core::mcp::helpers][INFO] MCP server Codebase Memory tools/list verified on attempt 1
+[2026-06-28][15:46:27][app_lib::core::mcp::helpers][INFO] MCP server Codebase Memory started successfully
+[2026-06-28][15:46:27][app_lib::core::mcp::helpers][INFO] MCP server Codebase Memory initialized successfully
+[2026-06-28][15:46:27][app_lib::core::mcp::helpers][INFO] Monitoring MCP server Codebase Memory health
+[2026-06-28][15:46:27][app_lib::core::mcp::helpers][INFO] Connected to server: Some(InitializeResult { protocol_version: ProtocolVersion("2025-03-26"), capabilities: ServerCapabilities { experimental: None, logging: None, completions: None, prompts: Some(PromptsCapability { list_changed: Some(true) }), resources: Some(ResourcesCapability { subscribe: None, list_changed: Some(true) }), tools: Some(ToolsCapability { list_changed: Some(true) }) }, server_info: Implementation { name: "exa-search-server", title: Some("Exa"), version: "3.2.1", icons: Some([Icon { src: "https://exa.ai/images/favicon-32x32.png", mime_type: Some("image/png"), sizes: Some(["32x32"]) }]), website_url: Some("https://exa.ai") }, instructions: None })
+[2026-06-28][15:46:27][app_lib::core::mcp::helpers][INFO] MCP server exa started successfully
+[2026-06-28][15:46:27][app_lib::core::mcp::helpers][INFO] MCP server exa initialized successfully
+[2026-06-28][15:46:27][app_lib::core::mcp::helpers][INFO] MCP server initialization complete: 2 successful, 0 failed
+[2026-06-28][15:46:27][app_lib::core::mcp::helpers][INFO] Monitoring MCP server exa health
+[2026-06-28][15:46:27][tauri_plugin_llamacpp::router][INFO] Starting llama-server in router mode: exe="C:\\Users\\nykoo\\AppData\\Roaming\\Jan\\data\\llamacpp\\backends\\b9743\\win-vulkan-x64\\build\\bin\\llama-server.exe" preset="\\\\?\\C:\\Users\\nykoo\\AppData\\Roaming\\Jan\\data\\llamacpp\\router.preset.ini" port=58959 models_max=2
+[2026-06-28][15:46:27][tauri_plugin_llamacpp::router][INFO] Router argv: ["--models-preset", "\\\\?\\C:\\Users\\nykoo\\AppData\\Roaming\\Jan\\data\\llamacpp\\router.preset.ini", "--models-max", "2", "--host", "127.0.0.1", "--port", "58959", "--api-key", "ZnkkUZwvsfjWIxK/3qI83NuEuwlw118i8Becvvb6HWc=", "--no-ui"]
+[2026-06-28][15:46:27][tauri_plugin_llamacpp::router][INFO] Waiting for router to be ready (timeout=600s)...
+[2026-06-28][15:46:27][tauri_plugin_llamacpp::router][INFO] [llamacpp-router] warn: LLAMA_API_KEY environment variable is set, but will be overwritten by command line argument --api-key
+[2026-06-28][15:46:27][tauri_plugin_llamacpp::router][INFO] [llamacpp-router] 0.00.069.101 I log_info: verbosity = 3 (adjust with the `-lv N` CLI arg)
+[2026-06-28][15:46:27][tauri_plugin_llamacpp::router][INFO] [llamacpp-router] 0.00.069.136 I system_info: n_threads = 6 (n_threads_batch = 6) / 12 | CPU : SSE3 = 1 | SSSE3 = 1 | AVX = 1 | AVX2 = 1 | F16C = 1 | FMA = 1 | BMI2 = 1 | LLAMAFILE = 1 | OPENMP = 1 | REPACK = 1 |
+[2026-06-28][15:46:27][tauri_plugin_llamacpp::router][INFO] [llamacpp-router] 0.00.069.184 I srv          init: api_keys: 2 keys loaded
+[2026-06-28][15:46:27][tauri_plugin_llamacpp::router][INFO] [llamacpp-router] 0.00.069.219 I srv          init: using 11 threads for HTTP server
+[2026-06-28][15:46:27][tauri_plugin_llamacpp::router][INFO] [llamacpp-router] 0.00.069.224 I srv          init: The UI is disabled
+[2026-06-28][15:46:27][tauri_plugin_llamacpp::router][INFO] [llamacpp-router] 0.00.069.225 I srv          init: Use --ui/--no-ui (or deprecated --webui/--no-webui) to enable/disable
+[2026-06-28][15:46:27][tauri_plugin_llamacpp::router][INFO] [llamacpp-router] 0.00.072.011 I srv   load_models: Loaded 0 cached model presets
+[2026-06-28][15:46:27][tauri_plugin_llamacpp::router][INFO] [llamacpp-router] 0.00.072.927 I srv   load_models: Loaded 3 custom model presets from \\?\C:\Users\nykoo\AppData\Roaming\Jan\data\llamacpp\router.preset.ini
+[2026-06-28][15:46:27][tauri_plugin_llamacpp::router][INFO] [llamacpp-router] 0.00.073.110 I srv   operator (): Available models (3) (*: custom preset)
+[2026-06-28][15:46:27][tauri_plugin_llamacpp::router][INFO] [llamacpp-router] 0.00.073.116 I srv   operator ():   * Jan-v3.5-4B-Q4_K_XL
+[2026-06-28][15:46:27][tauri_plugin_llamacpp::router][INFO] [llamacpp-router] 0.00.073.117 I srv   operator ():   * janhq\Jan-code-4b-Q4_K_M
+[2026-06-28][15:46:27][tauri_plugin_llamacpp::router][INFO] [llamacpp-router] 0.00.073.118 I srv   operator ():   * sentence-transformer-mini
+[2026-06-28][15:46:27][tauri_plugin_llamacpp::router][INFO] [llamacpp-router] 0.00.073.316 I srv  llama_server: starting router server, no model will be loaded in this process
+[2026-06-28][15:46:27][tauri_plugin_llamacpp::router][INFO] [llamacpp-router] 0.00.073.323 I srv         start: binding port with default address family
+[2026-06-28][15:46:27][tauri_plugin_llamacpp::router][INFO] [llamacpp-router] 0.00.084.773 I srv  llama_server: router server is listening on http://127.0.0.1:58959
+[2026-06-28][15:46:27][tauri_plugin_llamacpp::router][INFO] [llamacpp-router] 0.00.084.777 W srv  llama_server: NOTE: router mode is experimental
+[2026-06-28][15:46:27][tauri_plugin_llamacpp::router][INFO] [llamacpp-router] 0.00.084.778 W srv  llama_server:       it is not recommended to use this mode in untrusted environments
+[2026-06-28][15:46:27][tauri_plugin_llamacpp::router][INFO] llama-server router is ready.
+[2026-06-28][15:46:27][webview:Object.info@http://asset.localhost/C%3A%5CUsers%5Cnykoo%5CAppData%5CRoaming%5CJan%5Cdata%5Cextensions%5C%40janhq%2Fllamacpp-extension%5Cdist%2Findex.js:2331:3][INFO]  Router started on port 58959 (pid 24652, models_max=2 [user=1, +1 embedding, 1 installed], preset=\\?\C:\Users\nykoo\AppData\Roaming\Jan\data\llamacpp\router.preset.ini)
+[2026-06-28][15:46:27][reqwest::connect][DEBUG] starting new connection: https://api.github.com/
+[2026-06-28][15:46:27][reqwest::connect][DEBUG] starting new connection: https://mcp.exa.ai/
+[2026-06-28][15:46:29][reqwest::connect][DEBUG] starting new connection: https://api.github.com/
+[2026-06-28][15:46:29][tauri_plugin_llamacpp::backend][INFO] Already at latest version: b9743 = b9743
+[2026-06-28][15:46:29][tauri_plugin_llamacpp::backend][INFO] Determined best available backend: b9743/win-vulkan-common_cpus-x64 (Category: "vulkan")
+[2026-06-28][15:46:29][webview:Object.info@http://asset.localhost/C%3A%5CUsers%5Cnykoo%5CAppData%5CRoaming%5CJan%5Cdata%5Cextensions%5C%40janhq%2Fllamacpp-extension%5Cdist%2Findex.js:2331:3][INFO]  Using stored backend preference: b9743/win-vulkan-common_cpus-x64
+[2026-06-28][15:46:29][webview:Object.info@http://asset.localhost/C%3A%5CUsers%5Cnykoo%5CAppData%5CRoaming%5CJan%5Cdata%5Cextensions%5C%40janhq%2Fllamacpp-extension%5Cdist%2Findex.js:2331:3][INFO]  Initial UI defaults: llamacpp_version='b9743', llamacpp_backend='win-vulkan-common_cpus-x64'
+[2026-06-28][15:46:29][webview:Object.info@http://asset.localhost/C%3A%5CUsers%5Cnykoo%5CAppData%5CRoaming%5CJan%5Cdata%5Cextensions%5C%40janhq%2Fllamacpp-extension%5Cdist%2Findex.js:2331:3][INFO]  Auto-update engine is enabled. Current backend: b9743/win-vulkan-x64. Best available: b9743/win-vulkan-common_cpus-x64
+[2026-06-28][15:46:29][reqwest::connect][DEBUG] starting new connection: https://api.github.com/
+[2026-06-28][15:46:30][tauri_plugin_llamacpp::backend][INFO] Already at latest version: b9743 = b9743
+[2026-06-28][15:46:30][webview:Object.info@http://asset.localhost/C%3A%5CUsers%5Cnykoo%5CAppData%5CRoaming%5CJan%5Cdata%5Cextensions%5C%40janhq%2Fllamacpp-extension%5Cdist%2Findex.js:2331:3][INFO]  Final check: Backend b9743/win-vulkan-x64 is already installed
+[2026-06-28][15:46:30][tauri_plugin_llamacpp::backend][INFO] verify_backend_dependencies: scanned C:\Users\nykoo\AppData\Roaming\Jan\data\llamacpp\backends\b9743\win-vulkan-x64\build\bin in 0.04s (14 resolved, 0 missing)
+[2026-06-28][15:46:30][webview:Object.info@http://asset.localhost/C%3A%5CUsers%5Cnykoo%5CAppData%5CRoaming%5CJan%5Cdata%5Cextensions%5C%40janhq%2Fllamacpp-extension%5Cdist%2Findex.js:2331:3][INFO]  Backend b9743/win-vulkan-x64 dependency verification passed (14 libraries resolved)
+[2026-06-28][15:47:02][reqwest::connect][DEBUG] starting new connection: http://127.0.0.1:58959/
+[2026-06-28][15:47:02][tauri_plugin_llamacpp::process][WARN] gracefully killing is unsupported on Windows, force-killing PID 24652
+[2026-06-28][15:47:02][tauri_plugin_llamacpp::process][INFO] process 24652 has been terminated. Final exit status: exit code: 1
+[2026-06-28][15:47:02][app_lib][INFO] MCP cleanup completed successfully
+[2026-06-28][15:47:02][app_lib][INFO] Llama-server router shut down successfully
+[2026-06-28][15:47:02][app_lib][INFO] App cleanup completed

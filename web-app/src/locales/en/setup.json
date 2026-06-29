@@ -1,5 +1,9 @@
 {
-  "welcome": "Welcome to Jan",
+  "welcome": "Welcome to NxJan",
+  "welcomeTitle": "Hey, welcome to NxJan!",
+  "welcomeSubtitle": "NxJan needs a model to begin. Let's set it up.",
+  "downloadingTitle": "Sit tight, NxJan is getting ready...",
+  "downloadingSubtitle": "This may take a few minutes.",
   "description": "To get started, quickly launch with Jan Model or choose to set up your own local or remote provider",
   "descriptionWeb": "To get started, you'll need to connect to a cloud model using an API key",
   "quickStart": "Quick start with Jan Model",

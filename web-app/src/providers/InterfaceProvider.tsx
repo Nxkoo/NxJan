@@ -1,7 +1,9 @@
 import { useEffect } from 'react'
+import { getCurrentWebviewWindow } from '@tauri-apps/api/webviewWindow'
 import { useInterfaceSettings } from '@/hooks/useInterfaceSettings'
 import { useTheme } from '@/hooks/useTheme'
 import { ACCENT_COLORS } from '@/hooks/useInterfaceSettings'
+import { APP_NAME } from '@/constants/branding'
 
 /**
  * InterfaceProvider ensures interface settings are applied on every page load
@@ -10,6 +12,13 @@ import { ACCENT_COLORS } from '@/hooks/useInterfaceSettings'
 export function InterfaceProvider() {
   const { fontSize, accentColor, darkStyle } = useInterfaceSettings()
   const { isDark } = useTheme()
+
+  useEffect(() => {
+    document.title = APP_NAME
+    if (IS_TAURI) {
+      void getCurrentWebviewWindow().setTitle(APP_NAME)
+    }
+  }, [])
 
   // Apply interface settings on mount and when they change
   useEffect(() => {

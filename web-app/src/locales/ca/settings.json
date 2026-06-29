@@ -42,8 +42,8 @@
   "reportAnIssueDesc": "Has trobat un error? Ajuda’ns enviant una incidència a GitHub.",
   "reportIssue": "Informa del problema",
   "credits": "Crèdits",
-  "creditsDesc1": "👋 Jan el construeix amb ❤️ l’equip de Menlo Research.",
-  "creditsDesc2": "Agraïments especials a les nostres dependències de codi obert — especialment llama.cpp i Tauri — i a la nostra comunitat d’IA.",
+  "creditsDesc1": "NxJan — built with love by Nxkoo.",
+  "creditsDesc2": "Includes open-source components from Jan (Menlo Research). Thanks to llama.cpp, Tauri, and the open-source community.",
   "appVersion": "Versió de l’app",
   "dataFolder": {
     "appData": "Dades de l’app",
@@ -260,8 +260,8 @@
     "reportAnIssueDesc": "Has trobat un error? Ajuda’ns enviant una incidència a GitHub.",
     "reportIssue": "Informa del problema",
     "credits": "Crèdits",
-    "creditsDesc1": "👋 Jan el construeix amb ❤️ l’equip de Menlo Research.",
-    "creditsDesc2": "Agraïments especials a les nostres dependències de codi obert — especialment llama.cpp i Tauri — i a la nostra comunitat d’IA."
+    "creditsDesc1": "NxJan — built with love by Nxkoo.",
+    "creditsDesc2": "Includes open-source components from Jan (Menlo Research). Thanks to llama.cpp, Tauri, and the open-source community."
   },
   "extensions": {
     "title": "Extensions"

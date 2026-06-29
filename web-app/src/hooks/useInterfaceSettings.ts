@@ -31,9 +31,9 @@ export const ACCENT_COLORS = [
     value: 'ink',
     thumb: '#17234d',
     primary: '#17234d',
-    /* Jan Blue dark uses a brighter "paper ink" so user bubbles,
-       send buttons and other primary surfaces stay legible on the
-       navy night-desk. Editorial overrides this with its own gray. */
+    /* Default accent — Jan Blue dark uses a brighter "paper ink" so
+       user bubbles, send buttons and other primary surfaces stay
+       legible on the navy night-desk. Editorial overrides with gray. */
     primaryDark: '#4a5a8a',
     /* Sidebar gets a different shade per dark style so the Jan Blue
        mode keeps the deep-navy rail (#070b1c) and the Editorial
@@ -85,7 +85,6 @@ export const ACCENT_COLORS = [
     value: 'orange',
     thumb: '#f97d38',
     primary: '#f97d38',
-    /* The default accent — already vibrant, no dark variant needed. */
     sidebar: {
       light: '#f3cbc4',
       dark: '#1f1208',
@@ -106,7 +105,10 @@ export const ACCENT_COLORS = [
 ] as const
 
 export type AccentColorValue = (typeof ACCENT_COLORS)[number]['value']
-const DEFAULT_ACCENT_COLOR: AccentColorValue = 'orange'
+const DEFAULT_ACCENT_COLOR: AccentColorValue = 'ink'
+
+const isLegacyDefaultAccent = (value: unknown): boolean =>
+  value === 'orange' || value === 'gray'
 const DEFAULT_DARK_STYLE: DarkStyle = 'jan'
 
 const isDarkStyle = (value: unknown): value is DarkStyle =>
@@ -322,6 +324,13 @@ export const useInterfaceSettings = create<InterfaceSettingsState>()(
             : DEFAULT_DARK_STYLE
           state.darkStyle = darkStyleValue
           applyDarkStyleToDOM(darkStyleValue)
+
+          // Migrate legacy Jan defaults (orange / invalid gray) to NxJan ink.
+          const storedAccent = state.accentColor as string
+          const accentIsKnown = ACCENT_COLORS.some((c) => c.value === storedAccent)
+          if (!accentIsKnown || isLegacyDefaultAccent(storedAccent)) {
+            state.accentColor = DEFAULT_ACCENT_COLOR
+          }
 
           // Apply accent color preset (uses the resolved dark style)
           const accentColorValue = state.accentColor || DEFAULT_ACCENT_COLOR

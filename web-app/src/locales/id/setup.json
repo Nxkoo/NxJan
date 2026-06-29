@@ -1,5 +1,5 @@
 {
-  "welcome": "Selamat Datang di Jan",
+  "welcome": "Selamat Datang di NxJan",
   "description": "Untuk memulai, luncurkan dengan cepat menggunakan Jan Model atau pilih penyedia lokal atau jarak jauh Anda sendiri",
   "descriptionWeb": "Untuk memulai, Anda perlu terhubung ke model cloud menggunakan kunci API",
   "quickStart": "Mulai cepat dengan Jan Model",
@@ -9,5 +9,9 @@
   "downloadingDescription": "Harap tunggu saat kami mengunduh model. Ini mungkin memakan waktu beberapa menit.",
   "orDivider": "atau",
   "localModel": "Siapkan model lokal",
-  "remoteProvider": "Siapkan penyedia jarak jauh"
+  "remoteProvider": "Siapkan penyedia jarak jauh",
+  "welcomeTitle": "Hey, welcome to NxJan!",
+  "welcomeSubtitle": "NxJan needs a model to begin. Let's set it up.",
+  "downloadingTitle": "Sit tight, NxJan is getting ready...",
+  "downloadingSubtitle": "This may take a few minutes."
 }

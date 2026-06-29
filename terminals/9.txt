@@ -1,0 +1,8 @@
+---
+pid: 25572
+cwd: "C:\Users\nykoo\OneDrive\Documentos\jan"
+command: "gh release create v0.8.3 \"C:\\Users\\nykoo\\OneDrive\\Documentos\\jan\\src-tauri\\target\\release\\bundle\\nsis\\NxJan_0.8.3_x64-setup.exe\" \"C:\\Users\\nykoo\\OneDrive\\Documentos\\jan\\src-tauri\\target\\release\\bundle\\msi\\NxJan_0.8.3_x64_en-US.msi\" --repo Nxkoo/NxJan --title \"NxJan 0.8.3\" --notes \"Release Windows x64 do NxJan 0.8.3.`n`n- NxJan_0.8.3_x64-setup.exe (instalador NSIS)`n- NxJan_0.8.3_x64_en-US.msi (instalador MSI)\""
+started_at: 2026-06-28T16:17:44.112Z
+running_for_ms: 8010010  
+---
+https://github.com/Nxkoo/NxJan/releases/tag/v0.8.3

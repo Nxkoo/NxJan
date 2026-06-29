@@ -1715,7 +1715,8 @@ const ChatInput = memo(function ChatInput({
       <div className="relative">
         <div
           className={cn(
-            'relative overflow-hidden p-0.5 rounded-3xl'
+            'relative overflow-hidden rounded-3xl',
+            (isStreaming || !initialMessage) && 'p-0.5'
           )}
         >
           {isStreaming && (
@@ -1737,9 +1738,16 @@ const ChatInput = memo(function ChatInput({
                  to type" against the chat backdrop. The border is
                  translucent ink (--border-strong) instead of solid black,
                  and the focus state raises it to a real ring instead of
-                 doubling up the stroke. */
-              'relative z-20 px-0 pb-12 border rounded-3xl border-border-strong bg-surface-3 shadow-sm',
-              isFocused && 'ring-2 ring-ring/50 border-border-strong',
+                 doubling up the stroke.
+                 On the initial/home screen we use a softer dashed border
+                 to match the trust note pill below. */
+              'relative z-20 px-0 pb-12 rounded-3xl bg-surface-3 shadow-sm',
+              initialMessage
+                ? 'border-2 border-dashed border-border-soft'
+                : 'border border-border-strong',
+              isFocused && (initialMessage
+                ? 'ring-2 ring-ring/40'
+                : 'ring-2 ring-ring/50 border-border-strong'),
               isDragOver && 'ring-2 ring-ring/50 border-primary'
             )}
             data-drop-zone={dropAcceptsAnything ? 'true' : undefined}

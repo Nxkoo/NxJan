@@ -13,6 +13,7 @@ import {
 } from '@/components/ui/sidebar'
 import { cn } from '@/lib/utils'
 import { useTitlebarLayout } from '@/stores/titlebar-layout-store'
+import { AppTitle } from '@/components/AppTitle'
 
 export function LeftSidebar() {
   const { open: isLeftPanelOpen } = useLeftPanel()
@@ -26,11 +27,9 @@ export function LeftSidebar() {
       <Sidebar variant="floating" collapsible="offcanvas">
         <SidebarHeader className="flex px-2 pt-3">
           <div className={cn("flex items-center w-full justify-between", reserveLeft && "justify-end")}>
-            {!reserveLeft && <span className="ml-2 font-semibold font-display text-xl text-foreground">Jan</span>}
+            {!reserveLeft && <AppTitle className="ml-2" />}
             <div className="flex items-center">
-              {controlsOnLeft && (
-                <span className="mr-2 font-semibold font-display text-xl text-foreground">Jan</span>
-              )}
+              {controlsOnLeft && <AppTitle className="mr-2" />}
               {isLeftPanelOpen && <DownloadManagement />}
               <SidebarTrigger className="text-muted-foreground rounded-xl hover:bg-sidebar-accent hover:text-sidebar-accent-foreground -mt-0.5 relative z-50 ml-0.5" />
             </div>
