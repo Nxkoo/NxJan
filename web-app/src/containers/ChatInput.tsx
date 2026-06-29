@@ -2351,8 +2351,7 @@ const ChatInput = memo(function ChatInput({
             </div>
 
             <div className="flex items-center gap-2">
-              {selectedProvider === 'llamacpp' &&
-                tokenCounterCompact &&
+              {tokenCounterCompact &&
                 !effectiveAgentMode &&
                 !initialMessage &&
                 (threadMessages?.length > 0 || prompt.trim().length > 0) && (
@@ -2423,8 +2422,7 @@ const ChatInput = memo(function ChatInput({
         </div>
       )}
 
-      {selectedProvider === 'llamacpp' &&
-        isModelActive &&
+      {isModelActive &&
         !effectiveAgentMode &&
         !tokenCounterCompact &&
         !initialMessage &&

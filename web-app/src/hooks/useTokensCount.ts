@@ -3,6 +3,13 @@ import { ThreadMessage } from '@janhq/core'
 import { ExtensionManager } from '@/lib/extension'
 import { parseContextOverflow } from '@/utils/error'
 import { useModelProvider } from './useModelProvider'
+import { useModelsDev } from './useModelsDev'
+import {
+  calcCostFromUsage,
+  getModelLimit,
+  getModelPricing,
+  type ModelsDevPricing,
+} from '@/lib/modelsDev'
 
 export interface ModelProps {
   nCtx: number
@@ -11,11 +18,25 @@ export interface ModelProps {
   isSleeping?: boolean
 }
 
+/**
+ * Source of the max-context denominator. Used to decide whether to
+ * label the counter "Local" (engine-reported) or just show the raw
+ * catalog value.
+ */
+export type MaxTokensSource = 'engine' | 'catalog' | 'overflow' | 'unknown'
+
+/**
+ * Source of the dollar cost. OpenRouter returns `usage.cost` in the
+ * streaming body so it wins over the catalog estimate when present.
+ */
+export type CostSource = 'catalog' | 'openrouter' | 'local' | 'unknown'
+
 export interface TokenCountData {
   tokenCount: number
   inputTokens?: number
   outputTokens?: number
   maxTokens?: number
+  maxTokensSource?: MaxTokensSource
   percentage?: number
   isNearLimit: boolean
   loading: boolean
@@ -26,12 +47,20 @@ export interface TokenCountData {
   modalities?: { vision: boolean; audio: boolean }
   error?: string
   isOverflow?: boolean
+  /** Accumulated USD cost for the current thread, when available. */
+  cost?: number
+  costSource?: CostSource
+  /** True if a pricing entry is available for the active model. */
+  pricingAvailable: boolean
+  /** True if max context is available (engine, catalog, or overflow). */
+  maxAvailable: boolean
 }
 
 interface UsageMeta {
   inputTokens?: number
   outputTokens?: number
   totalTokens?: number
+  cost?: number
 }
 
 interface LlamacppExtensionLike {
@@ -48,6 +77,7 @@ const getActiveContextOverflow = (messages: ThreadMessage[]) => {
     const ctx = (messages[i].metadata as { contextError?: unknown } | undefined)
       ?.contextError
     if (typeof ctx === 'string' && ctx.length > 0) return parseContextOverflow(ctx)
+    return null
   }
   return null
 }
@@ -87,20 +117,70 @@ const readSettingNumber = (v: unknown): number | undefined => {
   return undefined
 }
 
+const isLocalProvider = (id: string | null | undefined): boolean =>
+  id === 'llamacpp' || id === 'mlx'
+
+interface SessionCost {
+  cost: number
+  source: CostSource
+}
+
+const accumulateSessionCost = (
+  messages: ThreadMessage[],
+  pricing: ModelsDevPricing | null
+): SessionCost | null => {
+  let total = 0
+  let fromOpenRouter = false
+  for (const m of messages) {
+    if (m.role !== 'assistant') continue
+    const usage = (m.metadata as { usage?: UsageMeta } | undefined)?.usage
+    if (!usage) continue
+    if (typeof usage.cost === 'number' && usage.cost > 0) {
+      total += usage.cost
+      fromOpenRouter = true
+      continue
+    }
+    if (pricing && typeof usage.inputTokens === 'number' && typeof usage.outputTokens === 'number') {
+      total += calcCostFromUsage(
+        pricing,
+        usage.inputTokens,
+        usage.outputTokens
+      )
+    }
+  }
+  if (total <= 0 && !fromOpenRouter) return null
+  return { cost: total, source: fromOpenRouter ? 'openrouter' : 'catalog' }
+}
+
 export const useTokensCount = (messages: ThreadMessage[] = []) => {
   const { selectedModel, selectedProvider, getProviderByName } =
     useModelProvider()
+  const catalog = useModelsDev((s) => s.catalog)
+  const ensureCatalog = useModelsDev((s) => s.ensureLoaded)
   const [modelProps, setModelProps] = useState<ModelProps | undefined>(
     undefined
   )
   const [loading, setLoading] = useState(false)
   const reqId = useRef(0)
 
+  // Always kick off a catalog fetch in the background on first
+  // mount so the next render has the data. Cheap and idempotent.
+  useEffect(() => {
+    void ensureCatalog()
+  }, [ensureCatalog])
+
   const modelId =
-    selectedProvider === 'llamacpp' ? selectedModel?.id : undefined
+    selectedProvider && isLocalProvider(selectedProvider) ? selectedModel?.id : selectedModel?.id
 
   useEffect(() => {
     if (!modelId) {
+      setModelProps(undefined)
+      setLoading(false)
+      return
+    }
+    if (!isLocalProvider(selectedProvider)) {
+      // Remote providers report nCtx through the catalog, not the
+      // local engine. Skip the extension probe.
       setModelProps(undefined)
       setLoading(false)
       return
@@ -126,44 +206,102 @@ export const useTokensCount = (messages: ThreadMessage[] = []) => {
         if (id !== reqId.current) return
         setLoading(false)
       })
-  }, [modelId, messages.length])
+  }, [modelId, selectedProvider, messages.length])
 
   const tokenData: TokenCountData = useMemo(() => {
-    if (selectedProvider !== 'llamacpp' || !modelId) {
+    if (!modelId) {
       return {
         tokenCount: 0,
         loading: false,
         isNearLimit: false,
         fitEnabled: false,
+        pricingAvailable: false,
+        maxAvailable: false,
       }
     }
     const overflow = getActiveContextOverflow(messages)
     const usage = getLatestServerUsage(messages)
     const tokenCount = overflow?.requestTokens ?? usage.totalTokens ?? 0
-    const maxTokens = overflow?.contextTokens ?? modelProps?.nCtx
-    const percentage = maxTokens ? (tokenCount / maxTokens) * 100 : undefined
-    const isNearLimit = overflow != null || (percentage ? percentage > 85 : false)
 
-    const provider = getProviderByName('llamacpp')
+    // Resolve max context in priority order:
+    //   1. overflow.contextTokens — what the engine said the request blew past
+    //   2. modelProps.nCtx — llamacpp/MLX engine-reported (only for local)
+    //   3. models.dev catalog — works for any provider, including remote
+    let maxTokens: number | undefined
+    let maxTokensSource: MaxTokensSource = 'unknown'
+    if (overflow?.contextTokens) {
+      maxTokens = overflow.contextTokens
+      maxTokensSource = 'overflow'
+    } else if (modelProps?.nCtx) {
+      maxTokens = modelProps.nCtx
+      maxTokensSource = 'engine'
+    } else {
+      const catalogLimit = getModelLimit(catalog, selectedProvider, modelId)
+      if (catalogLimit != null) {
+        maxTokens = catalogLimit
+        maxTokensSource = 'catalog'
+      }
+    }
+
+    const percentage =
+      maxTokens && maxTokens > 0 ? (tokenCount / maxTokens) * 100 : undefined
+    const isNearLimit =
+      overflow != null || (percentage ? percentage > 85 : false)
+
+    // fit/configured ctx_len are llamacpp-specific affordances; the
+    // chip in expanded mode still uses them.
+    const llamacppProvider = isLocalProvider(selectedProvider)
+      ? getProviderByName('llamacpp')
+      : undefined
     const fitEnabled =
-      provider?.settings?.find((s) => s.key === 'fit')?.controller_props
+      llamacppProvider?.settings?.find((s) => s.key === 'fit')?.controller_props
         ?.value === true
-    const configuredCtxLen = readSettingNumber(
-      selectedModel?.settings?.ctx_len?.controller_props?.value
-    )
+    const configuredCtxLen = llamacppProvider
+      ? readSettingNumber(
+          selectedModel?.settings?.ctx_len?.controller_props?.value
+        )
+      : undefined
     const modelDisplayName =
       modelProps?.modelAlias || selectedModel?.name || modelId
     const caps = selectedModel?.capabilities ?? []
-    const modalities = {
-      vision: caps.includes('vision'),
-      audio: caps.includes('audio'),
+    const modalities = llamacppProvider
+      ? {
+          vision: caps.includes('vision'),
+          audio: caps.includes('audio'),
+        }
+      : undefined
+
+    // Cost resolution: only for remote (catalog) providers — local
+    // engines never bill. OpenRouter overrides with the per-turn
+    // `usage.cost` returned in the streaming body when present.
+    let cost: number | undefined
+    let costSource: CostSource = 'unknown'
+    let pricingAvailable = false
+    if (!llamacppProvider) {
+      const pricing = getModelPricing(catalog, selectedProvider, modelId)
+      if (pricing) {
+        const session = accumulateSessionCost(messages, pricing)
+        if (session) {
+          cost = session.cost
+          costSource = session.source
+        }
+        pricingAvailable = true
+      } else if (isLocalProvider(selectedProvider)) {
+        costSource = 'local'
+      }
+    } else if (isLocalProvider(selectedProvider)) {
+      costSource = 'local'
     }
+
+    const inputTokens = overflow ? overflow.requestTokens : usage.inputTokens
+    const outputTokens = overflow ? 0 : usage.outputTokens
 
     return {
       tokenCount,
-      inputTokens: overflow ? overflow.requestTokens : usage.inputTokens,
-      outputTokens: overflow ? 0 : usage.outputTokens,
+      inputTokens,
+      outputTokens,
       maxTokens,
+      maxTokensSource,
       percentage,
       isNearLimit,
       loading,
@@ -173,6 +311,10 @@ export const useTokensCount = (messages: ThreadMessage[] = []) => {
       configuredCtxLen,
       modalities,
       isOverflow: overflow != null,
+      cost,
+      costSource,
+      pricingAvailable,
+      maxAvailable: typeof maxTokens === 'number' && maxTokens > 0,
     }
   }, [
     messages,
@@ -184,6 +326,7 @@ export const useTokensCount = (messages: ThreadMessage[] = []) => {
     selectedModel?.name,
     selectedModel?.capabilities,
     selectedModel?.settings?.ctx_len?.controller_props?.value,
+    catalog,
   ])
 
   return {

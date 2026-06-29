@@ -183,12 +183,27 @@
   },
   "editModel": {
     "title": "Edit Model: {{modelId}}",
-    "description": "Konfigurasikan kemampuan model dengan mengalihkan opsi di bawah ini.",
-    "capabilities": "Kemampuan",
-    "tools": "Alat",
+    "description": "Configure model capabilities by toggling the options below.",
+    "capabilities": "Capabilities",
+    "tools": "Tools",
+    "vision": "Vision",
+    "embeddings": "Embeddings",
+    "notAvailable": "Not available yet"
+  },
+  "tokenCounter": {
+    "contextWindow": "Jendela konteks",
+    "prompt": "Prompt",
+    "completion": "Penyelesaian",
+    "used": "Digunakan",
+    "remaining": "Tersisa",
+    "cost": "Biaya",
+    "local": "Lokal",
+    "free": "Gratis",
+    "tokens": "token",
+    "fittedTo": "Disesuaikan ke {{value}}",
+    "slots": "slot",
     "vision": "Visi",
-    "embeddings": "Embedding",
-    "notAvailable": "Belum tersedia"
+    "audio": "Audio"
   },
   "outOfContextError": {
     "truncateInput": "Potong Input",

@@ -195,13 +195,28 @@
     "save": "Guardar"
   },
   "editModel": {
-    "title": "Editar modelo: {{modelId}}",
-    "description": "Configura las capacidades del modelo activando las opciones a continuación.",
+    "title": "Editar Modelo: {{modelId}}",
+    "description": "Configura las capacidades del modelo alternando las opciones a continuación.",
     "capabilities": "Capacidades",
     "tools": "Herramientas",
     "vision": "Visión",
     "embeddings": "Embeddings",
     "notAvailable": "Aún no disponible"
+  },
+  "tokenCounter": {
+    "contextWindow": "Ventana de contexto",
+    "prompt": "Prompt",
+    "completion": "Finalización",
+    "used": "Usado",
+    "remaining": "Restante",
+    "cost": "Costo",
+    "local": "Local",
+    "free": "Gratis",
+    "tokens": "tokens",
+    "fittedTo": "Ajustado a {{value}}",
+    "slots": "espacios",
+    "vision": "Visión",
+    "audio": "Audio"
   },
   "outOfContextError": {
     "truncateInput": "Truncar entrada",

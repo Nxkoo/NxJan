@@ -205,12 +205,27 @@
   },
   "editModel": {
     "title": "モデルを編集: {{modelId}}",
-    "description": "以下のオプションを切り替えて、モデルの機能を設定します。",
+    "description": "以下のオプションを切り替えてモデルの機能を設定します。",
     "capabilities": "機能",
     "tools": "ツール",
-    "vision": "画像認識",
+    "vision": "ビジョン",
     "embeddings": "埋め込み",
     "notAvailable": "まだ利用できません"
+  },
+  "tokenCounter": {
+    "contextWindow": "コンテキストウィンドウ",
+    "prompt": "プロンプト",
+    "completion": "完了",
+    "used": "使用済み",
+    "remaining": "残り",
+    "cost": "コスト",
+    "local": "ローカル",
+    "free": "無料",
+    "tokens": "トークン",
+    "fittedTo": "{{value}} に調整",
+    "slots": "スロット",
+    "vision": "ビジョン",
+    "audio": "音声"
   },
   "outOfContextError": {
     "truncateInput": "入力を切り詰める",

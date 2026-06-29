@@ -181,8 +181,23 @@
     "capabilities": "Capacitats",
     "tools": "Eines",
     "vision": "Visió",
-    "embeddings": "Incrustacions",
+    "embeddings": "Embeddings",
     "notAvailable": "Encara no disponible"
+  },
+  "tokenCounter": {
+    "contextWindow": "Finestra de context",
+    "prompt": "Prompt",
+    "completion": "Finalització",
+    "used": "Utilitzat",
+    "remaining": "Resta",
+    "cost": "Cost",
+    "local": "Local",
+    "free": "Gratuït",
+    "tokens": "tokens",
+    "fittedTo": "Ajustat a {{value}}",
+    "slots": "espais",
+    "vision": "Visió",
+    "audio": "Àudio"
   },
   "outOfContextError": {
     "truncateInput": "Escurça l’entrada",

@@ -188,6 +188,21 @@
     "embeddings": "Embeddings",
     "notAvailable": "Ainda não disponível"
   },
+  "tokenCounter": {
+    "contextWindow": "Janela de contexto",
+    "prompt": "Prompt",
+    "completion": "Conclusão",
+    "used": "Usado",
+    "remaining": "Restante",
+    "cost": "Custo",
+    "local": "Local",
+    "free": "Grátis",
+    "tokens": "tokens",
+    "fittedTo": "Ajustado para {{value}}",
+    "slots": "slots",
+    "vision": "Visão",
+    "audio": "Áudio"
+  },
   "outOfContextError": {
     "truncateInput": "Truncar Entrada",
     "title": "Erro de contexto esgotado",

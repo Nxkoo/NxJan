@@ -184,12 +184,27 @@
   },
   "editModel": {
     "title": "Upravit model: {{modelId}}",
-    "description": "Nakonfigurujte schopnosti modelu přepnutím níže uvedených možností.",
+    "description": "Nakonfigurujte schopnosti modelu přepínáním níže uvedených možností.",
     "capabilities": "Schopnosti",
     "tools": "Nástroje",
     "vision": "Vidění",
-    "embeddings": "Embeddingy",
+    "embeddings": "Embeddings",
     "notAvailable": "Zatím není k dispozici"
+  },
+  "tokenCounter": {
+    "contextWindow": "Kontextové okno",
+    "prompt": "Prompt",
+    "completion": "Dokončení",
+    "used": "Použito",
+    "remaining": "Zbývá",
+    "cost": "Náklady",
+    "local": "Místní",
+    "free": "Zdarma",
+    "tokens": "tokenů",
+    "fittedTo": "Přizpůsobeno na {{value}}",
+    "slots": "sloty",
+    "vision": "Vidění",
+    "audio": "Zvuk"
   },
   "outOfContextError": {
     "truncateInput": "Zkrátit vstup",

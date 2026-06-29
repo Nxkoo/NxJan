@@ -196,12 +196,27 @@
   },
   "editModel": {
     "title": "मॉडल संपादित करें: {{modelId}}",
-    "description": "नीचे दिए गए विकल्पों को सक्षम करके मॉडल की क्षमताओं को कॉन्फ़िगर करें।",
+    "description": "नीचे दिए गए विकल्पों को टॉगल करके मॉडल क्षमताएँ कॉन्फ़िगर करें।",
     "capabilities": "क्षमताएँ",
     "tools": "उपकरण",
     "vision": "दृष्टि",
-    "embeddings": "एम्बेडिंग्स",
+    "embeddings": "एम्बेडिंग",
     "notAvailable": "अभी उपलब्ध नहीं"
+  },
+  "tokenCounter": {
+    "contextWindow": "संदर्भ विंडो",
+    "prompt": "प्रॉम्प्ट",
+    "completion": "पूर्णता",
+    "used": "उपयोग किया गया",
+    "remaining": "शेष",
+    "cost": "लागत",
+    "local": "स्थानीय",
+    "free": "मुफ़्त",
+    "tokens": "टोकन",
+    "fittedTo": "{{value}} के लिए उपयुक्त",
+    "slots": "स्लॉट",
+    "vision": "दृष्टि",
+    "audio": "ऑडियो"
   },
   "outOfContextError": {
     "truncateInput": "इनपुट को ट्रंकेट करें",

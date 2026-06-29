@@ -197,12 +197,27 @@
   },
   "editModel": {
     "title": "Modifica modello: {{modelId}}",
-    "description": "Configura le funzionalità del modello attivando o disattivando le opzioni sottostanti.",
-    "capabilities": "Funzionalità",
+    "description": "Configura le capacità del modello attivando le opzioni qui sotto.",
+    "capabilities": "Capacità",
     "tools": "Strumenti",
     "vision": "Visione",
-    "embeddings": "Embedding",
+    "embeddings": "Embeddings",
     "notAvailable": "Non ancora disponibile"
+  },
+  "tokenCounter": {
+    "contextWindow": "Finestra di contesto",
+    "prompt": "Prompt",
+    "completion": "Completamento",
+    "used": "Usato",
+    "remaining": "Rimanente",
+    "cost": "Costo",
+    "local": "Locale",
+    "free": "Gratuito",
+    "tokens": "token",
+    "fittedTo": "Adattato a {{value}}",
+    "slots": "slot",
+    "vision": "Visione",
+    "audio": "Audio"
   },
   "outOfContextError": {
     "truncateInput": "Tronca input",

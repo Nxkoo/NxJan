@@ -197,6 +197,21 @@
     "embeddings": "嵌入",
     "notAvailable": "尚不可用"
   },
+  "tokenCounter": {
+    "contextWindow": "上下文窗口",
+    "prompt": "提示",
+    "completion": "完成",
+    "used": "已用",
+    "remaining": "剩余",
+    "cost": "费用",
+    "local": "本地",
+    "free": "免费",
+    "tokens": "令牌",
+    "fittedTo": "已适配 {{value}}",
+    "slots": "插槽",
+    "vision": "视觉",
+    "audio": "音频"
+  },
   "toolApproval": {
     "title": "工具权限请求",
     "description": "助手想要使用 <strong>{{toolName}}</strong>",

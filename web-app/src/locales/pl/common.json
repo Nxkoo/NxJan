@@ -176,13 +176,28 @@
     "save": "Zapisz"
   },
   "editModel": {
-    "title": "Edytuj Model: {{modelId}}",
-    "description": "Ustaw możliwości modelu za pomocą poniższych przełączników.",
+    "title": "Edytuj model: {{modelId}}",
+    "description": "Skonfiguruj możliwości modelu, przełączając poniższe opcje.",
     "capabilities": "Możliwości",
     "tools": "Narzędzia",
     "vision": "Wizja",
     "embeddings": "Osadzenia",
     "notAvailable": "Jeszcze niedostępne"
+  },
+  "tokenCounter": {
+    "contextWindow": "Okno kontekstu",
+    "prompt": "Prompt",
+    "completion": "Zakończenie",
+    "used": "Użyte",
+    "remaining": "Pozostało",
+    "cost": "Koszt",
+    "local": "Lokalny",
+    "free": "Bezpłatny",
+    "tokens": "tokenów",
+    "fittedTo": "Dopasowane do {{value}}",
+    "slots": "sloty",
+    "vision": "Wizja",
+    "audio": "Audio"
   },
   "outOfContextError": {
     "truncateInput": "Przytnij Wejście",

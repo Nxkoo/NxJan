@@ -212,6 +212,21 @@
     "embeddings": "Embeddings",
     "notAvailable": "Not available yet"
   },
+  "tokenCounter": {
+    "contextWindow": "Context window",
+    "prompt": "Prompt",
+    "completion": "Completion",
+    "used": "Used",
+    "remaining": "Remaining",
+    "cost": "Cost",
+    "local": "Local",
+    "free": "Free",
+    "tokens": "tokens",
+    "fittedTo": "Fitted to {{value}}",
+    "slots": "slots",
+    "vision": "Vision",
+    "audio": "Audio"
+  },
   "outOfContextError": {
     "truncateInput": "Truncate Input",
     "title": "Out of context error",

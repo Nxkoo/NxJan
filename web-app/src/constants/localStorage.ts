@@ -31,6 +31,7 @@ export const localStorageKey = {
   defaultEmbeddingModel: 'default-embedding-model',
   pausedDownloads: 'paused-downloads',
   projectCodebases: 'project-codebases',
+  modelsDevCatalog: 'models-dev-catalog',
 }
 
 export const CACHE_EXPIRY_MS = 1000 * 60 * 60 * 24

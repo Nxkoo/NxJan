@@ -183,13 +183,28 @@
     "save": "Сохранить"
   },
   "editModel": {
-    "title": "Редактирование модели: {{modelId}}",
-    "description": "Настройте возможности модели, переключив нужные параметры ниже.",
+    "title": "Изменить модель: {{modelId}}",
+    "description": "Настройте возможности модели, переключая параметры ниже.",
     "capabilities": "Возможности",
     "tools": "Инструменты",
     "vision": "Зрение",
     "embeddings": "Эмбеддинги",
-    "notAvailable": "Пока недоступно"
+    "notAvailable": "Ещё не доступно"
+  },
+  "tokenCounter": {
+    "contextWindow": "Окно контекста",
+    "prompt": "Промпт",
+    "completion": "Завершение",
+    "used": "Использовано",
+    "remaining": "Осталось",
+    "cost": "Стоимость",
+    "local": "Локально",
+    "free": "Бесплатно",
+    "tokens": "токенов",
+    "fittedTo": "Подогнано к {{value}}",
+    "slots": "слотов",
+    "vision": "Зрение",
+    "audio": "Аудио"
   },
   "outOfContextError": {
     "truncateInput": "Обрезка ввода",
