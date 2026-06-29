@@ -166,17 +166,17 @@ export const SourcesSheet = memo(
             <div className="flex items-start justify-between gap-3">
               <div className="flex-1 min-w-0">
                 <SheetTitle
-                  className="flex items-center gap-2.5 text-2xl font-extrabold leading-none tracking-tight"
+                  className="flex items-center gap-2.5 text-[26px] font-black leading-none tracking-tight"
                   style={{ fontFamily: 'var(--font-sans)' }}
                 >
-                  <span className="inline-flex h-9 w-9 items-center justify-center rounded-xl border-2 border-[var(--ink)] bg-[var(--yellow)] text-zinc-900 shadow-[2px_2px_0_0_var(--ink)]">
-                    <BookmarkIcon size={17} strokeWidth={2.75} />
+                  <span className="inline-flex h-10 w-10 items-center justify-center rounded-xl border-2 border-[var(--ink)] bg-[var(--yellow)] text-zinc-900 shadow-[2.5px_2.5px_0_0_var(--ink)]">
+                    <BookmarkIcon size={18} strokeWidth={2.75} />
                   </span>
                   {t('chat:sources.title')}
                 </SheetTitle>
                 {queryLine && !isEmpty && (
                   <SheetDescription
-                    className="mt-2 text-sm italic text-muted-foreground/90 line-clamp-2"
+                    className="mt-2.5 text-sm italic text-muted-foreground/90 line-clamp-2"
                     style={{ fontFamily: 'Fraunces, Georgia, serif' }}
                   >
                     &ldquo;{queryLine}&rdquo;
@@ -184,7 +184,7 @@ export const SourcesSheet = memo(
                 )}
               </div>
               <span
-                className="inline-flex h-8 min-w-8 items-center justify-center px-2 rounded-full border-2 border-[var(--ink)] bg-[var(--foreground)] text-[var(--background)] font-extrabold text-sm tabular-nums shadow-[1.5px_1.5px_0_0_var(--ink)]"
+                className="inline-flex h-9 min-w-9 items-center justify-center px-2.5 rounded-full border-2 border-[var(--ink)] bg-[var(--foreground)] text-[var(--background)] font-black text-base tabular-nums shadow-[2px_2px_0_0_var(--ink)]"
                 aria-label={`${total} ${t('chat:sources.button')}`}
               >
                 {total}
@@ -192,12 +192,12 @@ export const SourcesSheet = memo(
             </div>
           </SheetHeader>
 
-          <div className="flex-1 overflow-y-auto px-4 py-5">
+          <div className="flex-1 overflow-y-auto px-5 py-6">
             {isEmpty ? (
               <div className="flex flex-col items-center justify-center text-center px-4 py-10 text-muted-foreground">
                 <EmptyIllustration />
                 <p
-                  className="mt-4 text-base font-semibold text-foreground/80"
+                  className="mt-4 text-base font-bold text-foreground/85"
                   style={{ fontFamily: 'var(--font-sans)' }}
                 >
                   {t('chat:sources.empty')}
@@ -210,7 +210,7 @@ export const SourcesSheet = memo(
                 </p>
               </div>
             ) : (
-              <div className="space-y-6">
+              <div className="space-y-7">
                 {hasRag && (
                   <section
                     className="animate-[sources-section-in_0.35s_ease-out_both]"
@@ -222,7 +222,7 @@ export const SourcesSheet = memo(
                       count={ragItems.length}
                       tone="blue"
                     />
-                    <ul className="mt-3 space-y-2.5">
+                    <ul className="mt-3.5 space-y-3">
                       {ragItems.map(({ citation, index }) => (
                         <RagCitationItem
                           key={citation.id}
@@ -245,7 +245,7 @@ export const SourcesSheet = memo(
                       count={webItems.length}
                       tone="green"
                     />
-                    <ul className="mt-3 space-y-2.5">
+                    <ul className="mt-3.5 space-y-3">
                       {webItems.map((c, i) => (
                         <WebCitationItem key={`${c.url}-${i}`} c={c} />
                       ))}

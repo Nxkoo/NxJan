@@ -45,9 +45,9 @@ const formatScore = (s: number | undefined) =>
 const cardBase = cn(
   'group/cit relative rounded-2xl border-2 border-[var(--ink)]',
   'bg-[var(--card)] text-foreground',
-  'shadow-[2px_2px_0_0_var(--ink)]',
-  'transition-all duration-150 ease-out',
-  'hover:-translate-y-0.5 hover:shadow-[3px_3px_0_0_var(--ink)]'
+  'shadow-[3px_3px_0_0_var(--ink)]',
+  'transition-all duration-200 ease-out',
+  'hover:-translate-y-1 hover:-translate-x-0.5 hover:shadow-[4.5px_4.5px_0_0_var(--ink)]'
 )
 
 export const RagCitationItem = memo(
@@ -137,11 +137,23 @@ export const WebCitationItem = memo(({ c }: { c: WebCitation }) => {
           href={c.url}
           target="_blank"
           rel="noreferrer noopener"
-          className="truncate font-semibold text-foreground hover:underline"
+          className="truncate font-bold text-foreground hover:underline decoration-2 underline-offset-2"
           title={c.url}
         >
           {c.title || host}
         </a>
+        {!c.favicon && host && (
+          <img
+            src={`https://www.google.com/s2/favicons?domain=${host}&sz=32`}
+            alt=""
+            aria-hidden
+            className="size-4 rounded-sm opacity-80"
+            loading="lazy"
+            onError={(e) => {
+              e.currentTarget.style.display = 'none'
+            }}
+          />
+        )}
         <span className="ml-auto truncate text-[10px] text-muted-foreground/80 font-mono">
           {host}
         </span>
