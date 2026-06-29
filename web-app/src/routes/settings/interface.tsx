@@ -6,12 +6,9 @@ import { Card, CardItem } from '@/containers/Card'
 import { useTranslation } from '@/i18n/react-i18next-compat'
 import { ThemeSwitcher } from '@/containers/ThemeSwitcher'
 import { FontSizeSwitcher } from '@/containers/FontSizeSwitcher'
-import { AccentColorPicker } from '@/containers/AccentColorPicker'
-import { DarkStyleSwitcher } from '@/containers/DarkStyleSwitcher'
 import { NotificationPositionSwitcher } from '@/containers/NotificationPositionSwitcher'
 import { TokenCounterCompactSwitcher } from '@/containers/TokenCounterCompactSwitcher'
 import { useInterfaceSettings } from '@/hooks/useInterfaceSettings'
-import { useTheme } from '@/hooks/useTheme'
 import { Button } from '@/components/ui/button'
 import { Switch } from '@/components/ui/switch'
 import { toast } from 'sonner'
@@ -23,7 +20,6 @@ export const Route = createFileRoute(route.settings.interface as any)({
 
 function InterfaceSettings() {
   const { t } = useTranslation()
-  const { isDark } = useTheme()
   const {
     resetInterface,
     showTokenSpeed,
@@ -50,27 +46,13 @@ function InterfaceSettings() {
               <CardItem
                 title={t('settings:interface.theme')}
                 description={t('settings:interface.themeDesc')}
+                className="flex-col sm:flex-row items-start sm:items-center sm:justify-between gap-y-3"
                 actions={<ThemeSwitcher />}
               />
               <CardItem
                 title={t('settings:interface.fontSize')}
                 description={t('settings:interface.fontSizeDesc')}
                 actions={<FontSizeSwitcher />}
-              />
-              <CardItem
-                title={t('settings:interface.accentColor')}
-                description={t('settings:interface.accentColorDesc')}
-                className="flex-col sm:flex-row items-start sm:items-center sm:justify-between gap-y-2"
-                actions={<AccentColorPicker />}
-              />
-              <CardItem
-                title={t('settings:interface.darkStyle')}
-                description={
-                  isDark
-                    ? t('settings:interface.darkStyleDesc')
-                    : t('settings:interface.darkStyleDescLight')
-                }
-                actions={<DarkStyleSwitcher />}
               />
               <CardItem
                 title={t('settings:interface.notificationPosition')}

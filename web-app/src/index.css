@@ -4,6 +4,10 @@
 /* Linked from 'self' so CSP keeps it: WebView2 drops sonner's runtime <style>
    once index.html's inline <style> makes Tauri hash style-src (voids unsafe-inline). */
 @import 'sonner/dist/styles.css';
+/* Instrument Sans — Pearfy Orchard UI sans. Served via Google Fonts CDN.
+   Variable axis covers 400-700; falls back to Figtree if the network call
+   is blocked (offline / CSP-locked environments). */
+@import url('https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wght@0,400..700;1,400..700&display=swap');
 
 /* Accent tint for neutral toasts (Appearance > Accent color, --primary).
    Set via class, not an inline style prop, so WebView2's hashed style-src
@@ -169,7 +173,7 @@
   --animate-hue-rotate: hue-rotate 4s infinite;
   --font-display: "StudioFeixenSans";
   --font-display: "Fraunces", "Georgia", serif;
-  --font-sans: "Figtree", "Inter", sans-serif;
+  --font-sans: "Instrument Sans", "Figtree", "Inter", sans-serif;
   --font-mono: "JetBrains Mono", ui-monospace, monospace;
 
   /* Font scale based on --font-size-base */
@@ -273,6 +277,41 @@
   --sidebar-active: color-mix(in srgb, var(--sidebar) 55%, var(--ink) 12%);
   --sidebar-border: var(--border-soft);
   --sidebar-ring: var(--ink);
+
+  /* ── Pearfy Orchard primitives (light) ─────────────────────────
+     Ativados quando html tem data-dark-style="pearfy".
+     Espelham o sistema Orchard da Pearfy src/index.css (linhas 86-118).
+     ─────────────────────────────────────────────────────────────── */
+  --orchard-bg: #F8F4EA;            /* Cream Paper — fundo base */
+  --orchard-bg-soft: #FCF8EF;
+  --orchard-surface: #FFFDF7;
+  --orchard-surface-raised: #FFF9EE;
+  --orchard-surface-muted: #EFE7D4;
+  --orchard-surface-orchard: #EDF3DF;
+  --orchard-ink: #243126;            /* Leaf Ink */
+  --orchard-ink-soft: #3D473D;
+  --orchard-muted: #6F746B;
+  --orchard-muted-soft: #9A9D93;
+  --orchard-border: #DED5BF;
+  --orchard-border-soft: #EBE3D0;
+  --orchard-primary: #6F8F3D;        /* Pear Core */
+  --orchard-primary-hover: #647F36;
+  --orchard-primary-active: #58712E;
+  --orchard-primary-light: #DDEBC2;  /* Pear Light */
+  --orchard-pear: #A8BE68;           /* Pear Highlight */
+  --orchard-sage: #E7EEDB;
+  --orchard-seed: #8B6F47;           /* Seed Brown */
+  --orchard-seed-soft: #CBB58C;
+  --orchard-pollen: #E7B84A;         /* Gold Pollen */
+  --orchard-peach: #F2B8A2;          /* Blush Peach */
+  --orchard-mist: #C9DCE8;           /* Blue Mist */
+  --orchard-focus: #A99BE6;          /* Lavender Focus */
+  --orchard-danger: #D9755B;
+  --orchard-shadow-card: 0 1px 0 rgba(36,49,38,0.055), 0 9px 24px rgba(139,111,71,0.075);
+  --orchard-shadow-button: 0 3px 0 rgba(36,49,38,0.18);
+  --orchard-shadow-button-active: 0 1px 0 rgba(36,49,38,0.18);
+  --ease-orchard-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-orchard-press: cubic-bezier(0.2, 0, 0, 1);
 }
 
 /* ──────────────────────────────────────────────────────────────────────
@@ -403,6 +442,167 @@
   --blue-soft: #1c2540;
   --paper-soft: #21201d;
   --paper-muted: #221d14;
+}
+
+/* ── Pearfy Orchard — light flavor ───────────────────────────────
+   Ativado por data-dark-style="pearfy" no <html>.
+   Esses tokens SOBRESCREVEM os do :root normal. Mapeiam Orchard →
+   tokens NxJan shadcn, então componentes existentes reagem sozinhos.
+   ─────────────────────────────────────────────────────────────── */
+:root[data-dark-style="pearfy"] {
+  --radius: 0.875rem;
+
+  /* Map Orchard → shadcn tokens */
+  --background: var(--orchard-bg);
+  --foreground: var(--orchard-ink);
+  --card: var(--orchard-surface);
+  --card-foreground: var(--orchard-ink);
+  --popover: var(--orchard-surface-raised);
+  --popover-foreground: var(--orchard-ink);
+  --primary: var(--orchard-primary);
+  --primary-foreground: var(--orchard-surface);
+  --secondary: var(--orchard-surface-muted);
+  --secondary-foreground: var(--orchard-ink);
+  --muted: var(--orchard-surface-muted);
+  --muted-foreground: var(--orchard-muted);
+  --accent: var(--orchard-primary-light);
+  --accent-foreground: var(--orchard-primary-active);
+  --destructive: var(--orchard-danger);
+  --input: var(--orchard-surface);
+  --ring: 79 28% 50%;
+  --chart-1: var(--orchard-primary);
+  --chart-2: var(--orchard-pollen);
+  --chart-3: var(--orchard-peach);
+  --chart-4: var(--orchard-focus);
+  --chart-5: var(--orchard-mist);
+
+  --surface-1: var(--orchard-bg);
+  --surface-2: var(--orchard-surface);
+  --surface-3: var(--orchard-surface-raised);
+
+  --border-soft: color-mix(in srgb, var(--orchard-seed) 14%, transparent);
+  --border: color-mix(in srgb, var(--orchard-ink) 45%, transparent);
+  --border-strong: color-mix(in srgb, var(--orchard-ink) 75%, transparent);
+
+  --sidebar: var(--orchard-bg-soft);
+  --sidebar-foreground: var(--orchard-ink);
+  --sidebar-primary: var(--orchard-primary);
+  --sidebar-primary-foreground: var(--orchard-surface);
+  --sidebar-accent: var(--orchard-sage);
+  --sidebar-accent-foreground: var(--orchard-primary-active);
+  --sidebar-border: var(--border-soft);
+  --sidebar-ring: var(--orchard-primary);
+
+  --paper: var(--orchard-bg);
+  --paper-soft: var(--orchard-bg-soft);
+  --paper-card: var(--orchard-surface);
+  --paper-muted: var(--orchard-surface-muted);
+  --ink: var(--orchard-ink);
+  --blue: var(--orchard-focus);
+  --blue-soft: color-mix(in srgb, var(--orchard-focus) 22%, var(--orchard-surface) 78%);
+  --green: var(--orchard-primary);
+  --green-soft: var(--orchard-primary-light);
+  --yellow: var(--orchard-pollen);
+  --yellow-soft: color-mix(in srgb, var(--orchard-pollen) 22%, var(--orchard-surface) 78%);
+  --orange: var(--orchard-peach);
+  --orange-soft: color-mix(in srgb, var(--orchard-peach) 26%, var(--orchard-surface) 74%);
+  --red: var(--orchard-danger);
+  --red-soft: color-mix(in srgb, var(--orchard-danger) 22%, var(--orchard-surface) 78%);
+}
+
+/* ── Pearfy Orchard — dark flavor ────────────────────────────────
+   Pomar à noite: greens suaves, navy-esverdeado, lavanda moderada.
+   Espelha Pearfy src/index.css .dark {} (linhas 271-362).
+   ─────────────────────────────────────────────────────────────── */
+.dark[data-dark-style="pearfy"] {
+  /* Orchard dark primitives (sobrescreve os do :root[data-dark-style="pearfy"]) */
+  --orchard-bg: #101110;
+  --orchard-bg-soft: #11130D;
+  --orchard-surface: rgba(20,22,17,0.85);
+  --orchard-surface-raised: rgba(28,32,24,0.95);
+  --orchard-surface-muted: rgba(35,40,30,0.7);
+  --orchard-surface-orchard: rgba(22,26,18,0.85);
+  --orchard-ink: #F2EFE8;
+  --orchard-ink-soft: #D1CDBC;
+  --orchard-muted: #989689;
+  --orchard-muted-soft: #6A675B;
+  --orchard-border: rgba(255,255,255,0.16);
+  --orchard-border-soft: rgba(255,255,255,0.10);
+  --orchard-primary: #859160;
+  --orchard-primary-hover: #96A36E;
+  --orchard-primary-active: #727C50;
+  --orchard-primary-light: rgba(133,145,96,0.15);
+  --orchard-pear: #9DA873;
+  --orchard-sage: rgba(38,44,30,0.6);
+  --orchard-seed: #C9BCA5;
+  --orchard-seed-soft: #857B69;
+  --orchard-pollen: #E3B64D;
+  --orchard-peach: #C47962;
+  --orchard-mist: #6B765E;
+  --orchard-focus: #796A85;
+  --orchard-danger: #C47962;
+  --orchard-shadow-card: 0 1px 1px rgba(255,255,255,0.03) inset, 0 12px 32px rgba(0,0,0,0.45);
+  --orchard-shadow-button: 0 3px 0 rgba(0,0,0,0.42);
+  --orchard-shadow-button-active: 0 1px 0 rgba(0,0,0,0.42);
+
+  /* Map dark Orchard → shadcn tokens */
+  --background: var(--orchard-bg);
+  --foreground: var(--orchard-ink);
+  --card: var(--orchard-surface);
+  --card-foreground: var(--orchard-ink);
+  --popover: var(--orchard-surface-raised);
+  --popover-foreground: var(--orchard-ink);
+  --primary: var(--orchard-primary);
+  --primary-foreground: var(--orchard-ink);
+  --secondary: var(--orchard-surface-muted);
+  --secondary-foreground: var(--orchard-ink);
+  --muted: var(--orchard-surface-muted);
+  --muted-foreground: var(--orchard-muted);
+  --accent: var(--orchard-primary-light);
+  --accent-foreground: var(--orchard-primary);
+  --destructive: var(--orchard-danger);
+  --input: var(--orchard-surface-raised);
+  --ring: 75 21% 44%;
+
+  --surface-1: var(--orchard-bg);
+  --surface-2: var(--orchard-surface);
+  --surface-3: var(--orchard-surface-raised);
+
+  --border-soft: color-mix(in srgb, var(--orchard-ink) 14%, transparent);
+  --border: color-mix(in srgb, var(--orchard-ink) 32%, transparent);
+  --border-strong: color-mix(in srgb, var(--orchard-ink) 55%, transparent);
+
+  --sidebar: var(--orchard-bg-soft);
+  --sidebar-foreground: var(--orchard-ink);
+  --sidebar-primary: var(--orchard-primary);
+  --sidebar-primary-foreground: var(--orchard-ink);
+  --sidebar-accent: var(--orchard-sage);
+  --sidebar-accent-foreground: var(--orchard-primary);
+  --sidebar-border: var(--border-soft);
+  --sidebar-ring: var(--orchard-primary);
+
+  --paper: var(--orchard-bg);
+  --paper-soft: var(--orchard-bg-soft);
+  --paper-card: var(--orchard-surface);
+  --paper-muted: var(--orchard-surface-muted);
+  --ink: var(--orchard-ink);
+  --blue: var(--orchard-focus);
+  --blue-soft: color-mix(in srgb, var(--orchard-focus) 22%, var(--orchard-surface) 78%);
+  --green: var(--orchard-primary);
+  --green-soft: var(--orchard-primary-light);
+  --yellow: var(--orchard-pollen);
+  --yellow-soft: color-mix(in srgb, var(--orchard-pollen) 22%, var(--orchard-surface) 78%);
+  --orange: var(--orchard-peach);
+  --orange-soft: color-mix(in srgb, var(--orchard-peach) 26%, var(--orchard-surface) 74%);
+  --red: var(--orchard-danger);
+  --red-soft: color-mix(in srgb, var(--orchard-danger) 22%, var(--orchard-surface) 78%);
+
+  /* BG radial sutil — pomar à noite com aurora de folhas */
+  background-image: radial-gradient(
+    ellipse 80% 50% at 50% -10%,
+    rgba(123,135,88,0.16) 0%,
+    transparent 70%
+  );
 }
 
 @layer base {
@@ -567,5 +767,143 @@
   100% {
     opacity: 1;
     transform: translateY(0) scale(1);
+  }
+}
+
+/* ── Pearfy Orchard utility classes ──────────────────────────────
+   Opt-in helpers — não se aplicam automaticamente. Use via className
+   em componentes que queiram a estética Orchard explícita (e.g.
+   ThemePresets, futuros PearfyBadges, hero da landing). Mirrors
+   src/index.css (.orchard-paper-*, .pearfy-tap) da Pearfy.
+   ─────────────────────────────────────────────────────────────── */
+@layer utilities {
+  /* Paper surfaces — três pesos. Card Orchard = tier-2. */
+  .orchard-paper-surface {
+    background: linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--orchard-surface) 96%, white 4%),
+      var(--orchard-surface)
+    );
+    border: 1px solid var(--orchard-border);
+    box-shadow: var(--orchard-shadow-card);
+  }
+
+  .orchard-paper-raised {
+    background: var(--orchard-surface-raised);
+    border: 1px solid var(--orchard-border);
+    box-shadow: var(--orchard-shadow-card);
+  }
+
+  .orchard-paper-tier-1 {
+    border: 1px solid color-mix(in srgb, var(--orchard-border-soft) 50%, transparent);
+    border-radius: 16px;
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.42),
+      0 2px 0 rgba(139, 111, 71, 0.08);
+  }
+
+  .dark .orchard-paper-tier-1 {
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.07),
+      0 2px 0 rgba(8, 9, 6, 0.18);
+  }
+
+  .orchard-paper-tier-2 {
+    border: 1px solid var(--orchard-border);
+    border-radius: 22px;
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.48),
+      0 10px 26px rgba(139, 111, 71, 0.08);
+  }
+
+  .dark .orchard-paper-tier-2 {
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.08),
+      0 18px 46px rgba(8, 9, 6, 0.14);
+  }
+
+  .orchard-paper-tier-3 {
+    border: 1px solid color-mix(in srgb, var(--orchard-border) 88%, var(--orchard-ink) 12%);
+    border-radius: 24px;
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.52),
+      0 18px 48px rgba(36, 49, 38, 0.07);
+  }
+
+  .dark .orchard-paper-tier-3 {
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.10),
+      0 22px 58px rgba(0, 0, 0, 0.45);
+  }
+
+  .orchard-paper-tier-hero {
+    border-radius: 28px;
+  }
+
+  /* Alternância rítmica de fundo (seções vizinhas) */
+  .orchard-paper-tone-soft {
+    background: linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--orchard-bg-soft) 88%, var(--orchard-sage) 12%),
+      color-mix(in srgb, var(--orchard-bg-soft) 96%, var(--orchard-sage) 4%)
+    );
+  }
+
+  .orchard-paper-tone-warm {
+    background: linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--orchard-bg) 92%, var(--orchard-pollen) 8%),
+      color-mix(in srgb, var(--orchard-bg-soft) 88%, var(--orchard-peach) 12%)
+    );
+  }
+
+  /* Botão com "press shadow" tátil */
+  .orchard-pressed {
+    box-shadow: var(--orchard-shadow-button);
+    transform: translateY(0);
+    will-change: transform;
+  }
+  .orchard-pressed:active {
+    box-shadow: var(--orchard-shadow-button-active);
+    transform: translateY(1px);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .orchard-pressed,
+    .orchard-pressed:active {
+      transform: none;
+    }
+  }
+
+  /* Caps editoriais — small + espaçado (mesma do Pearfy) */
+  .orchard-label-caps {
+    font-size: 0.6875rem;
+    font-weight: 800;
+    letter-spacing: 0.18em;
+    line-height: 1;
+    text-transform: uppercase;
+  }
+
+  /* Nav items / chips ativos (sage + ink ativo) */
+  .orchard-shell-active {
+    background: var(--orchard-sage);
+    color: color-mix(in srgb, var(--orchard-primary-active) 82%, var(--orchard-ink) 18%);
+    border-color: color-mix(in srgb, var(--orchard-primary) 24%, var(--orchard-border) 76%);
+  }
+
+  /* Tap target 44×44 (Apple HIG / Material) */
+  .pearfy-tap {
+    position: relative;
+    min-height: 2.75rem;
+    min-width: 2.75rem;
+  }
+  .pearfy-tap:not(.pearfy-tap--no-extend)::before {
+    content: '';
+    position: absolute;
+    inset: -0.5rem;
+    z-index: 0;
+  }
+  .pearfy-tap > * {
+    position: relative;
+    z-index: 1;
   }
 }

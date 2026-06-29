@@ -1,8 +1,7 @@
 import { useEffect } from 'react'
 import { getCurrentWebviewWindow } from '@tauri-apps/api/webviewWindow'
-import { useInterfaceSettings } from '@/hooks/useInterfaceSettings'
+import { useInterfaceSettings, getActiveTheme } from '@/hooks/useInterfaceSettings'
 import { useTheme } from '@/hooks/useTheme'
-import { ACCENT_COLORS } from '@/hooks/useInterfaceSettings'
 import { APP_NAME } from '@/constants/branding'
 
 /**
@@ -10,7 +9,7 @@ import { APP_NAME } from '@/constants/branding'
  * This component should be mounted at the root level of the application
  */
 export function InterfaceProvider() {
-  const { fontSize, accentColor, darkStyle } = useInterfaceSettings()
+  const { themeId } = useInterfaceSettings()
   const { isDark } = useTheme()
 
   useEffect(() => {
@@ -20,42 +19,14 @@ export function InterfaceProvider() {
     }
   }, [])
 
-  // Apply interface settings on mount and when they change
+  /* Apply the active theme to the DOM. Both data-dark-style and
+     --primary/--sidebar are owned by applyThemeToDOM (in the hook);
+     this effect just re-runs when themeId or isDark change so the
+     CSS stays in sync with the resolved accent variant. */
   useEffect(() => {
-    // Apply font size
-    document.documentElement.style.setProperty('--font-size-base', fontSize)
-  }, [fontSize])
-
-  // Apply dark style attribute (Jan Blue vs Editorial paper) on mount and change
-  useEffect(() => {
-    document.documentElement.setAttribute('data-dark-style', darkStyle)
-  }, [darkStyle])
-
-  // Apply accent color when it changes, theme changes, or dark style changes
-  useEffect(() => {
-    const color = ACCENT_COLORS.find((c) => c.value === accentColor)
-    if (!color) return
-
-    const root = document.documentElement
-    /* Jan Blue keeps each accent's deep tint rail; Editorial flattens
-       the rail to a neutral dark paper so the page reads as one tone. */
-    const sidebarColor = isDark
-      ? darkStyle === 'editorial'
-        ? color.sidebar.darkEditorial
-        : color.sidebar.dark
-      : color.sidebar.light
-    /* Jan Blue dark uses the brighter primaryDark so dark accents
-       (Ink, Blue) don't disappear on the navy night-desk. Editorial
-       has its own gray via CSS !important so we only apply primaryDark
-       in Jan Blue. */
-    let primaryColor: string = color.primary
-    if (isDark && darkStyle === 'jan' && 'primaryDark' in color) {
-      primaryColor = (color as { primaryDark: string }).primaryDark
-    }
-
-    root.style.setProperty('--sidebar', sidebarColor)
-    root.style.setProperty('--primary', primaryColor)
-  }, [accentColor, isDark, darkStyle])
+    const theme = getActiveTheme(themeId)
+    document.documentElement.setAttribute('data-dark-style', theme.darkStyle)
+  }, [themeId, isDark])
 
   return null
 }
