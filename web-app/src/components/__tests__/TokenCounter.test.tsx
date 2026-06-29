@@ -9,13 +9,17 @@ vi.mock('@/hooks/useTokensCount', () => ({
 
 // i18n in tests: useTranslation returns a humanized form of the key
 // so existing assertions on "Context window" / "Used" / "Remaining"
-// still match without spinning up a real provider. Pluralizes the
-// {{value}} interpolation that TokenCounter passes through.
+// still match without spinning up a real provider. Mirrors the
+// runtime behavior of setup.ts: strips the `namespace:` prefix and
+// resolves the rest via dot notation, then falls back to a
+// humanized form when the key isn't found.
 vi.mock('@/i18n/react-i18next-compat', () => ({
   useTranslation: () => ({
     t: (key: string, params?: Record<string, string | number>) => {
-      const last = key.includes(':') ? key.split(':').pop()! : key
+      const last = key.includes(':') ? key.split(':').slice(1).join(':') : key
       const humanized = last
+        .split('.')
+        .pop()!
         .replace(/([A-Z])/g, ' $1')
         .replace(/^./, (c) => c.toUpperCase())
         .trim()

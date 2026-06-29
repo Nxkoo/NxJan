@@ -235,7 +235,7 @@ export const TokenCounter = memo(function TokenCounter({
             <IconBrain className="size-4 text-muted-foreground shrink-0" />
             <div className="flex-1 min-w-0">
               <div className="text-xs font-medium text-foreground">
-                {t('tokenCounter:contextWindow')}
+                {t('common:tokenCounter.contextWindow')}
               </div>
               {modelDisplayName && (
                 <div className="text-[11px] text-muted-foreground truncate">
@@ -288,32 +288,32 @@ export const TokenCounter = memo(function TokenCounter({
             {typeof inputTokens === 'number' && inputTokens > 0 && (
               <Row
                 icon={<IconArrowUp className="size-3.5" />}
-                label={t('tokenCounter:prompt')}
+                label={t('common:tokenCounter.prompt')}
                 value={formatExact(inputTokens)}
               />
             )}
             {typeof outputTokens === 'number' && outputTokens > 0 && (
               <Row
                 icon={<IconArrowDown className="size-3.5" />}
-                label={t('tokenCounter:completion')}
+                label={t('common:tokenCounter.completion')}
                 value={formatExact(outputTokens)}
               />
             )}
             <Row
               icon={<IconSum className="size-3.5" />}
-              label={t('tokenCounter:used')}
+              label={t('common:tokenCounter.used')}
               value={formatExact(totalTokens)}
               strong
             />
             <Row
               icon={<IconRulerMeasure className="size-3.5" />}
-              label={t('tokenCounter:remaining')}
+              label={t('common:tokenCounter.remaining')}
               value={formatExact(remaining)}
             />
             {typeof tokenData.cost === 'number' && (
               <Row
                 icon={<IconCoins className="size-3.5" />}
-                label={t('tokenCounter:cost')}
+                label={t('common:tokenCounter.cost')}
                 value={formatUsd(tokenData.cost)}
                 strong
               />
@@ -321,8 +321,8 @@ export const TokenCounter = memo(function TokenCounter({
             {tokenData.costSource === 'local' && (
               <Row
                 icon={<IconCircleCheck className="size-3.5" />}
-                label={t('tokenCounter:local')}
-                value={t('tokenCounter:free')}
+                label={t('common:tokenCounter.local')}
+                value={t('common:tokenCounter.free')}
               />
             )}
           </div>
@@ -336,14 +336,14 @@ export const TokenCounter = memo(function TokenCounter({
                   title={`Configured ctx_len: ${formatExact(tokenData.configuredCtxLen!)}`}
                 >
                   <IconAdjustmentsAlt className="size-3" />
-                  {t('tokenCounter:fittedTo', { value: formatNumber(tokenData.maxTokens) })}
+                  {t('common:tokenCounter.fittedTo', { value: formatNumber(tokenData.maxTokens) })}
                 </span>
               )}
               {modelProps?.totalSlots !== undefined &&
                 modelProps.totalSlots > 1 && (
                   <span className="flex items-center gap-1">
                     <IconStack2 className="size-3" />
-                    {modelProps.totalSlots} {t('tokenCounter:slots')}
+                    {modelProps.totalSlots} {t('common:tokenCounter.slots')}
                   </span>
                 )}
               {tokenData.modalities?.vision && (
@@ -352,7 +352,7 @@ export const TokenCounter = memo(function TokenCounter({
                   title="Vision input supported"
                 >
                   <IconPhoto className="size-3" />
-                  {t('tokenCounter:vision')}
+                  {t('common:tokenCounter.vision')}
                 </span>
               )}
               {tokenData.modalities?.audio && (
@@ -361,7 +361,7 @@ export const TokenCounter = memo(function TokenCounter({
                   title="Audio input supported"
                 >
                   <IconMicrophone className="size-3" />
-                  {t('tokenCounter:audio')}
+                  {t('common:tokenCounter.audio')}
                 </span>
               )}
             </div>
@@ -454,22 +454,20 @@ function CompactPill({
         <TooltipTrigger asChild>
           <div
             className={cn(
-              'flex items-center gap-1.5 px-2 py-1 rounded-md bg-background border border-border cursor-pointer',
+              'flex items-center gap-1 cursor-pointer text-xs text-muted-foreground tabular-nums',
               className
             )}
           >
             {showCost && (
               <>
-                <IconCoins className="size-3 text-muted-foreground" />
                 <span className={moneyCls}>{formatUsd(cost!)}</span>
                 <span className={separatorCls}>|</span>
               </>
             )}
             {showLocal && (
               <>
-                <IconCircleCheck className="size-3 text-muted-foreground" />
-                <span className="text-xs font-medium text-foreground">
-                  {t('tokenCounter:local')}
+                <span className="text-foreground/80">
+                  {t('common:tokenCounter.local')}
                 </span>
                 <span className={separatorCls}>·</span>
               </>
@@ -478,14 +476,10 @@ function CompactPill({
             {typeof maxTokens === 'number' && maxTokens > 0 && (
               <>
                 <span className={separatorCls}>/</span>
-                <span className="text-xs text-muted-foreground tabular-nums">
-                  {formatNumber(maxTokens)}
-                </span>
+                <span>{formatNumber(maxTokens)}</span>
               </>
             )}
-            <span className="text-xs text-muted-foreground">
-              {t('tokenCounter:tokens')}
-            </span>
+            <span>{t('common:tokenCounter.tokens')}</span>
           </div>
         </TooltipTrigger>
         <TooltipContent
@@ -499,7 +493,7 @@ function CompactPill({
             <div className="flex items-center gap-2">
               <IconBrain className="size-3.5 text-muted-foreground shrink-0" />
               <span className="text-foreground font-medium">
-                {t('tokenCounter:contextWindow')}
+                {t('common:tokenCounter.contextWindow')}
               </span>
               {tokenData.modelDisplayName && (
                 <span className="text-muted-foreground truncate">
@@ -508,14 +502,14 @@ function CompactPill({
               )}
             </div>
             <div className="flex items-center justify-between gap-2 text-muted-foreground">
-              <span>{t('tokenCounter:used')}</span>
+              <span>{t('common:tokenCounter.used')}</span>
               <span className="font-mono tabular-nums text-foreground">
                 {formatExact(totalTokens)}
               </span>
             </div>
             {typeof maxTokens === 'number' && maxTokens > 0 && (
               <div className="flex items-center justify-between gap-2 text-muted-foreground">
-                <span>{t('tokenCounter:remaining')}</span>
+                <span>{t('common:tokenCounter.remaining')}</span>
                 <span className="font-mono tabular-nums text-foreground">
                   {formatExact(Math.max(0, maxTokens - totalTokens))}
                 </span>
@@ -523,7 +517,7 @@ function CompactPill({
             )}
             {showCost && (
               <div className="flex items-center justify-between gap-2 text-muted-foreground">
-                <span>{t('tokenCounter:cost')}</span>
+                <span>{t('common:tokenCounter.cost')}</span>
                 <span className="font-mono tabular-nums text-foreground">
                   {formatUsd(cost!)}
                 </span>
@@ -531,8 +525,8 @@ function CompactPill({
             )}
             {showLocal && (
               <div className="flex items-center justify-between gap-2 text-muted-foreground">
-                <span>{t('tokenCounter:cost')}</span>
-                <span className="text-foreground">{t('tokenCounter:free')}</span>
+                <span>{t('common:tokenCounter.cost')}</span>
+                <span className="text-foreground">{t('common:tokenCounter.free')}</span>
               </div>
             )}
           </div>
