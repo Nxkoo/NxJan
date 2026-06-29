@@ -52,9 +52,9 @@
 
 /* Rich states using editorial palette (paper surfaces) */
 .toaster [data-rich-colors="true"] [data-sonner-toast][data-type="success"] {
-  background: var(--green-soft);
-  color: var(--ink);
-  border-color: var(--green);
+  background: var(--accent);
+  color: var(--accent-foreground);
+  border-color: var(--accent-foreground);
 }
 .toaster [data-rich-colors="true"] [data-sonner-toast][data-type="error"] {
   background: var(--red-soft);
@@ -84,9 +84,9 @@
     2px 3px 0 1px color-mix(in srgb, #000 25%, transparent);
 }
 .dark .toaster [data-rich-colors="true"] [data-sonner-toast][data-type="success"] {
-  background: color-mix(in srgb, var(--green) 22%, var(--card));
-  color: var(--card-foreground);
-  border-color: var(--green);
+  background: var(--accent);
+  color: var(--accent-foreground);
+  border-color: var(--accent-foreground);
 }
 .dark .toaster [data-rich-colors="true"] [data-sonner-toast][data-type="error"] {
   background: color-mix(in srgb, var(--red) 22%, var(--card));
