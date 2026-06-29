@@ -71,3 +71,19 @@ llm-docs
 .claude/agents
 .claude
 CLAUDE.md
+
+## Cryptographic keys / signing material
+# Never commit private keys. Public keys are technically safe to publish
+# but committing them outside the build config is unnecessary noise.
+*.key
+*.privkey
+*.minisign
+*.pub
+*.pem
+*.pfx
+*.p12
+*.gpg
+*.asc
+*secrets*.json
+*signing*.json
+**/NxJan-*.key
