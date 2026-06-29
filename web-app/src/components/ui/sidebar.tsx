@@ -504,6 +504,7 @@ const SidebarContent = React.forwardRef<
 				"flex min-h-0 flex-1 flex-col overflow-auto group-data-[collapsible=icon]:overflow-hidden",
 				className,
 			)}
+			style={{ scrollbarGutter: "stable" }}
 			{...props}
 		/>
 	);

@@ -13,7 +13,8 @@ import { useLocalApiServer } from '@/hooks/useLocalApiServer'
 import { useAppState } from '@/hooks/useAppState'
 import { AppEvent, events } from '@janhq/core'
 import { SystemEvent } from '@/types/events'
-import { isDev } from '@/lib/utils'
+import { isDev, isLocalProvider } from '@/lib/utils'
+import { getModelCapabilities } from '@/lib/models'
 import { invoke } from '@tauri-apps/api/core'
 import { providerHasRemoteApiKeys, providerRemoteApiKeyChain } from '@/lib/provider-api-keys'
 
@@ -163,6 +164,50 @@ export function DataProvider() {
           registerRemoteProvider(provider)
           registeredProviderNames.add(provider.provider)
         }
+      })
+
+      // Auto-populate models for remote providers (e.g. opencode-go) that have
+      // an API key configured but whose model list is empty. This ensures the
+      // full set of models the provider's API actually offers is available
+      // immediately, instead of a stale hardcoded subset.
+      queueMicrotask(() => {
+        providers.forEach((p) => {
+          if (
+            !isLocalProvider(p.provider) &&
+            p.base_url &&
+            (!p.models || p.models.length === 0)
+          ) {
+            serviceHub
+              .providers()
+              .fetchModelsFromProvider(p)
+              .then((modelIds) => {
+                if (!modelIds || modelIds.length === 0) return
+                const store = useModelProvider.getState()
+                const current = store.getProviderByName(p.provider)
+                if (!current) return
+                const existing = new Set(current.models.map((m) => m.id))
+                const added = modelIds
+                  .filter((id) => !existing.has(id))
+                  .map((id) => ({
+                    id,
+                    model: id,
+                    name: id,
+                    capabilities: getModelCapabilities(p.provider, id),
+                    version: '1.0' as const,
+                  }))
+                if (added.length > 0) {
+                  store.updateProvider(p.provider, {
+                    ...current,
+                    models: [...current.models, ...added],
+                  })
+                }
+              })
+              .catch((err) => {
+                // Silent: provider may be temporarily unreachable or rate-limited
+                console.debug(`Auto model discovery skipped for ${p.provider}:`, err)
+              })
+          }
+        })
       })
     })
     serviceHub

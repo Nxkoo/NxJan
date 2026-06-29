@@ -35,7 +35,7 @@ import {
 import { useThreadManagement } from "@/hooks/useThreadManagement"
 import { useThreads } from "@/hooks/useThreads"
 import { useAssistant } from "@/hooks/useAssistant"
-import { Link, useNavigate } from "@tanstack/react-router"
+import { useNavigate } from "@tanstack/react-router"
 
 import { useCallback, useMemo, useState } from "react"
 import { useTranslation } from '@/i18n/react-i18next-compat'
@@ -114,15 +114,13 @@ function ProjectItem({
   return (
     <Collapsible open={isExpanded} onOpenChange={() => onToggleExpand(item.id)}>
       <SidebarMenuItem>
-        <div className="flex items-center w-full">
-          <SidebarMenuButton asChild>
-            <Link
-              to="/project/$projectId"
-              params={{ projectId: item.id }}
-            >
-              <FolderIcon className="text-foreground/70" size={18} />
-              <span className="font-medium">{item.name}</span>
-            </Link>
+        <div className="group/project flex items-center w-full">
+          <SidebarMenuButton
+            className="group-hover/project:bg-sidebar-accent group-hover/project:text-sidebar-accent-foreground"
+            onClick={() => onToggleExpand(item.id)}
+          >
+            <FolderIcon className="text-foreground/70" size={18} />
+            <span className="font-medium">{item.name}</span>
           </SidebarMenuButton>
           <CollapsibleTrigger asChild>
             <SidebarMenuAction
@@ -134,7 +132,7 @@ function ProjectItem({
           </CollapsibleTrigger>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <SidebarMenuAction showOnHover className="hover:bg-sidebar-foreground/8 right-7">
+              <SidebarMenuAction className="hover:bg-sidebar-foreground/8 right-7 md:opacity-0 group-hover/project:opacity-100 group-focus-within/project:opacity-100 data-[state=open]:opacity-100">
                 <MoreHorizontal />
                 <span className="sr-only">More</span>
               </SidebarMenuAction>
@@ -165,7 +163,7 @@ function ProjectItem({
         <CollapsibleContent>
           <SidebarMenuSub>
             {projectThreads.length > 0 ? (
-              <ProjectThreadList threads={projectThreads} projectId={item.id} projectName={item.name} isMobile={isMobile} />
+              <ProjectThreadList threads={projectThreads} projectName={item.name} isMobile={isMobile} />
             ) : null}
             <SidebarMenuSubItem>
               <SidebarMenuSubButton

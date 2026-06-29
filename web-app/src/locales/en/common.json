@@ -386,7 +386,14 @@
     "update": "Update",
     "searchProjects": "Search projects...",
     "noProjectsFound": "No projects found",
-    "tryDifferentSearch": "Try a different search term"
+    "tryDifferentSearch": "Try a different search term",
+    "showMore": "Show {{count}} more",
+    "showLess": "Show less",
+    "archive": "Archive",
+    "unarchive": "Unarchive",
+    "archivedSuccess": "Conversation archived",
+    "unarchivedSuccess": "Conversation unarchived",
+    "archivedConversations": "Archived conversations ({{count}})"
   },
   "codebase": {
     "title": "Codebase",

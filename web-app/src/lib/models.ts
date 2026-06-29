@@ -23,17 +23,20 @@ export const getModelCapabilities = (
 ): string[] => {
   const providerConfig = models[providerName as unknown as keyof typeof models]
 
-  const supportsToolCalls = Array.isArray(
-    providerConfig?.supportsToolCalls as unknown
-  )
-    ? (providerConfig.supportsToolCalls as unknown as string[])
-    : []
+  const rawTools = providerConfig?.supportsToolCalls
+  const rawImages = providerConfig?.supportsImages
 
-  const supportsImages = Array.isArray(
-    providerConfig?.supportsImages as unknown
-  )
-    ? (providerConfig.supportsImages as unknown as string[])
-    : []
+  const supportsToolCalls = Array.isArray(rawTools)
+    ? (rawTools as unknown as string[])
+    : rawTools === true
+      ? [modelId] // treat 'true' (dynamic providers) as support for this model
+      : []
+
+  const supportsImages = Array.isArray(rawImages)
+    ? (rawImages as unknown as string[])
+    : rawImages === true
+      ? [modelId]
+      : []
 
   return [
     ModelCapabilities.COMPLETION,

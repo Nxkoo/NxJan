@@ -1,10 +1,9 @@
 import { memo, useMemo, useState } from 'react'
 import { Link, useParams } from '@tanstack/react-router'
-import { MessageCircle, MoreHorizontal, Pencil, Trash2, X } from 'lucide-react'
+import { MessageCircle, MoreHorizontal, Pencil, Trash2, X, ChevronDown, ChevronUp, Archive, ArchiveX } from 'lucide-react'
 import { IconLoader2 } from '@tabler/icons-react'
 
 import { useThreads } from '@/hooks/useThreads'
-import { useThreadManagement } from '@/hooks/useThreadManagement'
 import { useIsThreadActive } from '@/hooks/useAppState'
 import { useChatSessions } from '@/stores/chat-session-store'
 import { useTranslation } from '@/i18n/react-i18next-compat'
@@ -26,17 +25,18 @@ import { cn } from '@/lib/utils'
 
 type ProjectThreadItemProps = {
   thread: Thread
-  projectId: string
   projectName: string
   isMobile: boolean
 }
 
 const ProjectThreadItem = memo(
-  ({ thread, projectId, projectName, isMobile }: ProjectThreadItemProps) => {
+  ({ thread, projectName, isMobile }: ProjectThreadItemProps) => {
     const { t } = useTranslation()
     const deleteThread = useThreads((state) => state.deleteThread)
     const renameThread = useThreads((state) => state.renameThread)
     const updateThread = useThreads((state) => state.updateThread)
+    const archiveThread = useThreads((state) => state.archiveThread)
+    const unarchiveThread = useThreads((state) => state.unarchiveThread)
 
     const [renameOpen, setRenameOpen] = useState(false)
     const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false)
@@ -120,6 +120,28 @@ const ProjectThreadItem = memo(
               <X className="size-4" />
               <span>{t('common:projects.removeFromProject')}</span>
             </DropdownMenuItem>
+            <DropdownMenuItem
+              onSelect={() => {
+                if (thread.metadata?.archived) {
+                  unarchiveThread(thread.id)
+                  toast.success(t('common:projects.unarchivedSuccess'))
+                } else {
+                  archiveThread(thread.id)
+                  toast.success(t('common:projects.archivedSuccess'))
+                }
+              }}
+            >
+              {thread.metadata?.archived ? (
+                <ArchiveX className="size-4" />
+              ) : (
+                <Archive className="size-4" />
+              )}
+              <span>
+                {thread.metadata?.archived
+                  ? t('common:projects.unarchive')
+                  : t('common:projects.archive')}
+              </span>
+            </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem
               variant="destructive"
@@ -166,28 +188,55 @@ ProjectThreadItem.displayName = 'ProjectThreadItem'
 
 type ProjectThreadListProps = {
   threads: Thread[]
-  projectId: string
   projectName: string
   isMobile: boolean
 }
 
 export const ProjectThreadList = memo(
-  ({ threads, projectId, projectName, isMobile }: ProjectThreadListProps) => {
+  ({ threads, projectName, isMobile }: ProjectThreadListProps) => {
+    const { t } = useTranslation()
+    const [showAll, setShowAll] = useState(false)
+    const LIMIT = 5
+
     const sortedThreads = useMemo(() => {
       return [...threads].sort((a, b) => (b.updated || 0) - (a.updated || 0))
     }, [threads])
 
+    const hasMore = sortedThreads.length > LIMIT
+    const visibleThreads = showAll ? sortedThreads : sortedThreads.slice(0, LIMIT)
+
     return (
       <>
-        {sortedThreads.map((thread) => (
+        {visibleThreads.map((thread) => (
           <ProjectThreadItem
             key={thread.id}
             thread={thread}
-            projectId={projectId}
             projectName={projectName}
             isMobile={isMobile}
           />
         ))}
+        {hasMore && (
+          <SidebarMenuSubItem>
+            <SidebarMenuSubButton
+              size="sm"
+              className="cursor-pointer"
+              onClick={() => setShowAll((prev) => !prev)}
+            >
+              <div className="flex items-center gap-2">
+                {showAll ? (
+                  <ChevronUp className="size-3.5 shrink-0" />
+                ) : (
+                  <ChevronDown className="size-3.5 shrink-0" />
+                )}
+                <span className="truncate">
+                  {showAll
+                    ? t('common:projects.showLess')
+                    : t('common:projects.showMore', { count: sortedThreads.length - LIMIT })}
+                </span>
+              </div>
+            </SidebarMenuSubButton>
+          </SidebarMenuSubItem>
+        )}
       </>
     )
   }

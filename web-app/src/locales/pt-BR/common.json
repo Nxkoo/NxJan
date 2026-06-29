@@ -316,7 +316,14 @@
     "noProjectsFound": "Nenhum projeto encontrado",
     "tryDifferentSearch": "Tente um termo de busca diferente",
     "uploadingFiles": "Processando arquivos…",
-    "processButton": "Adicionar"
+    "processButton": "Adicionar",
+    "showMore": "Mostrar mais {{count}}",
+    "showLess": "Mostrar menos",
+    "archive": "Arquivar",
+    "unarchive": "Desarquivar",
+    "archivedSuccess": "Conversa arquivada",
+    "unarchivedSuccess": "Conversa desarquivada",
+    "archivedConversations": "Conversas arquivadas ({{count}})"
   },
   "codebase": {
     "title": "Codebase",

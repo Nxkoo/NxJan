@@ -193,8 +193,8 @@ export function NavMain() {
     const newProject = await addFolder(name, assistantId)
     setProjectDialogOpen(false)
     navigate({
-      to: '/project/$projectId',
-      params: { projectId: newProject.id },
+      to: route.home,
+      search: { projectId: newProject.id },
     })
   }
 

@@ -28,7 +28,13 @@
     />
     <title>NxJan</title>
     <style>
-      /* Inlined so it applies on first paint (external CSS is injected late). */
+      /* Inlined so it applies on first paint (external CSS is injected late).
+         Loader palette follows the active theme by reading the same CSS
+         custom properties the rest of the app uses. The pre-paint script
+         below sets data-dark-style, so each selector resolves at parse
+         time to the right surface token. Hardcoded fallbacks match the
+         previous look so a user with a broken localStorage still sees
+         something sensible. */
       #initial-loader {
         position: fixed;
         inset: 0;
@@ -37,13 +43,28 @@
         align-items: center;
         justify-content: center;
         gap: 1.5rem;
-        background: #ffffea;
+        /* Light fallback: warm paper (nxjan / editorial) */
+        background: #fdf3d7;
+        background: var(--surface-1, #fdf3d7);
         z-index: 9999;
         opacity: 1;
         transition: opacity 0.3s ease-in-out;
       }
       .dark #initial-loader {
-        background: #0f1630;
+        /* Default dark = Jan Blue night desk */
+        background: var(--surface-1, #0f1630);
+      }
+      /* Editorial dark = warm paper at night, not blue terminal */
+      .dark[data-dark-style="editorial"] #initial-loader {
+        background: var(--surface-1, #181715);
+      }
+      /* Pearfy dark = deep orchard */
+      .dark[data-dark-style="pearfy"] #initial-loader {
+        background: var(--orchard-bg, #101110);
+      }
+      /* Pearfy light = cream paper (overrides :root default) */
+      [data-dark-style="pearfy"] #initial-loader {
+        background: var(--orchard-bg, #f8f4ea);
       }
       #initial-loader img {
         width: 5rem;
@@ -84,13 +105,22 @@
           sans-serif;
         font-size: 0.875rem;
         font-weight: 400;
+        /* Caption color tracks the active theme too. */
         color: #5a6a8a;
+        color: var(--muted-foreground, #5a6a8a);
         opacity: 0;
         /* Delayed so fast starts never flash the caption. */
         animation: caption-fade-in 0.3s ease-in-out 1s forwards;
       }
       .dark #initial-loader-caption {
-        color: #a8b4d0;
+        color: var(--muted-foreground, #a8b4d0);
+      }
+      /* Pearfy: leaf-ink muted caption, light + dark */
+      [data-dark-style="pearfy"] #initial-loader-caption {
+        color: var(--orchard-muted, #6f746b);
+      }
+      .dark[data-dark-style="pearfy"] #initial-loader-caption {
+        color: var(--orchard-muted, #989689);
       }
       @keyframes caption-fade-in {
         to {
@@ -124,13 +154,14 @@
           if (dark) document.documentElement.classList.add('dark')
 
           // Mirror the persisted dark style so the right surface palette
-          // (Jan Blue vs Editorial paper) is in effect before first paint.
+          // (Jan Blue, Editorial paper, or Pearfy orchard) is in effect
+          // before first paint.
           var interfaceRaw = localStorage.getItem('setting-appearance')
           if (interfaceRaw) {
             try {
               var iface = JSON.parse(interfaceRaw)
               var ds = iface && iface.state && iface.state.darkStyle
-              if (ds === 'jan' || ds === 'editorial') {
+              if (ds === 'jan' || ds === 'editorial' || ds === 'pearfy') {
                 document.documentElement.setAttribute('data-dark-style', ds)
               }
             } catch (_) {}
