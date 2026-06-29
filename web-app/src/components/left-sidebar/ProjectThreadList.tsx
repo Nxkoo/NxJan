@@ -1,7 +1,7 @@
-﻿import { memo, useMemo, useState } from 'react'
+import { memo, useMemo, useState } from 'react'
 import { Link, useParams } from '@tanstack/react-router'
 import { MessageCircle, MoreHorizontal, Pencil, Trash2, X } from 'lucide-react'
-import { Loader2 } from '@tabler/icons-react'
+import { IconLoader2 } from '@tabler/icons-react'
 
 import { useThreads } from '@/hooks/useThreads'
 import { useThreadManagement } from '@/hooks/useThreadManagement'
@@ -84,7 +84,7 @@ const ProjectThreadItem = memo(
             className="flex items-center gap-2"
           >
             {isActive ? (
-              <Loader2 className="size-3.5 shrink-0 animate-spin text-muted-foreground" />
+              <IconLoader2 className="size-3.5 shrink-0 animate-spin text-muted-foreground" />
             ) : (
               <MessageCircle className="size-3.5 shrink-0 text-muted-foreground/70" />
             )}
