@@ -109,7 +109,7 @@
     "threadScrollStickyTitle": "स्टिकी स्क्रॉल",
     "threadScrollStickyHint": "रीयल-टाइम उत्तर आने पर स्वतः अनुसरण करता है।",
     "tokenCounterCompact": "कॉम्पैक्ट टोकन काउंटर",
-    "tokenCounterCompactDesc": "टोकन काउंटर को चैट इनपुट के अंदर दिखाएं।",
+    "tokenCounterCompactDesc": "टोकन काउंटर को चैट इनपुट के अंदर दिखाएं। अक्षम होने पर, टोकन काउंटर इनपुट के ऊपर दिखाई देता है।",
     "codeBlockTitle": "कोड ब्लॉक",
     "codeBlockDesc": "सिंटैक्स हाइलाइटिंग शैली चुनें।",
     "showLineNumbers": "लाइन नंबर दिखाएं",

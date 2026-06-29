@@ -123,7 +123,7 @@
     "threadScrollStickyTitle": "スティッキースクロール",
     "threadScrollStickyHint": "返信がリアルタイムに流れてくるのに合わせて、自動的に追従します。",
     "tokenCounterCompact": "コンパクトなトークンカウンター",
-    "tokenCounterCompactDesc": "チャット入力内にトークンカウンターを表示します。無効にすると、トークンカウンターは入力の下に表示されます。",
+    "tokenCounterCompactDesc": "チャット入力内にトークンカウンターを表示します。無効にすると、トークンカウンターは入力の上に表示されます。",
     "codeBlockTitle": "コードブロック",
     "codeBlockDesc": "構文のハイライトスタイルを選択します。",
     "showLineNumbers": "行番号を表示",

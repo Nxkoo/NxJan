@@ -99,7 +99,7 @@
     "resetInterfaceSuccess": "Tampilan berhasil diatur ulang",
     "resetInterfaceSuccessDesc": "Semua pengaturan tampilan telah dikembalikan ke default.",
     "tokenCounterCompact": "Penghitung Token Ringkas",
-    "tokenCounterCompactDesc": "Tampilkan penghitung token di dalam input obrolan. Saat dinonaktifkan, penghitung token muncul di bawah input.",
+    "tokenCounterCompactDesc": "Tampilkan penghitung token di dalam input obrolan. Saat dinonaktifkan, penghitung token muncul di atas input.",
     "codeBlockTitle": "Blok Kode",
     "codeBlockDesc": "Pilih gaya penyorotan sintaks.",
     "showLineNumbers": "Tampilkan Nomor Baris",

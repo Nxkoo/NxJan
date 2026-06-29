@@ -107,7 +107,7 @@
     "resetCodeBlockSuccess": "Pomyślnie Przywrócono Styl Bloku Kodu",
     "resetCodeBlockSuccessDesc": "Styl bloku kodu został przywrócony do ustawień domyślnych.",
     "tokenCounterCompact": "Kompaktowy Licznik Tokenów",
-    "tokenCounterCompactDesc": "Pokaż licznik tokenów wewnątrz pola wprowadzania czatu. Po wyłączeniu, licznik tokenów pojawia się poniżej pola wprowadzania."
+    "tokenCounterCompactDesc": "Pokaż licznik tokenów wewnątrz pola wprowadzania czatu. Po wyłączeniu, licznik tokenów pojawia się powyżej pola wprowadzania."
   },
   "hardware": {
     "os": "System Operacyjny",

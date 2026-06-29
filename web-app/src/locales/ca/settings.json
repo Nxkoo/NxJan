@@ -107,7 +107,7 @@
     "threadScrollStickyTitle": "Desplaçament adherent",
     "threadScrollStickyHint": "Segueix automàticament les respostes mentre arriben en temps real.",
     "tokenCounterCompact": "Comptador de tokens compacte",
-    "tokenCounterCompactDesc": "Mostra el comptador de tokens dins de l’entrada del xat. Si es desactiva, apareix sota el camp.",
+    "tokenCounterCompactDesc": "Mostra el comptador de tokens dins de l’entrada del xat. Si es desactiva, apareix a sobre del camp.",
     "codeBlockTitle": "Bloc de codi",
     "codeBlockDesc": "Tria un estil de ressaltat de sintaxi.",
     "showLineNumbers": "Mostra els números de línia",

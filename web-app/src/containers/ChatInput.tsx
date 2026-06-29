@@ -1712,6 +1712,15 @@ const ChatInput = memo(function ChatInput({
 
   return (
     <div className="relative">
+      {!effectiveAgentMode &&
+        !tokenCounterCompact &&
+        !initialMessage &&
+        (threadMessages?.length > 0 || prompt.trim().length > 0) && (
+          <div className="flex w-full justify-end px-2 pb-2">
+            <TokenCounter messages={threadMessages || []} />
+          </div>
+        )}
+
       <div className="relative">
         <div
           className={cn(
@@ -2421,16 +2430,6 @@ const ChatInput = memo(function ChatInput({
           </div>
         </div>
       )}
-
-      {isModelActive &&
-        !effectiveAgentMode &&
-        !tokenCounterCompact &&
-        !initialMessage &&
-        (threadMessages?.length > 0 || prompt.trim().length > 0) && (
-          <div className="flex-1 w-full flex justify-start px-2">
-            <TokenCounter messages={threadMessages || []} />
-          </div>
-        )}
 
       <JanBrowserExtensionDialog
         open={extensionDialogOpen}

@@ -128,7 +128,7 @@
     "threadScrollStickyTitle": "Rolagem aderente",
     "threadScrollStickyHint": "Segue automaticamente conforme as respostas são transmitidas em tempo real.",
     "tokenCounterCompact": "Contador de Tokens Compacto",
-    "tokenCounterCompactDesc": "Mostrar contador de tokens dentro da entrada do chat. Quando desabilitado, o contador de tokens aparece abaixo da entrada.",
+    "tokenCounterCompactDesc": "Mostrar contador de tokens dentro da entrada do chat. Quando desabilitado, o contador de tokens aparece acima da entrada.",
     "codeBlockTitle": "Bloco de Código",
     "codeBlockDesc": "Escolher um estilo de realce de sintaxe.",
     "showLineNumbers": "Mostrar Números de Linha",

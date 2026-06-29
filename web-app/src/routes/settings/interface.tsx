@@ -9,6 +9,7 @@ import { FontSizeSwitcher } from '@/containers/FontSizeSwitcher'
 import { AccentColorPicker } from '@/containers/AccentColorPicker'
 import { DarkStyleSwitcher } from '@/containers/DarkStyleSwitcher'
 import { NotificationPositionSwitcher } from '@/containers/NotificationPositionSwitcher'
+import { TokenCounterCompactSwitcher } from '@/containers/TokenCounterCompactSwitcher'
 import { useInterfaceSettings } from '@/hooks/useInterfaceSettings'
 import { useTheme } from '@/hooks/useTheme'
 import { Button } from '@/components/ui/button'
@@ -85,6 +86,11 @@ function InterfaceSettings() {
                     onCheckedChange={setShowTokenSpeed}
                   />
                 }
+              />
+              <CardItem
+                title={t('settings:interface.tokenCounterCompact')}
+                description={t('settings:interface.tokenCounterCompactDesc')}
+                actions={<TokenCounterCompactSwitcher />}
               />
               <CardItem
                 title={t('settings:interface.coloredUserBubble')}
