@@ -26,6 +26,7 @@ import { useServiceHub } from '@/hooks/useServiceHub'
 import { getLastUsedModel } from '@/utils/getModelToStart'
 import { ChevronsUpDown } from 'lucide-react'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
+import { useKeyboardListNavigation } from '@/hooks/useKeyboardListNavigation'
 
 type DropdownModelProviderProps = {
   model?: ThreadModel
@@ -75,7 +76,9 @@ const DropdownModelProvider = memo(function DropdownModelProvider({
   // Search state
   const [open, setOpen] = useState(false)
   const [searchValue, setSearchValue] = useState('')
+  const [highlightedIndex, setHighlightedIndex] = useState(-1)
   const searchInputRef = useRef<HTMLInputElement>(null)
+  const listRef = useRef<HTMLDivElement>(null)
 
   // Helper function to check if a model exists in providers
   const checkModelExists = useCallback(
@@ -239,11 +242,13 @@ const DropdownModelProvider = memo(function DropdownModelProvider({
   }, [open, providers, checkAndUpdateModelVisionCapability])
 
   // Reset search value when dropdown closes
-  const onOpenChange = useCallback((open: boolean) => {
-    setOpen(open)
-    if (!open) {
+  const onOpenChange = useCallback((isOpen: boolean) => {
+    setOpen(isOpen)
+    if (!isOpen) {
+      setHighlightedIndex(-1)
       requestAnimationFrame(() => setSearchValue(''))
     } else {
+      setHighlightedIndex(0)
       // Focus search input when opening
       setTimeout(() => {
         searchInputRef.current?.focus()
@@ -395,6 +400,16 @@ const DropdownModelProvider = memo(function DropdownModelProvider({
     return groups
   }, [filteredItems, providers, searchValue, favoriteModels])
 
+  const selectableItems = useMemo(() => {
+    if (searchValue) return Object.values(groupedItems).flat()
+    return [...favoriteItems, ...Object.values(groupedItems).flat()]
+  }, [favoriteItems, groupedItems, searchValue])
+
+  useEffect(() => {
+    if (!open) return
+    setHighlightedIndex(selectableItems.length > 0 ? 0 : -1)
+  }, [open, searchValue, selectableItems.length])
+
   const handleSelect = useCallback(
     async (searchableModel: SearchableModel) => {
       // Immediately update display to prevent double-click issues
@@ -457,6 +472,28 @@ const DropdownModelProvider = memo(function DropdownModelProvider({
     ]
   )
 
+  const getOptionIndex = useCallback(
+    (item: SearchableModel) =>
+      selectableItems.findIndex((entry) => entry.value === item.value),
+    [selectableItems]
+  )
+
+  const { handleKeyDown } = useKeyboardListNavigation({
+    isOpen: open,
+    itemCount: selectableItems.length,
+    highlightedIndex,
+    setHighlightedIndex,
+    onOpen: () => onOpenChange(true),
+    onClose: () => onOpenChange(false),
+    onSelect: (index) => {
+      const item = selectableItems[index]
+      if (item) {
+        void handleSelect(item)
+      }
+    },
+    listRef,
+  })
+
   const currentModel = selectedModel?.id
     ? getModelBy(selectedModel?.id)
     : undefined
@@ -469,10 +506,11 @@ const DropdownModelProvider = memo(function DropdownModelProvider({
   return (
     <Popover open={open} onOpenChange={onOpenChange}>
         <PopoverTrigger asChild>
-          <div className="border border-border-soft bg-surface-3 relative z-20 px-3.5 py-1.5 flex items-center gap-1.5 rounded-xl shadow-none transition-colors hover:bg-paper-soft">
+          <div className="border border-border-soft bg-surface-3 relative z-20 flex min-w-0 max-w-[min(100%,18rem)] items-center gap-1.5 overflow-hidden rounded-xl px-3.5 py-1.5 shadow-none transition-colors hover:bg-paper-soft">
             <button
               type="button"
-              className="font-medium cursor-pointer flex items-center gap-1.5 relative z-20 min-w-0"
+              className="font-medium cursor-pointer flex min-w-0 flex-1 items-center gap-1.5 relative z-20"
+              onKeyDown={handleKeyDown}
             >
               {provider && (
                 <div className="shrink-0">
@@ -483,7 +521,7 @@ const DropdownModelProvider = memo(function DropdownModelProvider({
                 <TooltipTrigger asChild>
                   <span
                     className={cn(
-                      'text-foreground truncate leading-normal',
+                      'min-w-0 flex-1 truncate text-foreground leading-normal',
                       !selectedModel?.id && 'text-muted-foreground'
                     )}
                   >
@@ -497,7 +535,7 @@ const DropdownModelProvider = memo(function DropdownModelProvider({
           {currentModel?.settings &&
             provider &&
             provider.provider === 'llamacpp' && (
-              <div onClick={(e) => e.stopPropagation()}>
+              <div className="shrink-0" onClick={(e) => e.stopPropagation()}>
                 <ModelSetting
                   model={currentModel as Model}
                   provider={provider}
@@ -532,6 +570,7 @@ const DropdownModelProvider = memo(function DropdownModelProvider({
               ref={searchInputRef}
               value={searchValue}
               onChange={(e) => setSearchValue(e.target.value)}
+              onKeyDown={handleKeyDown}
               placeholder={t('common:searchModels')}
               className="text-sm font-normal outline-0"
             />
@@ -547,7 +586,7 @@ const DropdownModelProvider = memo(function DropdownModelProvider({
           </div>
 
           {/* Model list */}
-          <div className="max-h-80 overflow-y-auto">
+          <div ref={listRef} className="max-h-80 overflow-y-auto">
             {Object.keys(groupedItems).length === 0 && searchValue ? (
               <div className="py-3 px-4 text-sm ">
                 {t('common:noModelsFoundFor', { searchValue })}
@@ -566,6 +605,7 @@ const DropdownModelProvider = memo(function DropdownModelProvider({
 
                     {/* Favorite models */}
                     {favoriteItems.map((searchableModel) => {
+                      const optionIndex = getOptionIndex(searchableModel)
                       const isSelected =
                         selectedModel?.id === searchableModel.model.id &&
                         selectedProvider === searchableModel.provider.provider
@@ -575,13 +615,18 @@ const DropdownModelProvider = memo(function DropdownModelProvider({
                       return (
                         <div
                           key={`fav-${searchableModel.value}`}
+                          data-keyboard-option
+                          data-keyboard-index={optionIndex}
                           onClick={() => handleSelect(searchableModel)}
+                          onMouseEnter={() => setHighlightedIndex(optionIndex)}
                           className={cn(
                             'mx-1 mb-1 px-2 py-1.5 rounded-sm cursor-pointer flex items-center gap-2 transition-all duration-200',
                             'hover:bg-secondary/40',
                             // Selected state needs stronger contrast than the surrounding secondary tint.
                             isSelected &&
-                              'bg-primary/15 hover:bg-primary/15 ring-1 ring-primary/40'
+                              'bg-primary/15 hover:bg-primary/15 ring-1 ring-primary/40',
+                            highlightedIndex === optionIndex &&
+                              'bg-secondary/60'
                           )}
                         >
                           <div className="flex items-center gap-1 flex-1 min-w-0">
@@ -664,6 +709,7 @@ const DropdownModelProvider = memo(function DropdownModelProvider({
                         <></>
                       ) : (
                         models.map((searchableModel) => {
+                          const optionIndex = getOptionIndex(searchableModel)
                           const isSelected =
                             selectedModel?.id === searchableModel.model.id &&
                             selectedProvider ===
@@ -674,12 +720,17 @@ const DropdownModelProvider = memo(function DropdownModelProvider({
                           return (
                             <div
                               key={searchableModel.value}
+                              data-keyboard-option
+                              data-keyboard-index={optionIndex}
                               onClick={() => handleSelect(searchableModel)}
+                              onMouseEnter={() => setHighlightedIndex(optionIndex)}
                               className={cn(
                                 'mx-1 mb-1 px-2 py-1.5 rounded-sm cursor-pointer flex items-center gap-2 transition-all duration-200',
                                 'hover:bg-secondary/40',
                                 isSelected &&
-                                  'bg-primary/15 hover:bg-primary/15 ring-1 ring-primary/40'
+                                  'bg-primary/15 hover:bg-primary/15 ring-1 ring-primary/40',
+                                highlightedIndex === optionIndex &&
+                                  'bg-secondary/60'
                               )}
                             >
                               <div className="flex items-center gap-2 flex-1 min-w-0">

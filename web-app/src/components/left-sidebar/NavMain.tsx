@@ -34,13 +34,12 @@ import {
   type BotIconHandle,
 } from '@/components/animated-icon/bot'
 import AddProjectDialog from '@/containers/dialogs/AddProjectDialog'
-import { SearchDialog } from '@/containers/dialogs/SearchDialog'
 import { useThreadManagement } from '@/hooks/useThreadManagement'
-import { useSearchDialog } from '@/hooks/useSearchDialog'
 import { useProjectDialog } from '@/hooks/useProjectDialog'
 import { useAgentMode } from '@/hooks/useAgentMode'
 import { TEMPORARY_CHAT_ID } from '@/constants/chat'
 import { PlatformShortcuts, ShortcutAction } from '@/lib/shortcuts'
+import { useCommandCenter } from '@/hooks/useCommandCenter'
 
 type AnimatedIconHandle =
   | SearchIconHandle
@@ -173,12 +172,12 @@ export function NavMain() {
   const { t } = useTranslation()
   const navigate = useNavigate()
   const { addFolder } = useThreadManagement()
-  const { open: searchOpen, setOpen: setSearchOpen } = useSearchDialog()
+  const setCommandCenterOpen = useCommandCenter((state) => state.setOpen)
   const { open: projectDialogOpen, setOpen: setProjectDialogOpen } =
     useProjectDialog()
   const navMainItems = getNavMainItems(
     () => setProjectDialogOpen(true),
-    () => setSearchOpen(true),
+    () => setCommandCenterOpen(true),
     () => {
       useAgentMode.getState().removeThread(TEMPORARY_CHAT_ID)
       navigate({ to: route.home })
@@ -246,8 +245,6 @@ export function NavMain() {
         editingKey={null}
         onSave={handleCreateProject}
       />
-
-      <SearchDialog open={searchOpen} onOpenChange={setSearchOpen} />
     </>
   )
 }

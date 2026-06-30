@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useCallback, useMemo, useRef, useState } from 'react'
 import { useRouter } from '@tanstack/react-router'
 import {
   CheckCircle2,
@@ -27,6 +27,7 @@ import {
 } from '@/hooks/useCodebase'
 import { useMCPServers } from '@/hooks/useMCPServers'
 import { useTranslation } from '@/i18n/react-i18next-compat'
+import { useKeyboardListNavigation } from '@/hooks/useKeyboardListNavigation'
 
 type ProjectCodebaseChipProps = {
   projectId?: string
@@ -95,7 +96,9 @@ export default function ProjectCodebaseChip({
     useCodebases(projectId)
   const mcpServers = useMCPServers((state) => state.mcpServers)
   const tools = useAppState((state) => state.tools)
-  void compact
+  const [open, setOpen] = useState(false)
+  const [highlightedIndex, setHighlightedIndex] = useState(-1)
+  const codebaseListRef = useRef<HTMLUListElement>(null)
 
   const resolution = useMemo(
     () =>
@@ -106,6 +109,39 @@ export default function ProjectCodebaseChip({
       }),
     [codebases, mcpServers, tools]
   )
+
+  const selectableCodebases = useMemo(
+    () => (activeCount > 1 ? codebases : []),
+    [activeCount, codebases]
+  )
+
+  const handleCodebaseSelect = useCallback(
+    (index: number) => {
+      const entry = selectableCodebases[index]
+      if (!entry) return
+      setCodebaseEnabled(entry.id, entry.enabled === false)
+    },
+    [selectableCodebases, setCodebaseEnabled]
+  )
+
+  const handleOpenChange = useCallback((isOpen: boolean) => {
+    setOpen(isOpen)
+    setHighlightedIndex(isOpen ? 0 : -1)
+  }, [])
+
+  const { handleKeyDown } = useKeyboardListNavigation({
+    isOpen: open,
+    itemCount: selectableCodebases.length,
+    highlightedIndex,
+    setHighlightedIndex,
+    onOpen: () => {
+      setOpen(true)
+      setHighlightedIndex(0)
+    },
+    onClose: () => setOpen(false),
+    onSelect: handleCodebaseSelect,
+    listRef: codebaseListRef,
+  })
 
   if (!projectId || codebases.length === 0) return null
 
@@ -138,7 +174,7 @@ export default function ProjectCodebaseChip({
   })()
 
   return (
-    <Popover>
+    <Popover open={open} onOpenChange={handleOpenChange}>
       <PopoverTrigger asChild>
         <button
           type="button"
@@ -147,7 +183,8 @@ export default function ProjectCodebaseChip({
                outline (subtle by default, only colored when the status
                is a non-default one). The inner status pill is small
                enough to read like a label, not a sub-component. */
-            'group inline-flex max-w-full items-center gap-2 rounded-full border px-3 py-1 text-xs font-semibold leading-none transition-all',
+            'group inline-flex min-w-0 items-center gap-2 overflow-hidden rounded-full border px-3 py-1 text-xs font-semibold leading-none transition-all',
+            compact ? 'max-w-[min(100%,18rem)]' : 'max-w-[min(100%,22rem)]',
             'shadow-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/60',
             'border-border-soft bg-surface-3 text-foreground hover:bg-paper-soft',
             tone === 'success' &&
@@ -162,6 +199,7 @@ export default function ProjectCodebaseChip({
               'border-destructive/30 bg-destructive/10 text-destructive hover:bg-destructive/15'
           )}
           data-testid="codebase-chat-chip"
+          onKeyDown={handleKeyDown}
         >
           <TonalIcon
             className={cn(
@@ -173,10 +211,12 @@ export default function ProjectCodebaseChip({
               tone === 'error' && 'text-destructive'
             )}
           />
-          <span className="truncate text-foreground/90">{chipLabel}</span>
+          <span className="min-w-0 flex-1 truncate text-foreground/90">
+            {chipLabel}
+          </span>
           <span
             className={cn(
-              'inline-flex shrink-0 items-center gap-1 rounded-full border px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide',
+              'hidden shrink-0 items-center gap-1 rounded-full border px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide min-[620px]:inline-flex',
               tone === 'success' &&
                 'border-[var(--green)]/40 bg-[var(--green-soft)] text-[var(--green)]',
               tone === 'muted' &&
@@ -196,6 +236,7 @@ export default function ProjectCodebaseChip({
       <PopoverContent
         align="start"
         className="w-80 rounded-2xl border border-border-soft bg-popover p-0 text-card-foreground shadow-xl shadow-black/10"
+        onKeyDown={handleKeyDown}
       >
         <div className="border-b border-dashed border-border-soft p-3">
           <div className="flex items-start justify-between gap-3">
@@ -269,8 +310,12 @@ export default function ProjectCodebaseChip({
             <p className="text-[10px] font-semibold uppercase tracking-wide text-muted-foreground/90">
               {t('common:codebase.linkedCodebases')}
             </p>
-            <ul className="space-y-1.5" data-testid="codebase-popover-list">
-              {codebases.map((entry) => {
+            <ul
+              ref={codebaseListRef}
+              className="space-y-1.5"
+              data-testid="codebase-popover-list"
+            >
+              {codebases.map((entry, index) => {
                 const display = getCodebaseDisplayName(entry)
                 const isActive =
                   entry.enabled !== false &&
@@ -280,9 +325,14 @@ export default function ProjectCodebaseChip({
                     key={entry.id}
                     className={cn(
                       'flex items-center justify-between gap-2 rounded-xl border px-2.5 py-1.5',
-                      'border-border-soft bg-background/60'
+                      'border-border-soft bg-background/60',
+                      highlightedIndex === index &&
+                        'bg-secondary/70 ring-1 ring-ring/40'
                     )}
                     data-testid="codebase-popover-row"
+                    data-keyboard-option
+                    data-keyboard-index={index}
+                    onMouseEnter={() => setHighlightedIndex(index)}
                   >
                     <div className="min-w-0 flex-1">
                       <div className="flex items-center gap-1.5">

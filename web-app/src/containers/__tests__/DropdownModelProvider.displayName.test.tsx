@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
-import { render, screen, cleanup } from '@testing-library/react'
+import { render, screen, cleanup, fireEvent } from '@testing-library/react'
 import '@testing-library/jest-dom'
 import DropdownModelProvider from '../DropdownModelProvider'
 import { getModelDisplayName } from '@/lib/utils'
@@ -274,5 +274,35 @@ describe('DropdownModelProvider - Display Name Integration', () => {
     expect(screen.getAllByText('Short Name').length).toBeGreaterThanOrEqual(1)
     // Custom Model 1 is also in the dropdown
     expect(screen.getAllByText('Custom Model 1').length).toBeGreaterThanOrEqual(1)
+  })
+
+  it('selects a filtered model with keyboard navigation', () => {
+    const mockSelectModelProvider = vi.fn()
+
+    vi.mocked(useModelProvider).mockReturnValue({
+      providers: mockProviders,
+      selectedProvider: 'llamacpp',
+      selectedModel: mockSelectedModel,
+      getProviderByName: vi.fn((name: string) =>
+        mockProviders.find((p: ModelProvider) => p.provider === name)
+      ),
+      selectModelProvider: mockSelectModelProvider,
+      getModelBy: vi.fn((id: string) =>
+        mockProviders[0].models.find((m: Model) => m.id === id)
+      ),
+      updateProvider: vi.fn(),
+    } as MockHookReturn)
+
+    render(<DropdownModelProvider />)
+
+    const input = screen.getByPlaceholderText('common:searchModels')
+    fireEvent.change(input, { target: { value: 'Short' } })
+    fireEvent.keyDown(input, { key: 'ArrowDown' })
+    fireEvent.keyDown(input, { key: 'Enter' })
+
+    expect(mockSelectModelProvider).toHaveBeenCalledWith(
+      'llamacpp',
+      'model2-very-long-filename.gguf'
+    )
   })
 })

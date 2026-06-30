@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState, useCallback } from 'react'
+import { useMemo, useRef, useState, useCallback, useEffect } from 'react'
 import {
   Popover,
   PopoverContent,
@@ -10,6 +10,7 @@ import { IconChevronDown, IconX } from '@tabler/icons-react'
 import ProvidersAvatar from '@/containers/ProvidersAvatar'
 import Capabilities from '@/containers/Capabilities'
 import { isRouterModelSelectable } from '@/lib/mcp-router-model-filter'
+import { useKeyboardListNavigation } from '@/hooks/useKeyboardListNavigation'
 
 type Entry = {
   model: Model
@@ -47,7 +48,9 @@ export function McpRouterModelPicker({
 }: McpRouterModelPickerProps) {
   const [open, setOpen] = useState(false)
   const [searchValue, setSearchValue] = useState('')
+  const [highlightedIndex, setHighlightedIndex] = useState(-1)
   const searchInputRef = useRef<HTMLInputElement>(null)
+  const listRef = useRef<HTMLDivElement>(null)
 
   const availableModels = useMemo((): Entry[] => {
     // Dedupe by `${provider}:${modelId}` — provider model lists can carry
@@ -93,6 +96,11 @@ export function McpRouterModelPicker({
     return groups
   }, [filteredModels])
 
+  const selectableModels = useMemo(
+    () => Object.values(groupedModels).flat(),
+    [groupedModels]
+  )
+
   const current = useMemo(() => {
     if (!selectedModelId || !selectedProvider) return undefined
     return availableModels.find(
@@ -114,10 +122,41 @@ export function McpRouterModelPicker({
     setOpen(isOpen)
     if (!isOpen) {
       setSearchValue('')
+      setHighlightedIndex(-1)
     } else {
+      setHighlightedIndex(0)
       setTimeout(() => searchInputRef.current?.focus(), 100)
     }
   }, [])
+
+  const getOptionIndex = useCallback(
+    (entry: Entry) =>
+      selectableModels.findIndex(
+        (item) =>
+          item.providerName === entry.providerName &&
+          item.model.id === entry.model.id
+      ),
+    [selectableModels]
+  )
+
+  const { handleKeyDown } = useKeyboardListNavigation({
+    isOpen: open,
+    itemCount: selectableModels.length,
+    highlightedIndex,
+    setHighlightedIndex,
+    onOpen: () => handleOpenChange(true),
+    onClose: () => handleOpenChange(false),
+    onSelect: (index) => {
+      const entry = selectableModels[index]
+      if (entry) handleSelect(entry)
+    },
+    listRef,
+  })
+
+  useEffect(() => {
+    if (!open) return
+    setHighlightedIndex(selectableModels.length > 0 ? 0 : -1)
+  }, [open, searchValue, selectableModels.length])
 
   return (
     <Popover open={open} onOpenChange={handleOpenChange}>
@@ -127,9 +166,10 @@ export function McpRouterModelPicker({
           size="sm"
           disabled={disabled}
           {...(ariaLabel ? { 'aria-label': ariaLabel } : {})}
-          className="max-w-[min(100%,320px)] justify-between"
+          className="max-w-[min(100%,20rem)] justify-between"
+          onKeyDown={handleKeyDown}
         >
-          <span className="flex items-center gap-2 truncate leading-normal">
+          <span className="flex min-w-0 flex-1 items-center gap-2 truncate leading-normal">
             {current ? (
               <>
                 <span
@@ -142,12 +182,14 @@ export function McpRouterModelPicker({
                 >
                   {current.providerName}
                 </span>
-                <span className="truncate" title={current.model.id}>
+                <span className="min-w-0 flex-1 truncate" title={current.model.id}>
                   {getModelDisplayName(current.model)}
                 </span>
               </>
             ) : (
-              <span className="text-muted-foreground">{placeholder}</span>
+              <span className="min-w-0 truncate text-muted-foreground">
+                {placeholder}
+              </span>
             )}
           </span>
           <IconChevronDown className="size-4 shrink-0 text-muted-foreground" />
@@ -165,6 +207,7 @@ export function McpRouterModelPicker({
               ref={searchInputRef}
               value={searchValue}
               onChange={(e) => setSearchValue(e.target.value)}
+              onKeyDown={handleKeyDown}
               placeholder={searchPlaceholder}
               className="text-sm font-normal outline-0 w-full bg-transparent"
             />
@@ -179,7 +222,7 @@ export function McpRouterModelPicker({
             )}
           </div>
 
-          <div className="max-h-[300px] overflow-y-auto">
+          <div ref={listRef} className="max-h-[300px] overflow-y-auto">
             {Object.keys(groupedModels).length === 0 ? (
               <div className="py-3 px-4 text-sm text-muted-foreground">
                 {searchValue.trim()
@@ -207,6 +250,7 @@ export function McpRouterModelPicker({
                       </div>
 
                       {entries.map((e) => {
+                        const optionIndex = getOptionIndex(e)
                         const isSelected =
                           selectedModelId === e.model.id &&
                           selectedProvider === e.providerName
@@ -216,12 +260,17 @@ export function McpRouterModelPicker({
                           <div
                             key={`${e.providerName}:${e.model.id}`}
                             title={e.model.id}
+                            data-keyboard-option
+                            data-keyboard-index={optionIndex}
                             onClick={() => handleSelect(e)}
+                            onMouseEnter={() => setHighlightedIndex(optionIndex)}
                             className={cn(
                               'mx-1 mb-1 px-2 py-1.5 rounded-sm cursor-pointer flex items-center gap-2 transition-all duration-200',
                               'hover:bg-secondary/40',
                               isSelected &&
-                                'bg-secondary/60 hover:bg-secondary/60'
+                                'bg-secondary/60 hover:bg-secondary/60',
+                              highlightedIndex === optionIndex &&
+                                'bg-secondary/50'
                             )}
                           >
                             <div className="flex items-center gap-2 flex-1 min-w-0">

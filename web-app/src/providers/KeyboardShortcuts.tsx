@@ -1,6 +1,5 @@
 import { useKeyboardShortcut } from '@/hooks/useHotkeys'
 import { useLeftPanel } from '@/hooks/useLeftPanel'
-import { useSearchDialog } from '@/hooks/useSearchDialog'
 import { useProjectDialog } from '@/hooks/useProjectDialog'
 import { useRouter } from '@tanstack/react-router'
 import { route } from '@/constants/routes'
@@ -8,11 +7,12 @@ import { PlatformShortcuts, ShortcutAction } from '@/lib/shortcuts'
 import { useAgentMode } from '@/hooks/useAgentMode'
 import { useAssistantSwitcher } from '@/hooks/useAssistantSwitcher'
 import { TEMPORARY_CHAT_ID } from '@/constants/chat'
+import { useCommandCenter } from '@/hooks/useCommandCenter'
 
 export function KeyboardShortcutsProvider() {
   const { open, setLeftPanel } = useLeftPanel()
-  const { setOpen: setSearchOpen } = useSearchDialog()
   const { setOpen: setProjectDialogOpen } = useProjectDialog()
+  const setCommandCenterOpen = useCommandCenter((state) => state.setOpen)
   const router = useRouter()
 
   // Get shortcut specs from centralized configuration
@@ -70,7 +70,7 @@ export function KeyboardShortcutsProvider() {
   useKeyboardShortcut({
     ...searchShortcut,
     callback: () => {
-      setSearchOpen(true)
+      setCommandCenterOpen(true)
     },
   })
 
