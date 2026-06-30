@@ -1,4 +1,4 @@
-import { Folder, Loader2, MoreHorizontal, Pencil, Trash2, X } from 'lucide-react'
+import { Folder, Loader2, MoreHorizontal, Pencil, Trash2, X, ChevronDown, ChevronUp, Archive, ArchiveX } from 'lucide-react'
 import { useThreads } from '@/hooks/useThreads'
 import { useIsThreadActive } from '@/hooks/useAppState'
 import { useChatSessions } from '@/stores/chat-session-store'
@@ -49,6 +49,9 @@ const ThreadItem = memo(
     const { t } = useTranslation()
     const [renameOpen, setRenameOpen] = useState(false)
     const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false)
+
+    const archiveThread = useThreads((state) => state.archiveThread)
+    const unarchiveThread = useThreads((state) => state.unarchiveThread)
 
     const serviceHub = useServiceHub()
     const getMessages = useMessages((state) => state.getMessages)
@@ -152,9 +155,9 @@ const ThreadItem = memo(
     const isSelected = currentThreadId === thread.id
 
     return (
-      <SidebarMenuItem>
+      <SidebarMenuItem className="group/chat relative">
         {currentProjectId ?
-          <Link to="/threads/$threadId" params={{ threadId: thread.id }} className={cn("bg-surface-3 dark:bg-surface-3 mb-2 px-4 py-4 border border-border-soft hover:bg-paper-soft dark:hover:bg-paper-soft rounded-xl block max-w-full overflow-hidden", isSelected && "border-primary")}>
+          <Link to="/threads/$threadId" params={{ threadId: thread.id }} className={cn("bg-surface-3 dark:bg-surface-3 mb-2 px-4 py-4 border border-border-soft hover:bg-paper-soft dark:hover:bg-paper-soft rounded-xl block max-w-full overflow-hidden group-hover/chat:border-sidebar-accent", isSelected && "border-primary")}>
               <div className="flex items-center gap-1.5 min-w-0">
                 {isActive && (
                   <Loader2 className="size-3 shrink-0 animate-spin text-muted-foreground" />
@@ -168,7 +171,7 @@ const ThreadItem = memo(
               )}
           </Link>
           :
-          <SidebarMenuButton asChild isActive={isSelected}>
+          <SidebarMenuButton asChild isActive={isSelected} className="group-hover/chat:bg-sidebar-accent group-hover/chat:text-sidebar-accent-foreground">
             <Link to="/threads/$threadId" params={{ threadId: thread.id }}>
               {isActive && (
                 <Loader2 className="size-3 shrink-0 animate-spin text-muted-foreground" />
@@ -180,8 +183,7 @@ const ThreadItem = memo(
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <SidebarMenuAction
-              showOnHover
-              className={cn("hover:bg-sidebar-foreground/8", currentProjectId && 'mt-4 mr-2')}
+              className={cn("hover:bg-sidebar-foreground/8 group-hover/chat:bg-sidebar-accent group-hover/chat:text-sidebar-accent-foreground md:opacity-0 group-hover/chat:opacity-100 group-focus-within/chat:opacity-100 data-[state=open]:opacity-100", currentProjectId && 'mt-4 mr-2')}
             >
               <MoreHorizontal />
               <span className="sr-only">More</span>
@@ -195,6 +197,28 @@ const ThreadItem = memo(
             <DropdownMenuItem onSelect={() => setRenameOpen(true)}>
               <Pencil className="size-4" />
               <span>{t('common:rename')}</span>
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              onSelect={() => {
+                if (thread.metadata?.archived) {
+                  unarchiveThread(thread.id)
+                  toast.success(t('common:projects.unarchivedSuccess'))
+                } else {
+                  archiveThread(thread.id)
+                  toast.success(t('common:projects.archivedSuccess'))
+                }
+              }}
+            >
+              {thread.metadata?.archived ? (
+                <ArchiveX className="size-4" />
+              ) : (
+                <Archive className="size-4" />
+              )}
+              <span>
+                {thread.metadata?.archived
+                  ? t('common:projects.unarchive')
+                  : t('common:projects.archive')}
+              </span>
             </DropdownMenuItem>
             <DropdownMenuSub>
               <DropdownMenuSubTrigger className="gap-2">
@@ -289,10 +313,13 @@ const ThreadItem = memo(
 type ThreadListProps = {
   threads: Thread[]
   currentProjectId?: string
+  limit?: number
 }
 
-function ThreadList({ threads, currentProjectId }: ThreadListProps) {
+function ThreadList({ threads, currentProjectId, limit = 5 }: ThreadListProps) {
+  const { t } = useTranslation()
   const { isMobile } = useSidebar()
+  const [showAll, setShowAll] = useState(false)
 
   const sortedThreads = useMemo(() => {
     return [...threads].sort((a, b) => {
@@ -300,9 +327,12 @@ function ThreadList({ threads, currentProjectId }: ThreadListProps) {
     })
   }, [threads])
 
+  const hasMore = sortedThreads.length > limit
+  const visibleThreads = showAll ? sortedThreads : sortedThreads.slice(0, limit)
+
   return (
     <>
-      {sortedThreads.map((thread) => (
+      {visibleThreads.map((thread) => (
         <ThreadItem
           key={thread.id}
           thread={thread}
@@ -310,6 +340,26 @@ function ThreadList({ threads, currentProjectId }: ThreadListProps) {
           currentProjectId={currentProjectId}
         />
       ))}
+      {hasMore && (
+        <SidebarMenuItem>
+          <SidebarMenuButton
+            size="sm"
+            className="cursor-pointer"
+            onClick={() => setShowAll((prev) => !prev)}
+          >
+            {showAll ? (
+              <ChevronUp className="size-3.5 shrink-0" />
+            ) : (
+              <ChevronDown className="size-3.5 shrink-0" />
+            )}
+            <span className="truncate">
+              {showAll
+                ? t('common:projects.showLess')
+                : t('common:projects.showMore', { count: sortedThreads.length - limit })}
+            </span>
+          </SidebarMenuButton>
+        </SidebarMenuItem>
+      )}
     </>
   )
 }

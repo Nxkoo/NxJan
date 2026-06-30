@@ -132,8 +132,8 @@ export function createLanguageModel(
       // OpenRouter identification headers
       ...(provider.provider === 'openrouter'
         ? {
-            'HTTP-Referer': 'https://jan.ai',
-            'X-Title': 'Jan',
+            'HTTP-Referer': 'https://github.com/Nxkoo/NxJan',
+            'X-Title': 'NxJan',
           }
         : {}),
     },

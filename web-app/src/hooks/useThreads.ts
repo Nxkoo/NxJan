@@ -36,6 +36,9 @@ type ThreadState = {
   updateThreadTimestamp: (threadId: string) => void
   updateThread: (threadId: string, updates: Partial<Thread>) => void
   deleteAllThreadsByProject: (projectId: string) => void
+  archiveThread: (threadId: string) => void
+  unarchiveThread: (threadId: string) => void
+  getArchivedThreads: () => Thread[]
   searchIndex: Fzf<Thread[]> | null
 }
 
@@ -87,7 +90,7 @@ export const useThreads = create<ThreadState>()((set, get) => ({
     )
     // Filter out threads without valid titles for search index
     const filteredForSearch = Object.values(threadMap).filter(
-      (t) => t.id !== TEMPORARY_CHAT_ID && t.title
+      (t) => t.id !== TEMPORARY_CHAT_ID && t.title && !t.metadata?.archived
     )
 
     set({
@@ -102,7 +105,7 @@ export const useThreads = create<ThreadState>()((set, get) => ({
 
     // Filter out temporary chat from all operations
     const filteredThreadsValues = Object.values(threads).filter(
-      (t) => t.id !== TEMPORARY_CHAT_ID
+      (t) => t.id !== TEMPORARY_CHAT_ID && !t.metadata?.archived
     )
 
     // If no search term, return all threads
@@ -278,6 +281,63 @@ export const useThreads = create<ThreadState>()((set, get) => ({
         }),
       }
     })
+  },
+  archiveThread: (threadId) => {
+    set((state) => {
+      const thread = state.threads[threadId]
+      if (!thread) return state
+      const updatedThread = {
+        ...thread,
+        updated: Date.now() / 1000,
+        metadata: {
+          ...thread.metadata,
+          archived: true,
+          archivedAt: Date.now() / 1000,
+        },
+      }
+      getServiceHub().threads().updateThread(updatedThread)
+      const newThreads = { ...state.threads, [threadId]: updatedThread }
+      return {
+        threads: newThreads,
+        searchIndex: new Fzf<Thread[]>(
+          Object.values(newThreads).filter((t) => t.id !== TEMPORARY_CHAT_ID && t.title && !t.metadata?.archived),
+          {
+            selector: (item: Thread) => item.title ?? '',
+          }
+        ),
+      }
+    })
+  },
+  unarchiveThread: (threadId) => {
+    set((state) => {
+      const thread = state.threads[threadId]
+      if (!thread) return state
+      const updatedThread = {
+        ...thread,
+        updated: Date.now() / 1000,
+        metadata: {
+          ...thread.metadata,
+          archived: false,
+          archivedAt: undefined,
+        },
+      }
+      getServiceHub().threads().updateThread(updatedThread)
+      const newThreads = { ...state.threads, [threadId]: updatedThread }
+      return {
+        threads: newThreads,
+        searchIndex: new Fzf<Thread[]>(
+          Object.values(newThreads).filter((t) => t.id !== TEMPORARY_CHAT_ID && t.title && !t.metadata?.archived),
+          {
+            selector: (item: Thread) => item.title ?? '',
+          }
+        ),
+      }
+    })
+  },
+  getArchivedThreads: () => {
+    return Object.values(get().threads).filter(
+      (thread) => thread.metadata?.archived && thread.id !== TEMPORARY_CHAT_ID
+    )
   },
   unstarAllThreads: () => {
     set((state) => {

@@ -7,6 +7,33 @@ vi.mock('@/hooks/useTokensCount', () => ({
   useTokensCount: vi.fn(),
 }))
 
+// i18n in tests: useTranslation returns a humanized form of the key
+// so existing assertions on "Context window" / "Used" / "Remaining"
+// still match without spinning up a real provider. Mirrors the
+// runtime behavior of setup.ts: strips the `namespace:` prefix and
+// resolves the rest via dot notation, then falls back to a
+// humanized form when the key isn't found.
+vi.mock('@/i18n/react-i18next-compat', () => ({
+  useTranslation: () => ({
+    t: (key: string, params?: Record<string, string | number>) => {
+      const last = key.includes(':') ? key.split(':').slice(1).join(':') : key
+      const humanized = last
+        .split('.')
+        .pop()!
+        .replace(/([A-Z])/g, ' $1')
+        .replace(/^./, (c) => c.toUpperCase())
+        .trim()
+      if (!params) return humanized
+      return humanized.replace(
+        /\{\{(\w+)\}\}/g,
+        (_, k) => String(params[k] ?? '')
+      )
+    },
+    i18n: { language: 'en' },
+    ready: true,
+  }),
+}))
+
 // Mock tooltip components to render inline (Radix Portal + closed state prevents content from appearing in jsdom)
 vi.mock('@/components/ui/tooltip', async () => {
   const React = await import('react')
@@ -143,7 +170,7 @@ describe('TokenCounter', () => {
     render(<TokenCounter />)
     expect(
       screen.getByTestId('tooltip-content').textContent
-    ).toContain('Context window')
+    ).toMatch(/context\s*window/i)
   })
 
   it('shows correct remaining tokens', () => {
@@ -182,5 +209,76 @@ describe('TokenCounter', () => {
     const { container } = render(<TokenCounter className="custom-class" />)
     const wrapper = container.querySelector('.custom-class')
     expect(wrapper).toBeTruthy()
+  })
+
+  describe('compact mode (Osaurus-style pill)', () => {
+    it('renders "used / max tokens" when max context is available', () => {
+      mockTokens({
+        tokenCount: 7_100,
+        maxTokens: 128_000,
+        maxAvailable: true,
+        pricingAvailable: false,
+      })
+      const { container } = render(<TokenCounter compact />)
+      // The pill splits "~7.1k" and "128.0K" across multiple spans,
+      // so assert via combined text content.
+      expect(container.textContent).toMatch(/~7\.1K/)
+      expect(container.textContent).toMatch(/128\.0K/)
+      expect(container.textContent).toMatch(/tokens/i)
+    })
+
+    it('omits the "/ max" segment when no max context is known', () => {
+      mockTokens({
+        tokenCount: 6_900,
+        maxTokens: undefined,
+        maxAvailable: false,
+        pricingAvailable: false,
+      })
+      const { container } = render(<TokenCounter compact />)
+      expect(container.textContent).toMatch(/~6\.9K/)
+      // No slash separator when max is absent
+      expect(container.textContent).not.toMatch(/\//)
+    })
+
+    it('shows "Local" instead of cost for local providers', () => {
+      mockTokens({
+        tokenCount: 4_200,
+        maxTokens: 32_768,
+        costSource: 'local',
+        pricingAvailable: false,
+        maxAvailable: true,
+      })
+      const { container } = render(<TokenCounter compact />)
+      expect(container.textContent).toMatch(/Local/)
+      // No "$" prefix when the source is local
+      expect(container.textContent).not.toMatch(/\$\d/)
+    })
+
+    it('shows $cost | used/max when the provider has catalog pricing', () => {
+      mockTokens({
+        tokenCount: 80_000,
+        maxTokens: 1_048_576,
+        cost: 0.03,
+        costSource: 'catalog',
+        pricingAvailable: true,
+        maxAvailable: true,
+      })
+      const { container } = render(<TokenCounter compact />)
+      expect(container.textContent).toMatch(/\$0\.03/)
+      expect(container.textContent).toMatch(/\|/)
+      expect(container.textContent).toMatch(/~80\.0K/)
+    })
+
+    it('returns null when there are no tokens to display and no cost', () => {
+      const { container } = render(
+        <TokenCounter
+          compact
+          messages={
+            [] as unknown as Parameters<typeof TokenCounter>[0]['messages']
+          }
+        />
+      )
+      expect(container.firstChild).toBeNull()
+    })
   })
 })

@@ -6,7 +6,7 @@
     "jan",
     "core"
   ],
-  "homepage": "https://jan.ai",
+  "homepage": "https://github.com/Nxkoo/NxJan",
   "license": "AGPL-3.0",
   "main": "dist/index.js",
   "typings": "dist/types/index.d.ts",
@@ -14,7 +14,7 @@
     "dist",
     "types"
   ],
-  "author": "Jan <service@jan.ai>",
+  "author": "Nxkoo",
   "scripts": {
     "lint": "tslint --project tsconfig.json -t codeFrame 'src/**/*.ts' 'test/**/*.ts'",
     "test": "vitest run",

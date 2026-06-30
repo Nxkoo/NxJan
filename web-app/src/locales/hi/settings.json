@@ -42,8 +42,8 @@
   "reportAnIssueDesc": "कोई बग मिला? GitHub पर रिपोर्ट करके हमारी मदद करें।",
   "reportIssue": "समस्या रिपोर्ट करें",
   "credits": "श्रेय",
-  "creditsDesc1": "👋 Jan Menlo Research टीम द्वारा ❤️ के साथ बनाया गया है।",
-  "creditsDesc2": "हमारे ओपन सोर्स डिपेंडेंसीज़ जैसे llama.cpp और Tauri, तथा हमारी शानदार AI समुदाय को विशेष धन्यवाद।",
+  "creditsDesc1": "NxJan — built with love by Nxkoo.",
+  "creditsDesc2": "Includes open-source components from Jan (Menlo Research). Thanks to llama.cpp, Tauri, and the open-source community.",
   "appVersion": "ऐप संस्करण",
   "dataFolder": {
     "appData": "ऐप डेटा",
@@ -109,7 +109,7 @@
     "threadScrollStickyTitle": "स्टिकी स्क्रॉल",
     "threadScrollStickyHint": "रीयल-टाइम उत्तर आने पर स्वतः अनुसरण करता है।",
     "tokenCounterCompact": "कॉम्पैक्ट टोकन काउंटर",
-    "tokenCounterCompactDesc": "टोकन काउंटर को चैट इनपुट के अंदर दिखाएं।",
+    "tokenCounterCompactDesc": "टोकन काउंटर को चैट इनपुट के अंदर दिखाएं। अक्षम होने पर, टोकन काउंटर इनपुट के ऊपर दिखाई देता है।",
     "codeBlockTitle": "कोड ब्लॉक",
     "codeBlockDesc": "सिंटैक्स हाइलाइटिंग शैली चुनें।",
     "showLineNumbers": "लाइन नंबर दिखाएं",
@@ -265,8 +265,8 @@
     "reportAnIssueDesc": "कोई बग मिला? GitHub पर रिपोर्ट करके हमारी मदद करें।",
     "reportIssue": "समस्या रिपोर्ट करें",
     "credits": "श्रेय",
-    "creditsDesc1": "👋 Jan Menlo Research टीम द्वारा ❤️ के साथ बनाया गया है।",
-    "creditsDesc2": "हमारे ओपन सोर्स डिपेंडेंसीज़ जैसे llama.cpp और Tauri, तथा हमारी शानदार AI समुदाय को विशेष धन्यवाद।"
+    "creditsDesc1": "NxJan — built with love by Nxkoo.",
+    "creditsDesc2": "Includes open-source components from Jan (Menlo Research). Thanks to llama.cpp, Tauri, and the open-source community."
   },
   "extensions": {
     "title": "एक्सटेंशन"

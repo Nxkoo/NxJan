@@ -28,6 +28,11 @@ import { isDev } from '@/lib/utils'
 import { SystemEvent } from '@/types/events'
 import { Input } from '@/components/ui/input'
 import { useHardware } from '@/hooks/useHardware'
+import {
+  GITHUB_ISSUES,
+  GITHUB_RELEASES,
+  GITHUB_REPO,
+} from '@/constants/branding'
 import LanguageSwitcher from '@/containers/LanguageSwitcher'
 import { isRootDir } from '@/utils/path'
 const TOKEN_VALIDATION_TIMEOUT_MS = 10_000
@@ -574,7 +579,7 @@ function General() {
                 description={t('settings:general.releaseNotesDesc')}
                 actions={
                   <a
-                    href="https://github.com/janhq/jan/releases"
+                    href={GITHUB_RELEASES}
                     target="_blank"
                     rel="noopener noreferrer"
                   >
@@ -594,7 +599,7 @@ function General() {
                 description={t('settings:general.githubDesc')}
                 actions={
                   <a
-                    href="https://github.com/janhq/jan"
+                    href={GITHUB_REPO}
                     target="_blank"
                     rel="noopener noreferrer"
                   >
@@ -630,7 +635,7 @@ function General() {
                 description={t('settings:general.reportAnIssueDesc')}
                 actions={
                   <a
-                    href="https://github.com/janhq/jan/issues/new"
+                    href={GITHUB_ISSUES}
                     target="_blank"
                   >
                     <div className="flex items-center gap-1">

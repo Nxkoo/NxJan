@@ -17,7 +17,7 @@ import HeaderPage from '@/containers/HeaderPage'
 import ThreadList from '@/containers/ThreadList'
 import { AvatarEmoji } from '@/containers/AvatarEmoji'
 
-import { Code2, FolderPenIcon, MessageCircle, MoreHorizontal, PencilIcon, Trash2 } from 'lucide-react'
+import { Code2, FolderPenIcon, MessageCircle, MoreHorizontal, PencilIcon, Trash2, Archive, ChevronDown, ChevronUp } from 'lucide-react'
 import ProjectFiles from '@/containers/ProjectFiles'
 import ProjectCodebase from '@/containers/ProjectCodebase'
 import DropdownModelProvider from '@/containers/DropdownModelProvider'
@@ -51,6 +51,7 @@ function ProjectPageContent() {
   const [editDialogOpen, setEditDialogOpen] = useState(false)
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
   const [dropdownOpen, setDropdownOpen] = useState(false)
+  const [showArchived, setShowArchived] = useState(false)
 
   // Find the project
   const project = getFolderById(projectId)
@@ -64,7 +65,13 @@ function ProjectPageContent() {
   // Get threads for this project
   const projectThreads = useMemo(() => {
     return Object.values(threads)
-      .filter((thread) => thread.metadata?.project?.id === projectId)
+      .filter((thread) => thread.metadata?.project?.id === projectId && !thread.metadata?.archived)
+      .sort((a, b) => (b.updated || 0) - (a.updated || 0))
+  }, [threads, projectId])
+
+  const archivedProjectThreads = useMemo(() => {
+    return Object.values(threads)
+      .filter((thread) => thread.metadata?.project?.id === projectId && thread.metadata?.archived)
       .sort((a, b) => (b.updated || 0) - (a.updated || 0))
   }, [threads, projectId])
 
@@ -226,6 +233,39 @@ function ProjectPageContent() {
             </div>
           )}
 
+
+          {/* Archived Conversations */}
+          {archivedProjectThreads.length > 0 && (
+            <div className="rounded-2xl border border-border overflow-hidden mb-6 bg-card shadow-sm">
+              <button
+                type="button"
+                onClick={() => setShowArchived((prev) => !prev)}
+                className="flex items-center justify-between w-full p-5 border-b border-dashed border-border-soft hover:bg-accent/50 transition-colors"
+              >
+                <div className="flex items-center gap-2">
+                  <Archive className="size-4 text-muted-foreground" />
+                  <h3 className="text-sm font-display font-semibold">
+                    {t('projects.archivedConversations', { count: archivedProjectThreads.length })}
+                  </h3>
+                </div>
+                {showArchived ? (
+                  <ChevronUp className="size-4 text-muted-foreground" />
+                ) : (
+                  <ChevronDown className="size-4 text-muted-foreground" />
+                )}
+              </button>
+              {showArchived && (
+                <div className="p-5">
+                  <SidebarMenu>
+                    <ThreadList
+                      threads={archivedProjectThreads}
+                      currentProjectId={projectId}
+                    />
+                  </SidebarMenu>
+                </div>
+              )}
+            </div>
+          )}
           {/* Project Settings Card */}
           <div className="rounded-2xl border border-border overflow-hidden mb-6 bg-card shadow-sm">
             {/* Assistant Section */}

@@ -1,5 +1,5 @@
 {
-  "welcome": "Chào mừng đến với Jan",
+  "welcome": "Chào mừng đến với NxJan",
   "description": "Để bắt đầu, khởi chạy nhanh với Jan Model hoặc chọn nhà cung cấp cục bộ hoặc từ xa của riêng bạn",
   "descriptionWeb": "Để bắt đầu, bạn cần kết nối với mô hình đám mây bằng khóa API",
   "quickStart": "Khởi động nhanh với Jan Model",
@@ -9,5 +9,9 @@
   "downloadingDescription": "Vui lòng đợi trong khi chúng tôi tải xuống mô hình. Điều này có thể mất vài phút.",
   "orDivider": "hoặc",
   "localModel": "Thiết lập mô hình cục bộ",
-  "remoteProvider": "Thiết lập nhà cung cấp từ xa"
+  "remoteProvider": "Thiết lập nhà cung cấp từ xa",
+  "welcomeTitle": "Hey, welcome to NxJan!",
+  "welcomeSubtitle": "NxJan needs a model to begin. Let's set it up.",
+  "downloadingTitle": "Sit tight, NxJan is getting ready...",
+  "downloadingSubtitle": "This may take a few minutes."
 }

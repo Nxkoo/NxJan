@@ -14,7 +14,7 @@ const h = vi.hoisted(() => ({
 vi.mock('@/i18n/react-i18next-compat', () => ({
   useTranslation: () => ({
     t: (k: string, vars?: Record<string, unknown>) => {
-      if (k === 'settingUpJan') return 'Booting up Jan…'
+      if (k === 'settingUpJan') return 'Booting up NxJan…'
       if (k === 'registeringExtensions') return 'Registering extensions…'
       if (k === 'loadingExtensions')
         return `Loading extensions… (${vars?.done ?? 0}/${vars?.total ?? 0})`

@@ -42,8 +42,8 @@
   "reportAnIssueDesc": "Menemukan bug? Bantu kami dengan mengajukan masalah di GitHub.",
   "reportIssue": "Laporkan Masalah",
   "credits": "Kredit",
-  "creditsDesc1": "Jan dibuat dengan ❤️ oleh Tim Menlo.",
-  "creditsDesc2": "Terima kasih khusus kepada dependensi sumber terbuka kami—terutama llama.cpp dan Tauri—dan kepada komunitas AI kami yang luar biasa.",
+  "creditsDesc1": "NxJan — built with love by Nxkoo.",
+  "creditsDesc2": "Includes open-source components from Jan (Menlo Research). Thanks to llama.cpp, Tauri, and the open-source community.",
   "appVersion": "Versi Aplikasi",
   "dataFolder": {
     "appData": "Data Aplikasi",
@@ -99,7 +99,7 @@
     "resetInterfaceSuccess": "Tampilan berhasil diatur ulang",
     "resetInterfaceSuccessDesc": "Semua pengaturan tampilan telah dikembalikan ke default.",
     "tokenCounterCompact": "Penghitung Token Ringkas",
-    "tokenCounterCompactDesc": "Tampilkan penghitung token di dalam input obrolan. Saat dinonaktifkan, penghitung token muncul di bawah input.",
+    "tokenCounterCompactDesc": "Tampilkan penghitung token di dalam input obrolan. Saat dinonaktifkan, penghitung token muncul di atas input.",
     "codeBlockTitle": "Blok Kode",
     "codeBlockDesc": "Pilih gaya penyorotan sintaks.",
     "showLineNumbers": "Tampilkan Nomor Baris",
@@ -252,8 +252,8 @@
     "reportAnIssueDesc": "Menemukan bug? Bantu kami dengan mengajukan masalah di GitHub.",
     "reportIssue": "Laporkan Masalah",
     "credits": "Kredit",
-    "creditsDesc1": "Jan dibuat dengan ❤️ oleh Tim Menlo.",
-    "creditsDesc2": "Terima kasih khusus kepada dependensi sumber terbuka kami—terutama llama.cpp dan Tauri—dan kepada komunitas AI kami yang luar biasa."
+    "creditsDesc1": "NxJan — built with love by Nxkoo.",
+    "creditsDesc2": "Includes open-source components from Jan (Menlo Research). Thanks to llama.cpp, Tauri, and the open-source community."
   },
   "extensions": {
     "title": "Ekstensi"

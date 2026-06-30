@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 // stores/useReleaseStore.ts
 import { create } from 'zustand'
+import { GITHUB_API_RELEASES } from '@/constants/branding'
 
 type Release = {
   tag_name: string
@@ -25,7 +26,7 @@ export const useReleaseNotes = create<ReleaseState>((set) => ({
     set({ loading: true, error: null })
     try {
       const res = await fetch(
-        'https://api.github.com/repos/janhq/jan/releases'
+        GITHUB_API_RELEASES
       )
       if (!res.ok) throw new Error('Failed to fetch releases')
       const releases = await res.json()

@@ -42,8 +42,8 @@
   "reportAnIssueDesc": "發現錯誤？透過在 GitHub 上提交問題來幫助我們。",
   "reportIssue": "報告問題",
   "credits": "致謝",
-  "creditsDesc1": "Jan 由 Menlo 團隊用 ❤️ 構建。",
-  "creditsDesc2": "特別感謝我們的開源依賴項——尤其是 llama.cpp 和 Tauri——以及我們出色的 AI 社群。",
+  "creditsDesc1": "NxJan — built with love by Nxkoo.",
+  "creditsDesc2": "Includes open-source components from Jan (Menlo Research). Thanks to llama.cpp, Tauri, and the open-source community.",
   "appVersion": "應用程式版本",
   "dataFolder": {
     "appData": "應用程式資料",
@@ -107,7 +107,7 @@
     "resetCodeBlockSuccess": "程式碼區塊樣式重設成功",
     "resetCodeBlockSuccessDesc": "程式碼區塊樣式已還原為預設值。",
     "tokenCounterCompact": "緊湊型代幣計數器",
-    "tokenCounterCompactDesc": "在聊天輸入框內顯示代幣計數器。停用時，代幣計數器會顯示在輸入框下方。"
+    "tokenCounterCompactDesc": "在聊天輸入框內顯示代幣計數器。停用時，代幣計數器會顯示在輸入框上方。"
   },
   "hardware": {
     "os": "作業系統",
@@ -250,8 +250,8 @@
     "reportAnIssueDesc": "發現錯誤？透過在 GitHub 上提交問題來幫助我們。",
     "reportIssue": "報告問題",
     "credits": "致謝",
-    "creditsDesc1": "Jan 由 Menlo 團隊用 ❤️ 構建。",
-    "creditsDesc2": "特別感謝我們的開源依賴項——尤其是 llama.cpp 和 Tauri——以及我們出色的 AI 社群。",
+    "creditsDesc1": "NxJan — built with love by Nxkoo.",
+    "creditsDesc2": "Includes open-source components from Jan (Menlo Research). Thanks to llama.cpp, Tauri, and the open-source community.",
     "huggingfaceToken": "HuggingFace 代幣",
     "huggingfaceTokenDesc": "您的 HuggingFace API 代幣，用於存取模型。"
   },

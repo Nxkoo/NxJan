@@ -1,0 +1,12 @@
+---
+pid: 200
+cwd: "C:\Users\nykoo\OneDrive\Documentos\jan"
+command: "Stop-Process -Id 21636 -Force -ErrorAction SilentlyContinue; Start-Sleep -Seconds 2; yarn dev"
+started_at: 2026-06-28T15:47:39.936Z
+running_for_ms: 760000   
+---
+ParserError: 
+Line |
+   1 |  . & Stop-Process -Id 21636 -Force -ErrorAction SilentlyContinue; Start- .
+     |                                                                 ~
+     | Missing closing ')' in expression.

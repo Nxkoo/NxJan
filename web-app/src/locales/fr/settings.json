@@ -42,8 +42,8 @@
   "reportAnIssueDesc": "Vous avez trouvé un bug ? Aidez-nous en signalant un problème sur GitHub.",
   "reportIssue": "Signaler un problème",
   "credits": "Crédits",
-  "creditsDesc1": "👋 Jan est construit avec ❤️ par l'équipe de Menlo Research.",
-  "creditsDesc2": "Remerciements spéciaux à nos dépendances open-source, en particulier llama.cpp et Tauri, ainsi qu'à notre incroyable communauté IA.",
+  "creditsDesc1": "NxJan — built with love by Nxkoo.",
+  "creditsDesc2": "Includes open-source components from Jan (Menlo Research). Thanks to llama.cpp, Tauri, and the open-source community.",
   "appVersion": "Version de l'application",
   "dataFolder": {
     "appData": "Données de l'application",
@@ -105,7 +105,7 @@
     "threadScrollStickyTitle": "Défilement collant",
     "threadScrollStickyHint": "Suit automatiquement au fur et à mesure que les réponses arrivent en temps réel.",
     "tokenCounterCompact": "Compteur de jetons compact",
-    "tokenCounterCompactDesc": "Affichez le compteur de jetons à l'intérieur de la saisie de discussion. Lorsqu'il est désactivé, le compteur de jetons apparaît sous la saisie.",
+    "tokenCounterCompactDesc": "Affichez le compteur de jetons à l'intérieur de la saisie de discussion. Lorsqu'il est désactivé, le compteur de jetons apparaît au-dessus de la saisie.",
     "codeBlockTitle": "Bloc de code",
     "codeBlockDesc": "Choisissez un style de coloration syntaxique.",
     "showLineNumbers": "Afficher les numéros de ligne",
@@ -258,8 +258,8 @@
     "reportAnIssueDesc": "Vous avez trouvé un bug ? Aidez-nous en signalant un problème sur GitHub.",
     "reportIssue": "Signaler un problème",
     "credits": "Crédits",
-    "creditsDesc1": "👋 Jan est construit avec ❤️ par l'équipe de Menlo Research.",
-    "creditsDesc2": "Remerciements spéciaux à nos dépendances open-source, en particulier llama.cpp et Tauri, ainsi qu'à notre incroyable communauté IA."
+    "creditsDesc1": "NxJan — built with love by Nxkoo.",
+    "creditsDesc2": "Includes open-source components from Jan (Menlo Research). Thanks to llama.cpp, Tauri, and the open-source community."
   },
   "extensions": {
     "title": "Extensions"

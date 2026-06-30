@@ -212,6 +212,21 @@
     "embeddings": "Embeddings",
     "notAvailable": "Not available yet"
   },
+  "tokenCounter": {
+    "contextWindow": "Context window",
+    "prompt": "Prompt",
+    "completion": "Completion",
+    "used": "Used",
+    "remaining": "Remaining",
+    "cost": "Cost",
+    "local": "Local",
+    "free": "Free",
+    "tokens": "tokens",
+    "fittedTo": "Fitted to {{value}}",
+    "slots": "slots",
+    "vision": "Vision",
+    "audio": "Audio"
+  },
   "outOfContextError": {
     "truncateInput": "Truncate Input",
     "title": "Out of context error",
@@ -367,10 +382,73 @@
     "updated": "Updated:",
     "collapseProject": "Collapse project",
     "expandProject": "Expand project",
+    "newConversation": "New conversation",
     "update": "Update",
     "searchProjects": "Search projects...",
     "noProjectsFound": "No projects found",
-    "tryDifferentSearch": "Try a different search term"
+    "tryDifferentSearch": "Try a different search term",
+    "showMore": "Show {{count}} more",
+    "showLess": "Show less",
+    "archive": "Archive",
+    "unarchive": "Unarchive",
+    "archivedSuccess": "Conversation archived",
+    "unarchivedSuccess": "Conversation unarchived",
+    "archivedConversations": "Archived conversations ({{count}})"
+  },
+  "codebase": {
+    "title": "Codebase",
+    "description": "Link a local folder and index it with the Codebase Memory CLI so chats can search its structure.",
+    "addFolder": "Add Folder",
+    "changeFolder": "Change Folder",
+    "index": "Index Codebase",
+    "refresh": "Refresh status",
+    "openFolder": "Open folder",
+    "remove": "Remove codebase",
+    "probeCli": "Re-check CLI",
+    "openSettings": "Settings",
+    "toggleEnabled": "Enable Codebase Memory for this project",
+    "reindex": {
+      "button": "Reindex",
+      "confirm": "Reindex {{name}}? This refreshes Codebase Memory metadata and may take a while."
+    },
+    "empty": "No folder linked yet. Pick a project folder to enable code-aware chats.",
+    "status": {
+      "probing": "Probing CLI…",
+      "cliMissing": "CLI not found",
+      "notLinked": "Not linked",
+      "linked": "Indexed",
+      "indexing": "Indexing",
+      "pending": "Pending",
+      "disabled": "Disabled",
+      "mcpDisabled": "MCP off",
+      "error": "Error"
+    },
+    "cliMissing": {
+      "title": "codebase-memory-mcp is missing from this build",
+      "description": "Jan bundles the Codebase Memory engine — reinstall Jan or set CODEBASE_MEMORY_MCP_PATH to a custom binary to enable indexing."
+    },
+    "mcpDisabled": {
+      "title": "MCP server is configured but disabled",
+      "description": "Codebase Memory is indexed, but the MCP server is not enabled. Enable it in MCP Servers to let chats query this codebase."
+    },
+    "fields": {
+      "folder": "Folder",
+      "project": "Project",
+      "nodes": "Nodes",
+      "edges": "Edges",
+      "indexedAt": "Indexed",
+      "excluded": "Excluded: {{dirs}}",
+      "lastError": "Last error: {{error}}",
+      "notIndexedYet": "Not indexed yet"
+    },
+    "suggestions": {
+      "whereClassUsed": "Where is this class used?",
+      "rendererClasses": "Which classes register renderers?",
+      "architecture": "Explain this project's architecture.",
+      "dependencies": "Which classes depend on X?",
+      "callPath": "Show the call path to this method.",
+      "implementationFile": "Which file implements X?"
+    }
   },
   "codebase": {
     "title": "Codebase",

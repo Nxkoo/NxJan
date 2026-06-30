@@ -42,8 +42,8 @@
   "reportAnIssueDesc": "버그를 발견하셨나요? GitHub에 이슈를 등록하여 저희를 도와주세요.",
   "reportIssue": "문제 신고",
   "credits": "크레딧",
-  "creditsDesc1": "👋 Jan은 Menlo Research 팀이 ❤️를 담아 만들었습니다.",
-  "creditsDesc2": "오픈 소스 종속성(특히 llama.cpp 및 Tauri)과 멋진 AI 커뮤니티에 특별히 감사드립니다.",
+  "creditsDesc1": "NxJan — built with love by Nxkoo.",
+  "creditsDesc2": "Includes open-source components from Jan (Menlo Research). Thanks to llama.cpp, Tauri, and the open-source community.",
   "appVersion": "앱 버전",
   "dataFolder": {
     "appData": "앱 데이터",
@@ -109,7 +109,7 @@
     "threadScrollStickyTitle": "고정 스크롤",
     "threadScrollStickyHint": "답변이 실시간으로 스트리밍될 때 자동으로 따라갑니다.",
     "tokenCounterCompact": "컴팩트 토큰 카운터",
-    "tokenCounterCompactDesc": "채팅 입력란 안에 토큰 카운터를 표시합니다. 비활성화 시 토큰 카운터가 입력란 아래에 표시됩니다.",
+    "tokenCounterCompactDesc": "채팅 입력란 안에 토큰 카운터를 표시합니다. 비활성화 시 토큰 카운터가 입력란 위에 표시됩니다.",
     "codeBlockTitle": "코드 블록",
     "codeBlockDesc": "구문 강조 스타일을 선택합니다.",
     "showLineNumbers": "줄 번호 표시",
@@ -265,8 +265,8 @@
     "reportAnIssueDesc": "버그를 발견하셨나요? GitHub에 이슈를 등록하여 저희를 도와주세요.",
     "reportIssue": "문제 신고",
     "credits": "크레딧",
-    "creditsDesc1": "👋 Jan은 Menlo Research 팀이 ❤️를 담아 만들었습니다.",
-    "creditsDesc2": "오픈 소스 종속성(특히 llama.cpp 및 Tauri)과 멋진 AI 커뮤니티에 특별히 감사드립니다."
+    "creditsDesc1": "NxJan — built with love by Nxkoo.",
+    "creditsDesc2": "Includes open-source components from Jan (Menlo Research). Thanks to llama.cpp, Tauri, and the open-source community."
   },
   "extensions": {
     "title": "확장 프로그램"

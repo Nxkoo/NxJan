@@ -7,7 +7,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip'
-import { useTokensCount } from '@/hooks/useTokensCount'
+import { useTokensCount, type TokenCountData } from '@/hooks/useTokensCount'
 import { ThreadMessage } from '@janhq/core'
 import {
   IconBrain,
@@ -20,6 +20,8 @@ import {
   IconMicrophone,
   IconMoon,
   IconAdjustmentsAlt,
+  IconCoins,
+  IconCircleCheck,
 } from '@tabler/icons-react'
 
 interface TokenCounterProps {
@@ -40,9 +42,29 @@ const formatNumber = (num: number) => {
 
 const formatExact = (num: number) => num.toLocaleString()
 
+const formatUsd = (value: number) => {
+  if (value >= 0.01) {
+    return value.toLocaleString(undefined, {
+      style: 'currency',
+      currency: 'USD',
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    })
+  }
+  // Sub-cent costs: keep one significant digit so the user still sees
+  // the number moving instead of rounding to $0.00.
+  return value.toLocaleString(undefined, {
+    style: 'currency',
+    currency: 'USD',
+    minimumFractionDigits: 3,
+    maximumFractionDigits: 3,
+  })
+}
+
 export const TokenCounter = memo(function TokenCounter({
   messages = [],
   className,
+  compact = false,
   additionalTokens = 0,
 }: TokenCounterProps) {
   const { t } = useTranslation()
@@ -98,10 +120,6 @@ export const TokenCounter = memo(function TokenCounter({
     return 'ok'
   }, [pct])
 
-  // n_ctx from /props is required for a meaningful denominator. Without it,
-  // hide entirely rather than render a misleading 0%/0 indicator.
-  if (!tokenData.maxTokens) return null
-
   const textCls =
     tier === 'over'
       ? 'text-destructive'
@@ -120,6 +138,24 @@ export const TokenCounter = memo(function TokenCounter({
       : tier === 'warn'
         ? 'bg-amber-500'
         : 'bg-primary'
+
+  // Compact pill always renders so the user can see "7.1k tokens"
+  // even when no max-context denominator is available. The full
+  // meter is hidden without a denominator because a 0%/0 indicator
+  // is misleading.
+  if (compact) {
+    return (
+      <CompactPill
+        tokenData={tokenData}
+        totalTokens={totalTokens}
+        tier={tier}
+        textCls={textCls}
+        className={className}
+      />
+    )
+  }
+
+  if (!tokenData.maxTokens) return null
 
   const { inputTokens, outputTokens, modelProps, modelDisplayName } = tokenData
   const remaining = Math.max(0, tokenData.maxTokens - totalTokens)
@@ -199,7 +235,7 @@ export const TokenCounter = memo(function TokenCounter({
             <IconBrain className="size-4 text-muted-foreground shrink-0" />
             <div className="flex-1 min-w-0">
               <div className="text-xs font-medium text-foreground">
-                Context window
+                {t('common:tokenCounter.contextWindow')}
               </div>
               {modelDisplayName && (
                 <div className="text-[11px] text-muted-foreground truncate">
@@ -252,28 +288,43 @@ export const TokenCounter = memo(function TokenCounter({
             {typeof inputTokens === 'number' && inputTokens > 0 && (
               <Row
                 icon={<IconArrowUp className="size-3.5" />}
-                label="Prompt"
+                label={t('common:tokenCounter.prompt')}
                 value={formatExact(inputTokens)}
               />
             )}
             {typeof outputTokens === 'number' && outputTokens > 0 && (
               <Row
                 icon={<IconArrowDown className="size-3.5" />}
-                label="Completion"
+                label={t('common:tokenCounter.completion')}
                 value={formatExact(outputTokens)}
               />
             )}
             <Row
               icon={<IconSum className="size-3.5" />}
-              label="Used"
+              label={t('common:tokenCounter.used')}
               value={formatExact(totalTokens)}
               strong
             />
             <Row
               icon={<IconRulerMeasure className="size-3.5" />}
-              label="Remaining"
+              label={t('common:tokenCounter.remaining')}
               value={formatExact(remaining)}
             />
+            {typeof tokenData.cost === 'number' && (
+              <Row
+                icon={<IconCoins className="size-3.5" />}
+                label={t('common:tokenCounter.cost')}
+                value={formatUsd(tokenData.cost)}
+                strong
+              />
+            )}
+            {tokenData.costSource === 'local' && (
+              <Row
+                icon={<IconCircleCheck className="size-3.5" />}
+                label={t('common:tokenCounter.local')}
+                value={t('common:tokenCounter.free')}
+              />
+            )}
           </div>
 
           {/* Footer: fit + slots + modalities */}
@@ -285,14 +336,14 @@ export const TokenCounter = memo(function TokenCounter({
                   title={`Configured ctx_len: ${formatExact(tokenData.configuredCtxLen!)}`}
                 >
                   <IconAdjustmentsAlt className="size-3" />
-                  Fitted to {formatNumber(tokenData.maxTokens)}
+                  {t('common:tokenCounter.fittedTo', { value: formatNumber(tokenData.maxTokens) })}
                 </span>
               )}
               {modelProps?.totalSlots !== undefined &&
                 modelProps.totalSlots > 1 && (
                   <span className="flex items-center gap-1">
                     <IconStack2 className="size-3" />
-                    {modelProps.totalSlots} slots
+                    {modelProps.totalSlots} {t('common:tokenCounter.slots')}
                   </span>
                 )}
               {tokenData.modalities?.vision && (
@@ -301,7 +352,7 @@ export const TokenCounter = memo(function TokenCounter({
                   title="Vision input supported"
                 >
                   <IconPhoto className="size-3" />
-                  Vision
+                  {t('common:tokenCounter.vision')}
                 </span>
               )}
               {tokenData.modalities?.audio && (
@@ -310,7 +361,7 @@ export const TokenCounter = memo(function TokenCounter({
                   title="Audio input supported"
                 >
                   <IconMicrophone className="size-3" />
-                  Audio
+                  {t('common:tokenCounter.audio')}
                 </span>
               )}
             </div>
@@ -347,5 +398,140 @@ function Row({
         {value}
       </span>
     </div>
+  )
+}
+
+interface CompactPillProps {
+  tokenData: TokenCountData
+  totalTokens: number
+  tier: 'ok' | 'warn' | 'over'
+  textCls: string
+  className?: string
+}
+
+/**
+ * Osaurus-style inline pill. Order of segments:
+ *   1. Optional $cost (only if pricing is available and cost > 0)
+ *   2. Optional "Local" (only for local providers with no cost)
+ *   3. ~used (the approximate token count, prefixed with ~ per Osaurus)
+ *   4. Optional " / max" (only if max context is available)
+ *   5. "tokens" suffix
+ *
+ * The "approximate" tilde prefix signals that the value is an
+ * estimate, matching the convention used in the Osaurus chat footer.
+ */
+function CompactPill({
+  tokenData,
+  totalTokens,
+  tier,
+  textCls,
+  className,
+}: CompactPillProps) {
+  const { t } = useTranslation()
+  const { maxTokens, cost, costSource } = tokenData
+
+  const showCost = typeof cost === 'number' && cost > 0
+  const showLocal = !showCost && costSource === 'local'
+
+  // Nothing to show yet — degrade gracefully (return null so the
+  // empty flex-1 center slot doesn't render a bare colon separator).
+  if (totalTokens <= 0 && !showCost) return null
+
+  const tokensCls = cn(
+    'text-xs font-medium tabular-nums',
+    textCls
+  )
+
+  const separatorCls = 'text-xs text-muted-foreground/50 select-none'
+  const moneyCls = cn(
+    'text-xs font-medium tabular-nums',
+    tier === 'over' ? 'text-destructive' : 'text-foreground'
+  )
+
+  return (
+    <TooltipProvider delayDuration={400}>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <div
+            className={cn(
+              'flex items-center gap-1 cursor-pointer text-xs text-muted-foreground tabular-nums',
+              className
+            )}
+          >
+            {showCost && (
+              <>
+                <span className={moneyCls}>{formatUsd(cost!)}</span>
+                <span className={separatorCls}>|</span>
+              </>
+            )}
+            {showLocal && (
+              <>
+                <span className="text-foreground/80">
+                  {t('common:tokenCounter.local')}
+                </span>
+                <span className={separatorCls}>·</span>
+              </>
+            )}
+            <span className={tokensCls}>~{formatNumber(totalTokens)}</span>
+            {typeof maxTokens === 'number' && maxTokens > 0 && (
+              <>
+                <span className={separatorCls}>/</span>
+                <span>{formatNumber(maxTokens)}</span>
+              </>
+            )}
+            <span>{t('common:tokenCounter.tokens')}</span>
+          </div>
+        </TooltipTrigger>
+        <TooltipContent
+          side="bottom"
+          align="center"
+          sideOffset={6}
+          showArrow={false}
+          className="min-w-60 max-w-80 bg-background border p-2 text-xs"
+        >
+          <div className="space-y-1">
+            <div className="flex items-center gap-2">
+              <IconBrain className="size-3.5 text-muted-foreground shrink-0" />
+              <span className="text-foreground font-medium">
+                {t('common:tokenCounter.contextWindow')}
+              </span>
+              {tokenData.modelDisplayName && (
+                <span className="text-muted-foreground truncate">
+                  · {tokenData.modelDisplayName}
+                </span>
+              )}
+            </div>
+            <div className="flex items-center justify-between gap-2 text-muted-foreground">
+              <span>{t('common:tokenCounter.used')}</span>
+              <span className="font-mono tabular-nums text-foreground">
+                {formatExact(totalTokens)}
+              </span>
+            </div>
+            {typeof maxTokens === 'number' && maxTokens > 0 && (
+              <div className="flex items-center justify-between gap-2 text-muted-foreground">
+                <span>{t('common:tokenCounter.remaining')}</span>
+                <span className="font-mono tabular-nums text-foreground">
+                  {formatExact(Math.max(0, maxTokens - totalTokens))}
+                </span>
+              </div>
+            )}
+            {showCost && (
+              <div className="flex items-center justify-between gap-2 text-muted-foreground">
+                <span>{t('common:tokenCounter.cost')}</span>
+                <span className="font-mono tabular-nums text-foreground">
+                  {formatUsd(cost!)}
+                </span>
+              </div>
+            )}
+            {showLocal && (
+              <div className="flex items-center justify-between gap-2 text-muted-foreground">
+                <span>{t('common:tokenCounter.cost')}</span>
+                <span className="text-foreground">{t('common:tokenCounter.free')}</span>
+              </div>
+            )}
+          </div>
+        </TooltipContent>
+      </Tooltip>
+    </TooltipProvider>
   )
 }

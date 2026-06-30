@@ -54,11 +54,12 @@ vi.mock('@/hooks/useAppState', () => ({
   },
 }))
 
+let tokenCounterCompactMock = false
 vi.mock('@/hooks/useGeneralSetting', () => ({
   useGeneralSetting: (selector: any) =>
     selector({
       spellCheckChatInput: false,
-      tokenCounterCompact: false,
+      tokenCounterCompact: tokenCounterCompactMock,
     }),
 }))
 
@@ -98,10 +99,11 @@ vi.mock('@/hooks/useAgentMode', () => ({
     }),
 }))
 
+let threadMessagesStore: any[] = []
 vi.mock('@/hooks/useMessages', () => ({
   useMessages: (selector: any) =>
     selector({
-      messages: { 'thread-1': [] },
+      messages: { 'thread-1': threadMessagesStore },
     }),
 }))
 
@@ -290,6 +292,8 @@ const resetAll = () => {
   appStateOverrides = {}
   attachmentsList = []
   agentModeOn = false
+  threadMessagesStore = []
+  tokenCounterCompactMock = false
   selectedModelOverride = {
     id: 'model-a',
     capabilities: ['tools'],
@@ -520,5 +524,56 @@ describe('ChatInput', () => {
     // dismiss icon (svg) sits alongside
     const svg = container.querySelector('.text-destructive svg')
     expect(svg).toBeTruthy()
+  })
+
+  describe('TokenCounter position', () => {
+    beforeEach(() => {
+      // Make the model "active" so isModelActive is true
+      appStateOverrides = { activeModels: ['model-a'] }
+    })
+
+    it('renders the counter INSIDE the composer when tokenCounterCompact is true (default)', () => {
+      tokenCounterCompactMock = true
+      threadMessagesStore = [{ id: 'm1', role: 'user', content: 'hi' }]
+      renderInput()
+      const counter = screen.getByTestId('stub-token-counter')
+      const textarea = getTextarea()
+      // In compact mode, counter sits AFTER the textarea in the document
+      // (textarea is at the top of the composer, counter is in the bottom
+      // toolbar). Verify by checking textarea precedes counter.
+      expect(
+        textarea.compareDocumentPosition(counter) &
+          Node.DOCUMENT_POSITION_FOLLOWING
+      ).toBeTruthy()
+    })
+
+    it('renders the counter ABOVE the composer when tokenCounterCompact is false', () => {
+      threadMessagesStore = [{ id: 'm1', role: 'user', content: 'hi' }]
+      renderInput()
+      const counter = screen.getByTestId('stub-token-counter')
+      const textarea = getTextarea()
+      // Counter must appear BEFORE the textarea in the document when
+      // rendered above the composer
+      expect(
+        counter.compareDocumentPosition(textarea) &
+          Node.DOCUMENT_POSITION_FOLLOWING
+      ).toBeTruthy()
+    })
+
+    it('renders above the composer even when no model is active (activeModels: [])', () => {
+      // Simulate a fresh app load where the chat route has not yet populated
+      // useAppState.activeModels, but a persisted model is selected.
+      appStateOverrides = { activeModels: [] }
+      threadMessagesStore = [{ id: 'm1', role: 'user', content: 'hi' }]
+      renderInput()
+      expect(screen.getByTestId('stub-token-counter')).toBeInTheDocument()
+    })
+
+    it('does NOT render the counter above when there are no messages and no prompt', () => {
+      threadMessagesStore = []
+      promptState = ''
+      renderInput()
+      expect(screen.queryByTestId('stub-token-counter')).toBeNull()
+    })
   })
 })

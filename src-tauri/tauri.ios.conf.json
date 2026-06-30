@@ -1,5 +1,5 @@
 {
-  "identifier": "jan.ai.app.ios",
+  "identifier": "dev.nxkoo.nxjan.ios",
   "build": {
     "devUrl": null,
     "frontendDist": "../web-app/dist",

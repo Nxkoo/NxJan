@@ -68,7 +68,15 @@ vi.mock('@/hooks/useGeneralSetting', () => ({
 
 vi.mock('@/i18n/react-i18next-compat', () => ({
   useTranslation: () => ({
-    t: (k: string, opts?: any) => opts?.defaultValue ?? k,
+    t: (k: string, opts?: any) => {
+      const translations: Record<string, string> = {
+        'setup:welcomeTitle': 'Hey, welcome to NxJan!',
+        'setup:welcomeSubtitle': "NxJan needs a model to begin. Let's set it up.",
+        'setup:downloadingTitle': 'Sit tight, NxJan is getting ready...',
+        'setup:downloadingSubtitle': 'This may take a few minutes.',
+      }
+      return translations[k] ?? opts?.defaultValue ?? k
+    },
   }),
 }))
 
@@ -144,7 +152,7 @@ describe('SetupScreen', () => {
 
   it('renders welcome header when no download is active', () => {
     render(<SetupScreen />)
-    expect(screen.getByText('Hey, welcome to Jan!')).toBeInTheDocument()
+    expect(screen.getByText('Hey, welcome to NxJan!')).toBeInTheDocument()
     expect(screen.getByText('Download')).toBeInTheDocument()
   })
 
@@ -196,7 +204,7 @@ describe('SetupScreen', () => {
       },
     }
     render(<SetupScreen />)
-    expect(screen.getByText('Sit tight, Jan is getting ready...')).toBeInTheDocument()
+    expect(screen.getByText('Sit tight, NxJan is getting ready...')).toBeInTheDocument()
     expect(screen.getByText('Downloading')).toBeInTheDocument()
   })
 

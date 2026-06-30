@@ -22,9 +22,9 @@ export function ToasterProvider() {
           msUserSelect: 'none',
         },
         classNames: {
-          toast: 'toast select-none',
-          title: 'text-foreground! select-none',
-          description: 'text-muted-foreground! select-none',
+          toast: 'select-none',
+          title: 'select-none',
+          description: 'select-none',
         },
       }}
     />

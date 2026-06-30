@@ -1,0 +1,49 @@
+{
+  "name": "export_html",
+  "description": "Export nodes to HTML.\n\n- Takes an array of node IDs and exports them as HTML.\n- Supports HTML + Tailwind and HTML + CSS output.\n- Can include a full HTML scaffold, layer names, and layer IDs.\n- Image assets are always referenced with relative paths (never embedded).\n- Writes the HTML file to outputPath and returns its absolute path.",
+  "inputSchema": {
+    "properties": {
+      "filePath": {
+        "description": "An optional file path to access a .pen file.",
+        "type": "string"
+      },
+      "format": {
+        "description": "Output format (default: html-tailwind)",
+        "enum": [
+          "html-tailwind",
+          "html-css"
+        ],
+        "type": "string"
+      },
+      "includeHtmlScaffold": {
+        "description": "Include a full HTML document scaffold (default: true)",
+        "type": "boolean"
+      },
+      "includeLayerIds": {
+        "description": "Include layer IDs as data attributes (default: false)",
+        "type": "boolean"
+      },
+      "includeLayerNames": {
+        "description": "Include layer names as data attributes (default: true)",
+        "type": "boolean"
+      },
+      "nodeIds": {
+        "description": "Array of node IDs to export",
+        "items": {
+          "type": "string"
+        },
+        "type": "array"
+      },
+      "outputPath": {
+        "description": "Path to write the exported HTML file",
+        "type": "string"
+      }
+    },
+    "required": [
+      "filePath",
+      "nodeIds",
+      "outputPath"
+    ],
+    "type": "object"
+  }
+}

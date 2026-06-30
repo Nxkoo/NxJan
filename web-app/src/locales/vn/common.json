@@ -104,7 +104,7 @@
   "generateAiResponse": "Tạo phản hồi AI",
   "customAvatar": "Ảnh đại diện tùy chỉnh",
   "editAssistant": "Chỉnh sửa Trợ lý",
-  "jan": "Jan",
+  "jan": "NxJan",
   "metadata": "Siêu dữ liệu",
   "regenerate": "Tái tạo",
   "threadImage": "Hình ảnh chủ đề",
@@ -182,13 +182,28 @@
     "save": "Lưu"
   },
   "editModel": {
-    "title": "Chỉnh sửa mô hình: {{modelId}}",
-    "description": "Định cấu hình khả năng của mô hình bằng cách chuyển đổi các tùy chọn bên dưới.",
+    "title": "Chỉnh sửa Mô hình: {{modelId}}",
+    "description": "Cấu hình khả năng của mô hình bằng cách bật/tắt các tùy chọn bên dưới.",
     "capabilities": "Khả năng",
     "tools": "Công cụ",
     "vision": "Thị giác",
-    "embeddings": "Nhúng",
-    "notAvailable": "Chưa có"
+    "embeddings": "Embeddings",
+    "notAvailable": "Chưa khả dụng"
+  },
+  "tokenCounter": {
+    "contextWindow": "Cửa sổ ngữ cảnh",
+    "prompt": "Prompt",
+    "completion": "Hoàn thành",
+    "used": "Đã dùng",
+    "remaining": "Còn lại",
+    "cost": "Chi phí",
+    "local": "Cục bộ",
+    "free": "Miễn phí",
+    "tokens": "token",
+    "fittedTo": "Đã điều chỉnh {{value}}",
+    "slots": "vị trí",
+    "vision": "Thị giác",
+    "audio": "Âm thanh"
   },
   "outOfContextError": {
     "truncateInput": "Cắt bớt đầu vào",
@@ -250,6 +265,7 @@
     "updated": "Đã cập nhật:",
     "collapseProject": "Thu gọn dự án",
     "expandProject": "Mở rộng dự án",
+    "newConversation": "New conversation",
     "update": "Cập nhật",
     "noProjectsAvailable": "Không có dự án nào",
     "searchProjects": "Tìm kiếm dự án...",

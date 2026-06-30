@@ -111,7 +111,7 @@
   },
   "customAvatar": "自訂頭像",
   "editAssistant": "編輯助理",
-  "jan": "Jan",
+  "jan": "NxJan",
   "metadata": "元數據",
   "regenerate": "重新產生",
   "threadImage": "對話圖片",
@@ -197,6 +197,21 @@
     "embeddings": "嵌入",
     "notAvailable": "尚不可用"
   },
+  "tokenCounter": {
+    "contextWindow": "上下文視窗",
+    "prompt": "提示",
+    "completion": "完成",
+    "used": "已用",
+    "remaining": "剩餘",
+    "cost": "費用",
+    "local": "本機",
+    "free": "免費",
+    "tokens": "權杖",
+    "fittedTo": "已調整 {{value}}",
+    "slots": "插槽",
+    "vision": "視覺",
+    "audio": "音訊"
+  },
   "toolApproval": {
     "title": "工具權限請求",
     "description": "助理想要使用 <strong>{{toolName}}</strong>",
@@ -249,6 +264,7 @@
     "updated": "已更新：",
     "collapseProject": "收合專案",
     "expandProject": "展開專案",
+    "newConversation": "New conversation",
     "update": "更新",
     "noProjectsAvailable": "沒有可用的專案",
     "searchProjects": "搜尋專案...",

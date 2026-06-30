@@ -42,8 +42,8 @@
   "reportAnIssueDesc": "Znalazłeś/-aś błąd? Pomóż nam, zgłaszając go na GitHubie.",
   "reportIssue": "Zgłoś Problem",
   "credits": "Podziękowania",
-  "creditsDesc1": "Aplikacja Jan jest rozwijana z ❤️ przez Zespół Menlo.",
-  "creditsDesc2": "Szczególne podziękowania dla naszych otwartoźródłowych zależności - zwłaszcza llama.cpp i Tauri - oraz dla naszej wspaniałej społeczności SI.",
+  "creditsDesc1": "NxJan — built with love by Nxkoo.",
+  "creditsDesc2": "Includes open-source components from Jan (Menlo Research). Thanks to llama.cpp, Tauri, and the open-source community.",
   "appVersion": "Wersja Aplikacji",
   "dataFolder": {
     "appData": "Katalog Danych",
@@ -107,7 +107,7 @@
     "resetCodeBlockSuccess": "Pomyślnie Przywrócono Styl Bloku Kodu",
     "resetCodeBlockSuccessDesc": "Styl bloku kodu został przywrócony do ustawień domyślnych.",
     "tokenCounterCompact": "Kompaktowy Licznik Tokenów",
-    "tokenCounterCompactDesc": "Pokaż licznik tokenów wewnątrz pola wprowadzania czatu. Po wyłączeniu, licznik tokenów pojawia się poniżej pola wprowadzania."
+    "tokenCounterCompactDesc": "Pokaż licznik tokenów wewnątrz pola wprowadzania czatu. Po wyłączeniu, licznik tokenów pojawia się powyżej pola wprowadzania."
   },
   "hardware": {
     "os": "System Operacyjny",
@@ -252,8 +252,8 @@
     "reportAnIssueDesc": "Znalazłeś/-aś błąd? Pomóż nam, zgłaszając go na GitHubie.",
     "reportIssue": "Zgłoś Problem",
     "credits": "Podziękowania",
-    "creditsDesc1": "Aplikacja 👋 Jan jest rozwijana z ❤️ przez zespół Menlo Research.",
-    "creditsDesc2": "Szczególne podziękowania dla naszych otwartoźródłowych zależności - zwłaszcza llama.cpp i Tauri - oraz dla naszej wspaniałej społeczności SI."
+    "creditsDesc1": "NxJan — built with love by Nxkoo.",
+    "creditsDesc2": "Includes open-source components from Jan (Menlo Research). Thanks to llama.cpp, Tauri, and the open-source community."
   },
   "extensions": {
     "title": "Rozszerzenia"

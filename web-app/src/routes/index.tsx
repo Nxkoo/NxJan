@@ -26,6 +26,7 @@ type ThreadModel = {
 
 type SearchParams = {
   threadModel?: ThreadModel
+  projectId?: string
 }
 
 export const Route = createFileRoute(route.home as any)({
@@ -33,6 +34,7 @@ export const Route = createFileRoute(route.home as any)({
   validateSearch: (search: Record<string, unknown>): SearchParams => {
     const result: SearchParams = {
       threadModel: search.threadModel as ThreadModel | undefined,
+      projectId: search.projectId as string | undefined,
     }
 
     return result
@@ -79,6 +81,7 @@ function Index() {
   const { providers } = useModelProvider()
   const search = useSearch({ from: route.home as any })
   const threadModel = search.threadModel
+  const projectId = search.projectId
   const { setCurrentThreadId } = useThreads()
   const { setPrompt } = usePrompt()
   useTools()
@@ -141,6 +144,7 @@ function Index() {
               showSpeedToken={false}
               model={threadModel}
               initialMessage={true}
+              projectId={projectId}
             />
           </div>
 

@@ -4,6 +4,7 @@ import HeaderPage from '@/containers/HeaderPage'
 import SettingsMenu from '@/containers/SettingsMenu'
 import { useModelProvider } from '@/hooks/useModelProvider'
 import { cn, getProviderTitle, getModelDisplayName, isLocalProvider } from '@/lib/utils'
+import { getModelCapabilities } from '@/lib/models'
 import { createFileRoute, Link, useParams } from '@tanstack/react-router'
 import { useTranslation } from '@/i18n/react-i18next-compat'
 import Capabilities from '@/containers/Capabilities'
@@ -541,7 +542,7 @@ function ProviderDetail() {
           id,
           model: id,
           name: id,
-          capabilities: ['completion'],
+          capabilities: getModelCapabilities(provider.provider, id),
           version: '1.0',
         }))
       }

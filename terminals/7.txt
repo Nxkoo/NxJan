@@ -1,0 +1,9 @@
+---
+pid: 23856
+cwd: "C:\Users\nykoo\OneDrive\Documentos\jan\src-tauri"
+command: "cargo build --release --features cli --bin jan-cli"
+started_at: 2026-06-28T16:02:20.213Z
+running_for_ms: 8930012  
+---
+   Compiling nxjan v0.8.3 (C:\Users\nykoo\OneDrive\Documentos\jan\src-tauri)
+    Finished `release` profile [optimized] target(s) in 1m 05s

@@ -39,11 +39,12 @@ import { Button } from '@/components/ui/button'
 import { PromptProgress } from '@/components/PromptProgress'
 import { useServiceHub } from '@/hooks/useServiceHub'
 import { useToolApproval } from '@/hooks/useToolApproval'
-import { parseCitationsFromToolOutput } from '@/lib/citation-parser'
-import type { RagCitation } from '@/components/Citations'
 import { useGroundingStore } from '@/stores/grounding-store'
 import { injectCitationMarkers } from '@/lib/grounding'
 import { formatToolCallDisplay } from '@/lib/codebase-tool-format'
+import { useMessageCitations } from '@/hooks/useMessageCitations'
+import { SourcesButton } from '@/components/SourcesButton'
+import { SourcesSheet } from './SourcesSheet'
 
 const CHAT_STATUS = {
   STREAMING: 'streaming',
@@ -103,6 +104,7 @@ export const MessageItem = memo(
       url: string
       filename?: string
     } | null>(null)
+    const [sourcesOpen, setSourcesOpen] = useState(false)
 
 
     const handleRegenerate = useCallback(() => {
@@ -166,25 +168,10 @@ export const MessageItem = memo(
 
     // Aggregate RAG citations in part order and record each rag tool part's
     // base offset, so its card numbers/anchors continue the same global
-    // sequence the inline superscript markers use.
-    const { ragCitations, citationOffsets } = useMemo(() => {
-      const out: RagCitation[] = []
-      const offsets = new Map<number, number>()
-      if (message.role === 'assistant') {
-        const parts = message.parts as any[]
-        for (let i = 0; i < parts.length; i++) {
-          const part = parts[i]
-          if (!part.type?.startsWith('tool-')) continue
-          if (part.state !== 'output-available') continue
-          const parsed = parseCitationsFromToolOutput(part.output)
-          if (parsed?.kind === 'rag') {
-            offsets.set(i, out.length)
-            out.push(...parsed.citations)
-          }
-        }
-      }
-      return { ragCitations: out, citationOffsets: offsets }
-    }, [message.parts, message.role])
+    // sequence the inline superscript markers use. Also collect web citations
+    // for the Sources sheet.
+    const { ragCitations, citationOffsets, entries, total } =
+      useMessageCitations(message)
 
     const serviceHub = useServiceHub()
     const grounding = useGroundingStore((s) => s.byMessageId[message.id])
@@ -778,6 +765,13 @@ export const MessageItem = memo(
                 {versionNav}
                 <CopyButton text={getFullTextContent()} />
 
+                {total > 0 && !isStreaming && (
+                  <SourcesButton
+                    total={total}
+                    onClick={() => setSourcesOpen(true)}
+                  />
+                )}
+
                 {onEdit && !isStreaming && (
                   <EditMessageDialog
                     message={getFullTextContent()}
@@ -822,6 +816,13 @@ export const MessageItem = memo(
             />
           </div>
         )}
+
+        <SourcesSheet
+          open={sourcesOpen}
+          onOpenChange={setSourcesOpen}
+          entries={entries}
+          total={total}
+        />
       </div>
     )
   },

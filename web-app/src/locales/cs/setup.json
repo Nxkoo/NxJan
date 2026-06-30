@@ -1,5 +1,5 @@
 {
-  "welcome": "Vítejte v Jan",
+  "welcome": "Vítejte v NxJan",
   "description": "Chcete-li začít, rychle spusťte Jan Model nebo si vyberte vlastního místního nebo vzdáleného poskytovatele",
   "descriptionWeb": "Chcete-li začít, budete se muset připojit ke cloudovému modelu pomocí klíče API",
   "quickStart": "Rychlý start s Jan Model",
@@ -9,5 +9,9 @@
   "downloadingDescription": "Počkejte prosím, než stáhneme model. Může to trvat několik minut.",
   "orDivider": "nebo",
   "localModel": "Nastavit místní model",
-  "remoteProvider": "Nastavit vzdáleného poskytovatele"
+  "remoteProvider": "Nastavit vzdáleného poskytovatele",
+  "welcomeTitle": "Hey, welcome to NxJan!",
+  "welcomeSubtitle": "NxJan needs a model to begin. Let's set it up.",
+  "downloadingTitle": "Sit tight, NxJan is getting ready...",
+  "downloadingSubtitle": "This may take a few minutes."
 }

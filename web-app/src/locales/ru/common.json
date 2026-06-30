@@ -99,7 +99,7 @@
   "noModels": "Модели не найдены",
   "customAvatar": "Свой аватар",
   "editAssistant": "Редактировать ассистента",
-  "jan": "Jan",
+  "jan": "NxJan",
   "metadata": "Метаданные",
   "regenerate": "Сгенерировать заново",
   "threadImage": "Изображение обсуждения",
@@ -183,13 +183,28 @@
     "save": "Сохранить"
   },
   "editModel": {
-    "title": "Редактирование модели: {{modelId}}",
-    "description": "Настройте возможности модели, переключив нужные параметры ниже.",
+    "title": "Изменить модель: {{modelId}}",
+    "description": "Настройте возможности модели, переключая параметры ниже.",
     "capabilities": "Возможности",
     "tools": "Инструменты",
     "vision": "Зрение",
     "embeddings": "Эмбеддинги",
-    "notAvailable": "Пока недоступно"
+    "notAvailable": "Ещё не доступно"
+  },
+  "tokenCounter": {
+    "contextWindow": "Окно контекста",
+    "prompt": "Промпт",
+    "completion": "Завершение",
+    "used": "Использовано",
+    "remaining": "Осталось",
+    "cost": "Стоимость",
+    "local": "Локально",
+    "free": "Бесплатно",
+    "tokens": "токенов",
+    "fittedTo": "Подогнано к {{value}}",
+    "slots": "слотов",
+    "vision": "Зрение",
+    "audio": "Аудио"
   },
   "outOfContextError": {
     "truncateInput": "Обрезка ввода",
@@ -298,6 +313,7 @@
     "updated": "Обновлено:",
     "collapseProject": "Свернуть проект",
     "expandProject": "Развернуть проект",
+    "newConversation": "New conversation",
     "update": "Обновить",
     "searchProjects": "Поиск проектов...",
     "noProjectsFound": "Проекты не найдены",

@@ -99,7 +99,7 @@
   "noModels": "Keine Modelle gefunden",
   "customAvatar": "Benutzerdefinierter Avatar",
   "editAssistant": "Assistenten bearbeiten",
-  "jan": "Jan",
+  "jan": "NxJan",
   "metadata": "Metadaten",
   "regenerate": "Neu generieren",
   "threadImage": "Thread Bild",
@@ -183,12 +183,27 @@
   },
   "editModel": {
     "title": "Modell bearbeiten: {{modelId}}",
-    "description": "Konfiguriere die Modelfähigkeiten durch Umschalten der untenstehenden Optionen.",
-    "capabilities": "Modelfähigkeiten",
+    "description": "Konfigurieren Sie die Modellfähigkeiten, indem Sie die folgenden Optionen umschalten.",
+    "capabilities": "Fähigkeiten",
     "tools": "Werkzeuge",
     "vision": "Vision",
-    "embeddings": "Einbettungen",
-    "notAvailable": "Nicht verfügbar bisher"
+    "embeddings": "Embeddings",
+    "notAvailable": "Noch nicht verfügbar"
+  },
+  "tokenCounter": {
+    "contextWindow": "Kontextfenster",
+    "prompt": "Eingabe",
+    "completion": "Ausgabe",
+    "used": "Verwendet",
+    "remaining": "Verbleibend",
+    "cost": "Kosten",
+    "local": "Lokal",
+    "free": "Kostenlos",
+    "tokens": "Token",
+    "fittedTo": "Angepasst auf {{value}}",
+    "slots": "Slots",
+    "vision": "Vision",
+    "audio": "Audio"
   },
   "outOfContextError": {
     "truncateInput": "Input verkleinern",
@@ -298,6 +313,7 @@
     "updated": "Aktualisiert:",
     "collapseProject": "Projekt einklappen",
     "expandProject": "Projekt ausklappen",
+    "newConversation": "New conversation",
     "update": "Aktualisieren",
     "searchProjects": "Projekte durchsuchen...",
     "noProjectsFound": "Keine Projekte gefunden",

@@ -42,8 +42,8 @@
   "reportAnIssueDesc": "Hai trovato un bug? Aiutaci aprendo una segnalazione su GitHub.",
   "reportIssue": "Segnala problema",
   "credits": "Crediti",
-  "creditsDesc1": "👋 Jan è sviluppato con ❤️ dal team di Menlo Research.",
-  "creditsDesc2": "Un ringraziamento speciale alle nostre dipendenze open-source — in particolare llama.cpp e Tauri — e alla nostra straordinaria community IA.",
+  "creditsDesc1": "NxJan — built with love by Nxkoo.",
+  "creditsDesc2": "Includes open-source components from Jan (Menlo Research). Thanks to llama.cpp, Tauri, and the open-source community.",
   "appVersion": "Versione app",
   "dataFolder": {
     "appData": "Dati dell'app",
@@ -117,7 +117,7 @@
     "threadScrollStickyTitle": "Scorrimento fisso (Sticky)",
     "threadScrollStickyHint": "Segue automaticamente lo scorrimento del testo mentre le risposte vengono generate in tempo reale.",
     "tokenCounterCompact": "Contatore token compatto",
-    "tokenCounterCompactDesc": "Mostra il contatore dei token all'interno del campo di input della chat. Se disabilitato, il contatore dei token apparirà sotto il campo di input.",
+    "tokenCounterCompactDesc": "Mostra il contatore dei token all'interno del campo di input della chat. Se disabilitato, il contatore dei token apparirà sopra il campo di input.",
     "codeBlockTitle": "Blocco di codice",
     "codeBlockDesc": "Scegli uno stile per l'evidenziazione della sintassi.",
     "showLineNumbers": "Mostra numeri di riga",
@@ -271,8 +271,8 @@
     "reportAnIssueDesc": "Hai trovato un bug? Aiutaci aprendo una segnalazione su GitHub.",
     "reportIssue": "Segnala problema",
     "credits": "Crediti",
-    "creditsDesc1": "👋 Jan è sviluppato con ❤️ dal team di Menlo Research.",
-    "creditsDesc2": "Un ringraziamento speciale alle nostre dipendenze open-source — in particolare llama.cpp e Tauri — e alla nostra straordinaria community IA."
+    "creditsDesc1": "NxJan — built with love by Nxkoo.",
+    "creditsDesc2": "Includes open-source components from Jan (Menlo Research). Thanks to llama.cpp, Tauri, and the open-source community."
   },
   "extensions": {
     "title": "Estensioni"

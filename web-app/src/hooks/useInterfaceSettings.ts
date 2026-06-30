@@ -10,34 +10,90 @@ import {
 
 export type FontSize = '14px' | '15px' | '16px' | '18px' | '20px'
 
-export type DarkStyle = 'jan' | 'editorial'
+export type DarkStyle = 'jan' | 'editorial' | 'pearfy'
 
-export const DARK_STYLE_OPTIONS: { value: DarkStyle; label: string; description: string }[] = [
+export type ThemeId = 'nxjan' | 'editorial' | 'pearfy'
+
+export type AccentColorValue =
+  | 'ink'
+  | 'blue'
+  | 'green'
+  | 'yellow'
+  | 'orange'
+  | 'red'
+  | 'pearfy'
+
+/* ── Theme presets ────────────────────────────────────────────────
+   A "Theme" is an atomic (accent, darkStyle) pair. Choosing a theme
+   from the ThemeSwitcher applies both at once — no granular accent
+   picker or darkStyle picker in the UI anymore.
+
+   Order is the order they appear in the ThemeSwitcher dropdown. */
+export interface ThemePreset {
+  id: ThemeId
+  label: string
+  description: string
+  accentColor: AccentColorValue
+  darkStyle: DarkStyle
+  /** Mini preview rows for the dropdown item. Index 0 = light, 1 = dark. */
+  swatches: { bg: string; surface: string; accent: string; ink: string }[]
+}
+
+export const THEMES: readonly ThemePreset[] = [
   {
-    value: 'jan',
-    label: 'Jan Blue',
-    description: 'Deep navy editorial night desk — the original Jan dark.',
+    id: 'nxjan',
+    label: 'NxJan',
+    description: 'Default warm-paper desk with deep navy ink.',
+    accentColor: 'ink',
+    darkStyle: 'jan',
+    swatches: [
+      { bg: '#FDF3D7', surface: '#F5E7C2', accent: '#17234D', ink: '#17234D' },
+      { bg: '#0F1630', surface: '#182552', accent: '#5A7AD0', ink: '#F7F1DC' },
+    ],
   },
   {
-    value: 'editorial',
+    id: 'editorial',
     label: 'Editorial',
-    description: 'Neutral warm-paper dark, adapted from the Jan source palette.',
+    description: 'Neutral warm-paper dark, adapted from Jan source palette.',
+    accentColor: 'ink',
+    darkStyle: 'editorial',
+    swatches: [
+      { bg: '#FDF3D7', surface: '#F5E7C2', accent: '#17234D', ink: '#17234D' },
+      { bg: '#181715', surface: '#262626', accent: '#827D72', ink: '#F5ECD6' },
+    ],
   },
-]
+  {
+    id: 'pearfy',
+    label: 'Pearfy Orchard',
+    description: 'Olive pear + cream paper, serif editorial.',
+    accentColor: 'pearfy',
+    darkStyle: 'pearfy',
+    swatches: [
+      { bg: '#F8F4EA', surface: '#FFFDF7', accent: '#6F8F3D', ink: '#243126' },
+      { bg: '#101110', surface: '#1A1C16', accent: '#859160', ink: '#F2EFE8' },
+    ],
+  },
+] as const
 
+const DEFAULT_THEME_ID: ThemeId = 'nxjan'
+
+export function getActiveTheme(themeId: ThemeId): ThemePreset {
+  return THEMES.find((t) => t.id === themeId) ?? THEMES[0]
+}
+
+const isThemeId = (value: unknown): value is ThemeId =>
+  value === 'nxjan' || value === 'editorial' || value === 'pearfy'
+
+/* ── Accent color registry (internal) ──────────────────────────────
+   Maps accent value → CSS hex for JS injection of --primary / --sidebar.
+   Pearfy is special-cased: its CSS owns the sidebar, so JS skips it. */
 export const ACCENT_COLORS = [
   {
     name: 'Ink',
     value: 'ink',
     thumb: '#17234d',
     primary: '#17234d',
-    /* Jan Blue dark uses a brighter "paper ink" so user bubbles,
-       send buttons and other primary surfaces stay legible on the
-       navy night-desk. Editorial overrides this with its own gray. */
     primaryDark: '#4a5a8a',
-    /* Sidebar gets a different shade per dark style so the Jan Blue
-       mode keeps the deep-navy rail (#070b1c) and the Editorial
-       mode uses the neutral dark paper (#131313). */
     sidebar: {
       light: '#f5e7c2',
       dark: '#070b1c',
@@ -45,12 +101,22 @@ export const ACCENT_COLORS = [
     },
   },
   {
+    name: 'Pearfy',
+    value: 'pearfy',
+    thumb: '#6F8F3D',
+    primary: '#6F8F3D',
+    primaryDark: '#6F8F3D',
+    sidebar: {
+      light: '#FCF8EF',
+      dark: '#11130D',
+      darkEditorial: '#FCF8EF',
+    },
+  },
+  {
     name: 'Blue',
     value: 'blue',
     thumb: '#214099',
     primary: '#214099',
-    /* Brighter blue for Jan Blue dark mode so the primary is visible
-       on the navy night-desk background. Editorial overrides this. */
     primaryDark: '#5a7ad0',
     sidebar: {
       light: '#e0e8f5',
@@ -85,7 +151,6 @@ export const ACCENT_COLORS = [
     value: 'orange',
     thumb: '#f97d38',
     primary: '#f97d38',
-    /* The default accent — already vibrant, no dark variant needed. */
     sidebar: {
       light: '#f3cbc4',
       dark: '#1f1208',
@@ -105,58 +170,57 @@ export const ACCENT_COLORS = [
   },
 ] as const
 
-export type AccentColorValue = (typeof ACCENT_COLORS)[number]['value']
-const DEFAULT_ACCENT_COLOR: AccentColorValue = 'orange'
-const DEFAULT_DARK_STYLE: DarkStyle = 'jan'
-
-const isDarkStyle = (value: unknown): value is DarkStyle =>
-  value === 'jan' || value === 'editorial'
-
 const applyAccentColorToDOM = (
   colorValue: string,
   isDark: boolean,
-  darkStyle: DarkStyle = 'jan'
+  darkStyle: DarkStyle
 ) => {
   const color = ACCENT_COLORS.find((c) => c.value === colorValue)
   if (!color) return
 
   const root = document.documentElement
-  /* Jan Blue keeps each accent's deep tint rail; Editorial flattens
-     the rail to a neutral dark paper so the page reads as one tone. */
+  /* Pearfy owns its own --sidebar via CSS (data-dark-style="pearfy").
+     Skip JS injection so the CSS can paint the cream paper / dark
+     orchard bg-soft without conflict. */
+  const skipSidebarInjection = darkStyle === 'pearfy'
   const sidebarColor = isDark
     ? darkStyle === 'editorial'
       ? color.sidebar.darkEditorial
       : color.sidebar.dark
     : color.sidebar.light
-  /* Accents like Ink/Blue are dark by design — they vanish on the
-     navy night-desk. In Jan Blue dark, use the brighter primaryDark
-     variant so the user bubble, send button and other primary surfaces
-     stay legible. Editorial has its own gray via CSS !important so
-     we just pass the dark variant through here. */
   let primaryColor: string = color.primary
-  if (isDark && darkStyle === 'jan' && 'primaryDark' in color) {
+  if (
+    isDark &&
+    (darkStyle === 'jan' || darkStyle === 'pearfy') &&
+    'primaryDark' in color
+  ) {
     primaryColor = (color as { primaryDark: string }).primaryDark
   }
 
-  root.style.setProperty('--sidebar', sidebarColor)
+  if (skipSidebarInjection) {
+    root.style.removeProperty('--sidebar')
+  } else {
+    root.style.setProperty('--sidebar', sidebarColor)
+  }
   root.style.setProperty('--primary', primaryColor)
 }
 
-const applyDarkStyleToDOM = (style: DarkStyle) => {
-  document.documentElement.setAttribute('data-dark-style', style)
+const applyThemeToDOM = (themeId: ThemeId) => {
+  const theme = getActiveTheme(themeId)
+  document.documentElement.setAttribute('data-dark-style', theme.darkStyle)
+  const { isDark } = useTheme.getState()
+  applyAccentColorToDOM(theme.accentColor, isDark, theme.darkStyle)
 }
 
 interface InterfaceSettingsState {
+  themeId: ThemeId
   fontSize: FontSize
-  accentColor: AccentColorValue
-  darkStyle: DarkStyle
   notificationPosition: NotificationPosition
   showTokenSpeed: boolean
   coloredUserBubble: boolean
   renderHtmlArtifacts: boolean
   setFontSize: (size: FontSize) => void
-  setAccentColor: (color: AccentColorValue) => void
-  setDarkStyle: (style: DarkStyle) => void
+  applyTheme: (id: ThemeId) => void
   setNotificationPosition: (position: NotificationPosition) => void
   setShowTokenSpeed: (show: boolean) => void
   setColoredUserBubble: (colored: boolean) => void
@@ -168,8 +232,7 @@ type InterfaceSettingsPersistedSlice = Omit<
   InterfaceSettingsState,
   | 'resetInterface'
   | 'setFontSize'
-  | 'setAccentColor'
-  | 'setDarkStyle'
+  | 'applyTheme'
   | 'setNotificationPosition'
   | 'setShowTokenSpeed'
   | 'setColoredUserBubble'
@@ -183,14 +246,12 @@ export const fontSizeOptions = [
   { label: 'Extra Large', value: '20px' as FontSize },
 ]
 
-// Default interface settings
 const defaultFontSize: FontSize = '16px'
 
 const createDefaultInterfaceValues = (): InterfaceSettingsPersistedSlice => {
   return {
+    themeId: DEFAULT_THEME_ID,
     fontSize: defaultFontSize,
-    accentColor: DEFAULT_ACCENT_COLOR,
-    darkStyle: DEFAULT_DARK_STYLE,
     notificationPosition: getDefaultNotificationPosition(),
     showTokenSpeed: true,
     coloredUserBubble: true,
@@ -201,6 +262,21 @@ const createDefaultInterfaceValues = (): InterfaceSettingsPersistedSlice => {
 const interfaceStorage = createJSONStorage<InterfaceSettingsPersistedSlice>(() =>
   localStorage
 )
+
+/* Backwards-compat: pre-refactor storage had `accentColor` + `darkStyle`
+   slices. Map them to a themeId on rehydrate. */
+const migrateLegacyToThemeId = (
+  raw: Record<string, unknown>
+): ThemeId => {
+  if (isThemeId(raw.themeId)) return raw.themeId
+  const legacyAccent = raw.accentColor as string | undefined
+  const legacyDarkStyle = raw.darkStyle as DarkStyle | undefined
+  if (!legacyAccent && !legacyDarkStyle) return DEFAULT_THEME_ID
+  const matched = THEMES.find(
+    (t) => t.accentColor === legacyAccent && t.darkStyle === legacyDarkStyle
+  )
+  return matched?.id ?? DEFAULT_THEME_ID
+}
 
 export const useInterfaceSettings = create<InterfaceSettingsState>()(
   persist<
@@ -214,45 +290,22 @@ export const useInterfaceSettings = create<InterfaceSettingsState>()(
       return {
         ...defaultState,
         resetInterface: () => {
-          const { isDark } = useTheme.getState()
-
           // Reset font size
           document.documentElement.style.setProperty(
             '--font-size-base',
             defaultFontSize
           )
-
-          // Reset dark style attribute first so accent picks the right
-          // sidebar variant (Jan Blue vs Editorial).
-          applyDarkStyleToDOM(DEFAULT_DARK_STYLE)
-
-          // Reset accent color preset
-          applyAccentColorToDOM(
-            DEFAULT_ACCENT_COLOR,
-            isDark,
-            DEFAULT_DARK_STYLE
-          )
-
-          // Update state
+          // Reset theme (clears data-dark-style and re-applies accent)
+          applyThemeToDOM(DEFAULT_THEME_ID)
           set({
-            fontSize: defaultFontSize,
-            accentColor: DEFAULT_ACCENT_COLOR,
-            darkStyle: DEFAULT_DARK_STYLE,
-            notificationPosition: getDefaultNotificationPosition(),
-            showTokenSpeed: true,
-            coloredUserBubble: true,
-            renderHtmlArtifacts: false,
+            ...defaultState,
           })
         },
 
-        setAccentColor: (color: AccentColorValue) => {
-          const colorExists = ACCENT_COLORS.find((c) => c.value === color)
-          if (!colorExists) return
-
-          const { isDark } = useTheme.getState()
-          const { darkStyle } = useInterfaceSettings.getState()
-          applyAccentColorToDOM(color, isDark, darkStyle)
-          set({ accentColor: color })
+        applyTheme: (id: ThemeId) => {
+          if (!isThemeId(id)) return
+          applyThemeToDOM(id)
+          set({ themeId: id })
         },
 
         setDarkStyle: (style: DarkStyle) => {
@@ -262,9 +315,7 @@ export const useInterfaceSettings = create<InterfaceSettingsState>()(
         },
 
         setFontSize: (size: FontSize) => {
-          // Update CSS variable
           document.documentElement.style.setProperty('--font-size-base', size)
-          // Update state
           set({ fontSize: size })
         },
 
@@ -290,42 +341,31 @@ export const useInterfaceSettings = create<InterfaceSettingsState>()(
       name: localStorageKey.settingInterface,
       storage: interfaceStorage,
       partialize: (state) => ({
+        themeId: state.themeId,
         fontSize: state.fontSize,
-        accentColor: state.accentColor,
-        darkStyle: state.darkStyle,
         notificationPosition: state.notificationPosition,
         showTokenSpeed: state.showTokenSpeed,
         coloredUserBubble: state.coloredUserBubble,
         renderHtmlArtifacts: state.renderHtmlArtifacts,
       }),
-      // Apply settings when hydrating from storage
       onRehydrateStorage: () => (state) => {
         if (state) {
-          // Migrate old font size value '15px' to '16px'
           if ((state.fontSize as FontSize) === '15px') {
             state.fontSize = '16px'
           }
-
-          // Apply font size from storage
           document.documentElement.style.setProperty(
             '--font-size-base',
             state.fontSize
           )
 
-          // Get the current theme state
-          const { isDark } = useTheme.getState()
-
-          // Apply dark style — migrate old persisted state that doesn't
-          // have the field yet, defaulting to Jan Blue.
-          const darkStyleValue = isDarkStyle(state.darkStyle)
-            ? state.darkStyle
-            : DEFAULT_DARK_STYLE
-          state.darkStyle = darkStyleValue
-          applyDarkStyleToDOM(darkStyleValue)
-
-          // Apply accent color preset (uses the resolved dark style)
-          const accentColorValue = state.accentColor || DEFAULT_ACCENT_COLOR
-          applyAccentColorToDOM(accentColorValue, isDark, darkStyleValue)
+          /* Backwards-compat: read themeId; if missing, fall back to
+             legacy (accent, darkStyle) pair, then default. */
+          const rawState = state as unknown as Record<string, unknown>
+          const resolvedThemeId = isThemeId(rawState.themeId)
+            ? rawState.themeId
+            : migrateLegacyToThemeId(rawState)
+          state.themeId = resolvedThemeId
+          applyThemeToDOM(resolvedThemeId)
 
           if (
             !state.notificationPosition ||
@@ -333,38 +373,33 @@ export const useInterfaceSettings = create<InterfaceSettingsState>()(
           ) {
             state.notificationPosition = getDefaultNotificationPosition()
           }
-
           if (typeof state.showTokenSpeed !== 'boolean') {
             state.showTokenSpeed = true
           }
-
           if (typeof state.coloredUserBubble !== 'boolean') {
             state.coloredUserBubble = true
           }
-
           if (typeof state.renderHtmlArtifacts !== 'boolean') {
             state.renderHtmlArtifacts = false
           }
         }
-
-        // Return the state to be used for hydration
         return state
       },
     }
   )
 )
 
-// Subscribe to theme changes to update accent color sidebar variant
+/* Re-apply accent/darkStyle on light↔dark mode change so the sidebar
+   variant and primaryDark branches stay in sync. */
 let prevIsDark = useTheme.getState().isDark
 const unsubscribeTheme = useTheme.subscribe((state) => {
   if (state.isDark !== prevIsDark) {
     prevIsDark = state.isDark
-    const { accentColor, darkStyle } = useInterfaceSettings.getState()
-    applyAccentColorToDOM(accentColor, state.isDark, darkStyle)
+    const { themeId } = useInterfaceSettings.getState()
+    applyThemeToDOM(themeId)
   }
 })
 
-// Detach the module-level subscription on HMR so reloads don't stack listeners.
 if (import.meta.hot) {
   import.meta.hot.dispose(() => unsubscribeTheme())
 }

@@ -1,5 +1,5 @@
 {
-  "welcome": "Willkommen bei Jan",
+  "welcome": "Willkommen bei NxJan",
   "description": "Um zu beginnen, starten Sie schnell mit Jan Model oder wählen Sie Ihren eigenen lokalen oder Remote-Anbieter ein",
   "descriptionWeb": "Um zu beginnen, müssen Sie über einen API-Schlüssel eine Verbindung zu einem Cloud-Modell herstellen",
   "quickStart": "Schnellstart mit Jan Model",
@@ -9,5 +9,9 @@
   "downloadingDescription": "Bitte warten Sie, während wir das Modell herunterladen. Dies kann einige Minuten dauern.",
   "orDivider": "oder",
   "localModel": "Lokales Modell einrichten",
-  "remoteProvider": "Fernen Anbieter einrichten"
+  "remoteProvider": "Fernen Anbieter einrichten",
+  "welcomeTitle": "Hey, welcome to NxJan!",
+  "welcomeSubtitle": "NxJan needs a model to begin. Let's set it up.",
+  "downloadingTitle": "Sit tight, NxJan is getting ready...",
+  "downloadingSubtitle": "This may take a few minutes."
 }

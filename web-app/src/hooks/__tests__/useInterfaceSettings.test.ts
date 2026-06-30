@@ -44,7 +44,7 @@ describe('useInterfaceSettings', () => {
     const { result } = renderHook(() => useInterfaceSettings())
 
     expect(result.current.fontSize).toBe('16px')
-    expect(result.current.accentColor).toBe('gray')
+    expect(result.current.accentColor).toBe('ink')
     expect(result.current.notificationPosition).toBe('top-right')
     expect(typeof result.current.setFontSize).toBe('function')
     expect(typeof result.current.setAccentColor).toBe('function')
@@ -106,7 +106,7 @@ describe('useInterfaceSettings', () => {
     })
 
     expect(result.current.fontSize).toBe('16px')
-    expect(result.current.accentColor).toBe('gray')
+    expect(result.current.accentColor).toBe('ink')
     expect(result.current.notificationPosition).toBe('top-right')
   })
 

@@ -8,5 +8,14 @@
   },
   "sendMessage": "Enviar Mensagem",
   "newConversation": "Nova Conversa",
-  "clearHistory": "Limpar Histórico"
+  "clearHistory": "Limpar Histórico",
+  "sources": {
+    "button": "Fontes",
+    "buttonWithCount": "Fontes · {{count}}",
+    "title": "Fontes",
+    "empty": "Nenhuma fonte para esta resposta",
+    "emptyHint": "Tente uma pergunta que use RAG ou busca na web.",
+    "documents": "Documentos",
+    "web": "Web"
+  }
 }
