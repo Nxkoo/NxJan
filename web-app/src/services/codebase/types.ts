@@ -61,11 +61,28 @@ export type ProjectCodebaseStatus =
   | 'missing'
 
 /**
- * Per-project metadata persisted in Jan's localStorage. We deliberately keep
+ * Per-codebase metadata persisted in Jan's localStorage. We deliberately keep
  * this metadata-only — the indexed data lives inside the Codebase Memory MCP
  * store and is queried at chat time.
+ *
+ * A project can now hold multiple codebases; each entry is a self-contained
+ * `ProjectCodebaseMeta`. The legacy "one project == one codebase" shape is
+ * migrated on read in `useCodebase.ts` and is still accepted as input to the
+ * chat-resolution helpers.
  */
 export type ProjectCodebaseMeta = {
+  /**
+   * Stable id used by the UI to reference a specific codebase inside a
+   * project. Auto-generated when a codebase is first added; never reused
+   * after removal.
+   */
+  id: string
+  /**
+   * User-facing label for the codebase (e.g. "Frontend", "Backend"). The
+   * chip and popover use this when more than one codebase is linked.
+   * Falls back to the folder basename when missing.
+   */
+  displayName: string
   /** Absolute folder path the user picked. */
   folderPath: string
   /** Project name returned by `codebase-memory-mcp`. */
@@ -82,7 +99,7 @@ export type ProjectCodebaseMeta = {
   status: ProjectCodebaseStatus
   /** Last error message, if any. */
   lastError?: string | null
-  /** Per-project kill switch for automatic Codebase Memory chat behavior. */
+  /** Per-codebase kill switch for automatic Codebase Memory chat behavior. */
   enabled: boolean
 }
 
@@ -90,6 +107,12 @@ export type ProjectCodebaseState = {
   meta: ProjectCodebaseMeta | null
   status: 'idle' | 'checking' | 'indexing' | 'refreshing' | 'error'
 }
+
+/**
+ * Stored shape of one project's codebase collection. Always an array, even
+ * when only one codebase is linked.
+ */
+export type ProjectCodebases = ProjectCodebaseMeta[]
 
 export interface CodebaseService {
   /** Probe CLI availability. */

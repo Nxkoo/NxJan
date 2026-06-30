@@ -16,9 +16,10 @@ import { useAppState } from '@/hooks/useAppState'
 import {
   CODEBASE_MEMORY_SERVER_NAME,
   buildCodebaseSystemMessage,
-  resolveCodebaseChatState,
+  resolveCodebasesChatState,
   useCodebaseStore,
 } from '@/hooks/useCodebase'
+import { buildProjectMemorySystemMessage, useProjectMemoryStore } from '@/hooks/useProjectMemory'
 import { SESSION_STORAGE_PREFIX } from '@/constants/chat'
 import { useChat } from '@/hooks/use-chat'
 import { useModelProvider } from '@/hooks/useModelProvider'
@@ -185,43 +186,74 @@ function ThreadDetail() {
   const threadRef = useRef(thread)
   const projectId = thread?.metadata?.project?.id
 
-  // Look up the project's linked Codebase Memory project, if any, so the
-  // chat can be told to query the codebase through MCP tools.
+  // Look up the project's linked Codebase Memory projects, if any, so the
+  // chat can be told to query the codebase through MCP tools. A project may
+  // now have several codebases; when more than one is enabled, the system
+  // message tells the model to pick the most relevant one first.
   const codebaseMetas = useCodebaseStore((state) => state.metas)
   const mcpServers = useMCPServers((state) => state.mcpServers)
   const mcpTools = useAppState((state) => state.tools)
-  const codebaseMeta = projectId ? codebaseMetas[projectId] ?? null : null
+  const projectCodebases = useMemo(
+    () => (projectId ? codebaseMetas[projectId] ?? [] : []),
+    [codebaseMetas, projectId]
+  )
   const codebaseResolution = useMemo(
     () =>
-      resolveCodebaseChatState({
-        meta: codebaseMeta,
+      resolveCodebasesChatState({
+        metas: projectCodebases,
         mcpServer: mcpServers[CODEBASE_MEMORY_SERVER_NAME],
         tools: mcpTools,
       }),
-    [codebaseMeta, mcpServers, mcpTools]
+    [projectCodebases, mcpServers, mcpTools]
   )
   const codebaseAddendum = useMemo(
     () =>
       codebaseResolution.canInject
-        ? buildCodebaseSystemMessage(codebaseMeta)
+        ? buildCodebaseSystemMessage(projectCodebases)
         : null,
-    [codebaseMeta, codebaseResolution.canInject]
+    [projectCodebases, codebaseResolution.canInject]
+  )
+
+  // Pull the project's project-scoped memory record. The kill switch is read
+  // here so the chat can short-circuit when memory is disabled for the
+  // project — the resolver and context builder also enforce it, but reading
+  // it directly keeps the `useChat` system message off the critical path.
+  const memoryRecords = useProjectMemoryStore((state) => state.records)
+  const projectMemoryRecord = useMemo(() => {
+    if (!projectId) return null
+    return memoryRecords[projectId] ?? null
+  }, [memoryRecords, projectId])
+  // `chatMessages` is destructured from `useChat` further down. The last
+  // user-message text is mirrored into a piece of local state so the
+  // system message above `useChat` can read it on every render. The
+  // `useEffect` that syncs the state is declared right after `useChat`.
+  const [lastUserQuery, setLastUserQuery] = useState('')
+  const memoryAddendum = useMemo(
+    () =>
+      buildProjectMemorySystemMessage({
+        record: projectMemoryRecord,
+        query: lastUserQuery,
+      }),
+    [projectMemoryRecord, lastUserQuery]
   )
 
   // Get system message from thread's assistant instructions (if thread has an assigned assistant)
   // Only use assistant instructions if the thread was created with one (e.g., via a project).
   // If the project has a linked Codebase Memory project, append a small addendum
   // telling the model to prefer the codebase tools instead of reindexing.
+  // Project memory is appended last so it sits closest to the user query.
   const threadAssistant = thread?.assistants?.[0]
   const assistantInstructions = threadAssistant?.instructions
     ? renderInstructions(threadAssistant.instructions)
     : undefined
   const systemMessage = useMemo(() => {
-    if (assistantInstructions && codebaseAddendum) {
-      return `${codebaseAddendum}\n\n${assistantInstructions}`
-    }
-    return assistantInstructions ?? codebaseAddendum ?? undefined
-  }, [assistantInstructions, codebaseAddendum])
+    const parts: string[] = []
+    if (codebaseAddendum) parts.push(codebaseAddendum)
+    if (assistantInstructions) parts.push(assistantInstructions)
+    if (memoryAddendum) parts.push(memoryAddendum)
+    if (parts.length === 0) return undefined
+    return parts.join('\n\n')
+  }, [codebaseAddendum, assistantInstructions, memoryAddendum])
 
   useEffect(() => {
     threadRef.current = thread
@@ -598,6 +630,29 @@ function ThreadDetail() {
   const disabledTools = useToolAvailable((state) =>
     state.getDisabledToolsForThread(threadId)
   )
+
+  // Mirror the latest user message into `lastUserQuery` so the system-message
+  // addendum computed above `useChat` reflects the current turn.
+  useEffect(() => {
+    let nextText = ''
+    for (let i = chatMessages.length - 1; i >= 0; i -= 1) {
+      const msg = chatMessages[i]
+      if (msg?.role !== 'user') continue
+      const text = (msg.parts ?? [])
+        .filter(
+          (part): part is { type: 'text'; text: string } =>
+            part?.type === 'text'
+        )
+        .map((part) => part.text)
+        .join(' ')
+        .trim()
+      if (text) {
+        nextText = text
+        break
+      }
+    }
+    setLastUserQuery((prev) => (prev === nextText ? prev : nextText))
+  }, [chatMessages])
 
   // Update RAG tools availability when documents, model, or tool availability changes
   useEffect(() => {

@@ -382,10 +382,48 @@ vi.mock('@/hooks/useCodebase', () => {
       hasCodebaseTools: true,
       message: 'ok',
     }),
-    buildCodebaseSystemMessage: (meta: any) =>
-      meta?.codebaseMemoryProjectName
-        ? `linked project: ${meta.codebaseMemoryProjectName}`
-        : null,
+    resolveCodebasesChatState: ({ metas: list }: any) => {
+      const entries: any[] = Array.isArray(list) ? list : []
+      const first = entries[0] ?? null
+      return {
+        state: first?.codebaseMemoryProjectName ? 'indexed' : 'not_linked',
+        canInject: entries.length > 0 && Boolean(first?.codebaseMemoryProjectName),
+        hasLinkedCodebase: entries.length > 0,
+        hasCodebaseTools: true,
+        message: 'ok',
+        total: entries.length,
+        activeCount: entries.filter((e) => e?.codebaseMemoryProjectName).length,
+        primary: first,
+        actives: entries.filter((e) => e?.codebaseMemoryProjectName),
+        all: entries,
+      }
+    },
+    buildCodebaseSystemMessage: (input: any) => {
+      const list: any[] = Array.isArray(input) ? input : input ? [input] : []
+      const first = list.find((e) => e?.codebaseMemoryProjectName)
+      return first ? `linked project: ${first.codebaseMemoryProjectName}` : null
+    },
+  }
+})
+
+vi.mock('@/hooks/useProjectMemory', () => {
+  const records: Record<string, unknown> = {}
+  const useProjectMemoryStore: any = (selector: any) =>
+    selector({ records })
+  useProjectMemoryStore.getState = () => ({
+    records,
+    loadAll: () => {},
+    ensureRecord: () => ({ entries: [], settings: { enabled: true } }),
+    setSettings: () => {},
+    upsertEntry: () => {},
+    removeEntry: () => {},
+    togglePinned: () => {},
+    toggleDisabled: () => {},
+    getRecord: () => ({ entries: [], settings: { enabled: true } }),
+  })
+  return {
+    useProjectMemoryStore,
+    buildProjectMemorySystemMessage: () => null,
   }
 })
 

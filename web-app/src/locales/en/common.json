@@ -448,62 +448,63 @@
       "dependencies": "Which classes depend on X?",
       "callPath": "Show the call path to this method.",
       "implementationFile": "Which file implements X?"
+    },
+    "linkedCodebases": "Linked codebases",
+    "activeCount": "Codebases: {{count}} active",
+    "singular": "1 codebase",
+    "plural": "{{count}} codebases",
+    "remove": {
+      "confirm": "Remove {{name}} from this project?"
     }
   },
-  "codebase": {
-    "title": "Codebase",
-    "description": "Link a local folder and index it with the Codebase Memory CLI so chats can search its structure.",
-    "addFolder": "Add Folder",
-    "changeFolder": "Change Folder",
-    "index": "Index Codebase",
-    "refresh": "Refresh status",
-    "openFolder": "Open folder",
-    "remove": "Remove codebase",
-    "probeCli": "Re-check CLI",
-    "openSettings": "Settings",
-    "toggleEnabled": "Enable Codebase Memory for this project",
-    "reindex": {
-      "button": "Reindex",
-      "confirm": "Reindex {{name}}? This refreshes Codebase Memory metadata and may take a while."
-    },
-    "empty": "No folder linked yet. Pick a project folder to enable code-aware chats.",
-    "status": {
-      "probing": "Probing CLI…",
-      "cliMissing": "CLI not found",
-      "notLinked": "Not linked",
-      "linked": "Indexed",
-      "indexing": "Indexing",
-      "pending": "Pending",
-      "disabled": "Disabled",
-      "mcpDisabled": "MCP off",
-      "error": "Error"
-    },
-    "cliMissing": {
-      "title": "codebase-memory-mcp is missing from this build",
-      "description": "Jan bundles the Codebase Memory engine — reinstall Jan or set CODEBASE_MEMORY_MCP_PATH to a custom binary to enable indexing."
-    },
-    "mcpDisabled": {
-      "title": "MCP server is configured but disabled",
-      "description": "Codebase Memory is indexed, but the MCP server is not enabled. Enable it in MCP Servers to let chats query this codebase."
+  "projectMemory": {
+    "title": "Project Memory",
+    "description": "Store facts, decisions, and summaries for this project. Chats pull a compact context from these entries automatically.",
+    "add": "Add entry",
+    "empty": "No memory stored yet. Capture a decision, a convention, or a summary so future chats have the context.",
+    "killSwitch": {
+      "label": "Inject project memory in chats",
+      "description": "When off, no project memory entries are sent to the model for chats in this project. Entries stay in storage."
     },
     "fields": {
-      "folder": "Folder",
-      "project": "Project",
-      "nodes": "Nodes",
-      "edges": "Edges",
-      "indexedAt": "Indexed",
-      "excluded": "Excluded: {{dirs}}",
-      "lastError": "Last error: {{error}}",
-      "notIndexedYet": "Not indexed yet"
+      "title": "Title",
+      "content": "Content",
+      "tags": "Tags (comma-separated)",
+      "pinned": "Pin to top",
+      "disabled": "Hide from chat"
     },
-    "suggestions": {
-      "whereClassUsed": "Where is this class used?",
-      "rendererClasses": "Which classes register renderers?",
-      "architecture": "Explain this project's architecture.",
-      "dependencies": "Which classes depend on X?",
-      "callPath": "Show the call path to this method.",
-      "implementationFile": "Which file implements X?"
-    }
+    "actions": {
+      "add": "Add",
+      "save": "Save",
+      "cancel": "Cancel",
+      "edit": "Edit",
+      "pin": "Pin",
+      "unpin": "Unpin",
+      "hide": "Hide from chat",
+      "show": "Show in chat",
+      "delete": "Delete"
+    },
+    "status": {
+      "pinned": "Pinned",
+      "disabled": "Hidden",
+      "ready": "Injected"
+    },
+    "placeholders": {
+      "title": "e.g. Use SQLite for the offline cache",
+      "content": "Explain the decision, convention, or summary in 1-3 sentences.",
+      "tags": "convention, decision, summary"
+    },
+    "validation": {
+      "required": "Title or content is required."
+    },
+    "remove": {
+      "confirm": "Delete this memory entry? The model will stop seeing it immediately."
+    },
+    "dialog": {
+      "addTitle": "Add memory entry",
+      "editTitle": "Edit memory entry"
+    },
+    "footer": "{{count}} stored · {{pinned}} pinned · kill switch: {{state}}"
   },
   "attachmentsIngestion": {
     "title": "Choose how to ingest attachments",

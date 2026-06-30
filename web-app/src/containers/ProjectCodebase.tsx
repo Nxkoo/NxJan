@@ -1,12 +1,23 @@
 import { useCallback, useState } from 'react'
 import { useTranslation } from '@/i18n/react-i18next-compat'
-import { FolderSearch, Loader2, RefreshCw, Search, Trash2 } from 'lucide-react'
+import {
+  DatabaseZap,
+  FolderSearch,
+  Loader2,
+  Plus,
+  RefreshCw,
+  Search,
+  Trash2,
+} from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { Switch } from '@/components/ui/switch'
 import { useServiceHub } from '@/hooks/useServiceHub'
 import {
   CODEBASE_MEMORY_SERVER_NAME,
+  getCodebaseDisplayName,
   normalizeCodebaseStatus,
   useCodebase,
+  useCodebases,
 } from '@/hooks/useCodebase'
 import { useMCPServers } from '@/hooks/useMCPServers'
 import { toast } from 'sonner'
@@ -38,23 +49,26 @@ export default function ProjectCodebase({
   const { t } = useTranslation()
   const serviceHub = useServiceHub()
   const {
-    meta,
-    isIndexing,
-    isRefreshing,
-    isChecking,
-    availability,
-    setFolder,
-    index,
-    refresh,
-    clear,
-    refreshAvailability,
-  } = useCodebase(projectId)
+    codebases,
+    activeCount,
+    addCodebase,
+    removeCodebase,
+    setCodebaseEnabled,
+  } = useCodebases(projectId)
   const mcpServers = useMCPServers((state) => state.mcpServers)
   const mcpServerConfigured = Boolean(mcpServers[CODEBASE_MEMORY_SERVER_NAME])
   const mcpServerActive = Boolean(
     mcpServers[CODEBASE_MEMORY_SERVER_NAME]?.active
   )
   const [isPicking, setIsPicking] = useState(false)
+  const [pendingId, setPendingId] = useState<string | null>(null)
+
+  // Subscribe to availability once for the section-level probe so the CLI
+  // warning / status badge react to a single shared probe.
+  const { availability, refreshAvailability, isChecking } = useCodebase(
+    projectId,
+    codebases[0]?.id
+  )
 
   const handlePickFolder = useCallback(async () => {
     setIsPicking(true)
@@ -66,7 +80,7 @@ export default function ProjectCodebase({
       if (!selection) return
       const folderPath = Array.isArray(selection) ? selection[0] : selection
       if (!folderPath) return
-      setFolder(folderPath)
+      addCodebase(folderPath)
     } catch (error) {
       const message =
         error instanceof Error ? error.message : String(error)
@@ -74,23 +88,23 @@ export default function ProjectCodebase({
     } finally {
       setIsPicking(false)
     }
-  }, [serviceHub, setFolder])
+  }, [serviceHub, addCodebase])
 
-  const handleReveal = useCallback(async () => {
-    if (!meta?.folderPath) return
-    try {
-      await serviceHub.opener().revealItemInDir(meta.folderPath)
-    } catch (error) {
-      const message =
-        error instanceof Error ? error.message : String(error)
-      toast.error('Failed to open folder', { description: message })
-    }
-  }, [meta?.folderPath, serviceHub])
-
-  const handleClear = useCallback(() => {
-    clear()
-    toast.success('Codebase removed from this project')
-  }, [clear])
+  const handleRemove = useCallback(
+    (codebaseId: string) => {
+      const entry = codebases.find((c) => c.id === codebaseId)
+      const label = entry ? getCodebaseDisplayName(entry) : 'codebase'
+      const confirmed = window.confirm(
+        t('common:codebase.remove.confirm', { name: label })
+      )
+      if (!confirmed) return
+      removeCodebase(codebaseId)
+      toast.success('Codebase removed from this project', {
+        description: label,
+      })
+    },
+    [codebases, removeCodebase, t]
+  )
 
   const statusBadge = (() => {
     if (!availability) {
@@ -105,26 +119,19 @@ export default function ProjectCodebase({
         tone: 'destructive',
       }
     }
-    if (!meta) {
+    if (codebases.length === 0) {
       return {
         label: t('common:codebase.status.notLinked'),
         tone: 'muted',
       }
     }
-    const normalizedStatus = normalizeCodebaseStatus(
-      meta.status,
-      Boolean(meta.codebaseMemoryProjectName)
-    )
-    if (normalizedStatus === 'indexed') {
+    if (activeCount > 0) {
       return {
-        label: t('common:codebase.status.linked'),
+        label:
+          activeCount > 1
+            ? t('common:codebase.activeCount', { count: activeCount })
+            : t('common:codebase.status.linked'),
         tone: 'success',
-      }
-    }
-    if (normalizedStatus === 'error') {
-      return {
-        label: t('common:codebase.status.error'),
-        tone: 'destructive',
       }
     }
     return {
@@ -184,7 +191,7 @@ export default function ProjectCodebase({
         </div>
       )}
 
-      {meta && mcpServerConfigured && !mcpServerActive && (
+      {codebases.length > 0 && mcpServerConfigured && !mcpServerActive && (
         <div
           className="rounded-xl border border-dashed border-[var(--yellow)]/40 bg-[var(--yellow-soft)]/60 px-3 py-2.5 text-xs text-foreground mb-3"
           data-testid="codebase-mcp-warning"
@@ -198,76 +205,21 @@ export default function ProjectCodebase({
         </div>
       )}
 
-      <div className="flex flex-wrap items-center gap-2 mb-3">
+      <div className="mb-3 flex items-center justify-between gap-2">
         <Button
           variant="outline"
           size="sm"
           onClick={handlePickFolder}
-          disabled={isPicking || isIndexing}
+          disabled={isPicking}
+          data-testid="codebase-add-folder"
         >
           {isPicking ? (
             <Loader2 className="size-3 animate-spin" />
           ) : (
-            <FolderSearch className="size-3" />
+            <Plus className="size-3" />
           )}
-          <span>
-            {meta
-              ? t('common:codebase.changeFolder')
-              : t('common:codebase.addFolder')}
-          </span>
+          <span>{t('common:codebase.addFolder')}</span>
         </Button>
-        <Button
-          variant="default"
-          size="sm"
-          onClick={() => {
-            void index()
-          }}
-          disabled={!meta || isIndexing}
-          data-testid="codebase-index-button"
-        >
-          {isIndexing ? (
-            <Loader2 className="size-3 animate-spin" />
-          ) : (
-            <Search className="size-3" />
-          )}
-          <span>{t('common:codebase.index')}</span>
-        </Button>
-        {meta && (
-          <>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => {
-                void refresh()
-              }}
-              disabled={isRefreshing || isIndexing}
-            >
-              {isRefreshing ? (
-                <Loader2 className="size-3 animate-spin" />
-              ) : (
-                <RefreshCw className="size-3" />
-              )}
-              <span>{t('common:codebase.refresh')}</span>
-            </Button>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={handleReveal}
-              disabled={!meta.folderPath}
-            >
-              <span>{t('common:codebase.openFolder')}</span>
-            </Button>
-            <Button
-              variant="ghost"
-              size="icon-sm"
-              onClick={handleClear}
-              aria-label={t('common:codebase.remove')}
-              title={t('common:codebase.remove')}
-            >
-              <Trash2 className="size-3.5 text-muted-foreground hover:text-destructive" />
-            </Button>
-          </>
-        )}
         <Button
           variant="ghost"
           size="icon-sm"
@@ -286,102 +238,247 @@ export default function ProjectCodebase({
         </Button>
       </div>
 
-      {meta ? (
-        <div
-          className="rounded-2xl border border-dashed border-border/50 bg-background/20 p-4 text-xs shadow-inner shadow-black/5"
-          data-testid="codebase-meta"
-        >
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-            <div className="min-w-0 space-y-1.5">
-              <MetaRow
-                label={t('common:codebase.fields.project')}
-                value={
-                  meta.codebaseMemoryProjectName ||
-                  t('common:codebase.fields.notIndexedYet')
-                }
-                strong={Boolean(meta.codebaseMemoryProjectName)}
-                testId="codebase-project-name"
-              />
-              <MetaRow
-                label={t('common:codebase.fields.folder')}
-                value={meta.folderPath}
-                mono
-              />
-            </div>
-          </div>
-
-          <div className="mt-3 grid grid-cols-3 gap-2">
-            <StatCell
-              label={t('common:codebase.fields.nodes')}
-              value={formatNumber(meta.nodes ?? null)}
-            />
-            <StatCell
-              label={t('common:codebase.fields.edges')}
-              value={formatNumber(meta.edges ?? null)}
-            />
-            <StatCell
-              label={t('common:codebase.fields.indexedAt')}
-              value={formatRelativeTime(meta.indexedAt)}
-            />
-          </div>
-
-          {meta.excludedDirs && meta.excludedDirs.length > 0 && (
-            <p className="text-muted-foreground pt-1">
-              {t('common:codebase.fields.excluded', {
-                dirs: meta.excludedDirs.join(', '),
-              })}
-            </p>
-          )}
-          {meta.lastError && (
-            <p className="text-[var(--red)] pt-1 break-words">
-              {t('common:codebase.fields.lastError', {
-                error: meta.lastError,
-              })}
-            </p>
-          )}
-        </div>
-      ) : (
+      {codebases.length === 0 ? (
         <div
           className="rounded-xl border border-dashed border-border-soft bg-secondary/30 p-4 text-xs text-muted-foreground"
           data-testid="codebase-empty"
         >
           {t('common:codebase.empty')}
         </div>
+      ) : (
+        <ul className="space-y-2" data-testid="codebase-list">
+          {codebases.map((entry) => (
+            <CodebaseRow
+              key={entry.id}
+              codebaseId={entry.id}
+              projectId={projectId}
+              isPending={pendingId === entry.id}
+              onSetPending={setPendingId}
+              onToggle={(enabled) => setCodebaseEnabled(entry.id, enabled)}
+              onRemove={() => handleRemove(entry.id)}
+              onReveal={async (folderPath) => {
+                try {
+                  await serviceHub.opener().revealItemInDir(folderPath)
+                } catch (error) {
+                  const message =
+                    error instanceof Error ? error.message : String(error)
+                  toast.error('Failed to open folder', { description: message })
+                }
+              }}
+            />
+          ))}
+        </ul>
       )}
     </div>
   )
 }
 
-function MetaRow({
-  label,
-  value,
-  mono,
-  strong,
-  testId,
-}: {
-  label: string
-  value: string
-  mono?: boolean
-  strong?: boolean
-  testId?: string
-}) {
+type CodebaseRowProps = {
+  projectId: string
+  codebaseId: string
+  isPending: boolean
+  onSetPending: (id: string | null) => void
+  onToggle: (enabled: boolean) => void
+  onRemove: () => void
+  onReveal: (folderPath: string) => Promise<void> | void
+}
+
+function CodebaseRow({
+  projectId,
+  codebaseId,
+  isPending,
+  onSetPending,
+  onToggle,
+  onRemove,
+  onReveal,
+}: CodebaseRowProps) {
+  const { t } = useTranslation()
+  const {
+    meta,
+    isIndexing,
+    isRefreshing,
+    index,
+    refresh,
+  } = useCodebase(projectId, codebaseId)
+
+  const displayName = meta ? getCodebaseDisplayName(meta) : ''
+  const status = meta
+    ? normalizeCodebaseStatus(
+        meta.status,
+        Boolean(meta.codebaseMemoryProjectName)
+      )
+    : 'not_linked'
+
+  const handleRefresh = useCallback(() => {
+    onSetPending(codebaseId)
+    void refresh().then(() => onSetPending(null))
+  }, [codebaseId, refresh, onSetPending])
+
+  if (!meta) return null
   return (
-    <div className="flex items-center gap-2 min-w-0">
-      <span className="text-[10px] uppercase tracking-[0.14em] text-muted-foreground/80 shrink-0">
-        {label}
-      </span>
+    <li
+      className="rounded-2xl border border-dashed border-border/50 bg-background/20 p-4 text-xs shadow-inner shadow-black/5"
+      data-testid="codebase-row"
+      data-codebase-id={meta.id}
+    >
+      <div className="flex items-start justify-between gap-3">
+        <div className="min-w-0 flex-1">
+          <div className="flex items-center gap-1.5">
+            <DatabaseZap className="size-3.5 shrink-0 text-primary" />
+            <span
+              className="truncate font-display text-sm font-semibold text-foreground"
+              data-testid="codebase-row-name"
+            >
+              {displayName}
+            </span>
+            <CodebaseStatusPill status={status} />
+          </div>
+          <p
+            className="mt-1 truncate font-mono text-[11px] text-muted-foreground"
+            title={meta.folderPath}
+          >
+            {meta.folderPath}
+          </p>
+          <p
+            className="truncate font-mono text-[11px] text-muted-foreground"
+            data-testid="codebase-row-project"
+          >
+            {meta.codebaseMemoryProjectName ||
+              t('common:codebase.fields.notIndexedYet')}
+          </p>
+        </div>
+        <Switch
+          checked={meta.enabled !== false}
+          onCheckedChange={onToggle}
+          aria-label={t('common:codebase.toggleEnabled')}
+        />
+      </div>
+
+      <div className="mt-3 grid grid-cols-3 gap-2">
+        <StatCell
+          label={t('common:codebase.fields.nodes')}
+          value={formatNumber(meta.nodes ?? null)}
+        />
+        <StatCell
+          label={t('common:codebase.fields.edges')}
+          value={formatNumber(meta.edges ?? null)}
+        />
+        <StatCell
+          label={t('common:codebase.fields.indexedAt')}
+          value={formatRelativeTime(meta.indexedAt)}
+        />
+      </div>
+
+      {meta.excludedDirs && meta.excludedDirs.length > 0 && (
+        <p className="mt-2 text-muted-foreground">
+          {t('common:codebase.fields.excluded', {
+            dirs: meta.excludedDirs.join(', '),
+          })}
+        </p>
+      )}
+      {meta.lastError && (
+        <p className="mt-2 break-words text-[var(--red)]">
+          {t('common:codebase.fields.lastError', { error: meta.lastError })}
+        </p>
+      )}
+
+      <div className="mt-3 flex flex-wrap items-center gap-2">
+        <Button
+          variant="default"
+          size="sm"
+          onClick={() => {
+            void index()
+          }}
+          disabled={!meta.folderPath || isIndexing}
+          data-testid="codebase-row-index"
+        >
+          {isIndexing ? (
+            <Loader2 className="size-3 animate-spin" />
+          ) : (
+            <Search className="size-3" />
+          )}
+          <span>
+            {status === 'indexed'
+              ? t('common:codebase.reindex.button')
+              : t('common:codebase.index')}
+          </span>
+        </Button>
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={handleRefresh}
+          disabled={isRefreshing || isIndexing}
+        >
+          {isRefreshing || isPending ? (
+            <Loader2 className="size-3 animate-spin" />
+          ) : (
+            <RefreshCw className="size-3" />
+          )}
+          <span>{t('common:codebase.refresh')}</span>
+        </Button>
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={() => {
+            void onReveal(meta.folderPath)
+          }}
+          disabled={!meta.folderPath}
+        >
+          <span>{t('common:codebase.openFolder')}</span>
+        </Button>
+        <Button
+          variant="ghost"
+          size="icon-sm"
+          onClick={onRemove}
+          aria-label={t('common:codebase.remove')}
+          title={t('common:codebase.remove')}
+        >
+          <Trash2 className="size-3.5 text-muted-foreground hover:text-destructive" />
+        </Button>
+      </div>
+    </li>
+  )
+}
+
+function CodebaseStatusPill({ status }: { status: string }) {
+  const { t } = useTranslation()
+  const label = (() => {
+    if (status === 'indexed') return t('common:codebase.status.linked')
+    if (status === 'indexing') return t('common:codebase.status.indexing')
+    if (status === 'error') return t('common:codebase.status.error')
+    return t('common:codebase.status.pending')
+  })()
+  const tone = (() => {
+    if (status === 'indexed') return 'success'
+    if (status === 'indexing') return 'loading'
+    if (status === 'error') return 'destructive'
+    return 'muted'
+  })()
+  return (
+    <span
+      className={cn(
+        'inline-flex items-center gap-1 rounded-full border px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide',
+        tone === 'success' &&
+          'border-[var(--green)]/40 bg-[var(--green-soft)] text-[var(--green)]',
+        tone === 'loading' &&
+          'border-primary/40 bg-primary/15 text-primary',
+        tone === 'destructive' &&
+          'border-[var(--red)]/40 bg-[var(--red-soft)] text-[var(--red)]',
+        tone === 'muted' &&
+          'border-border-soft bg-secondary/70 text-muted-foreground'
+      )}
+    >
       <span
         className={cn(
-          'truncate min-w-0 text-foreground',
-          mono && 'font-mono text-[11px]',
-          strong && 'font-display text-sm font-semibold text-primary'
+          'size-1.5 rounded-full',
+          tone === 'success' && 'bg-[var(--green)]',
+          tone === 'loading' && 'bg-primary',
+          tone === 'destructive' && 'bg-[var(--red)]',
+          tone === 'muted' && 'bg-muted-foreground/60'
         )}
-        data-testid={testId}
-        title={value}
-      >
-        {value}
-      </span>
-    </div>
+      />
+      {label}
+    </span>
   )
 }
 

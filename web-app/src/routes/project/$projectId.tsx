@@ -20,6 +20,7 @@ import { AvatarEmoji } from '@/containers/AvatarEmoji'
 import { Code2, FolderPenIcon, MessageCircle, MoreHorizontal, PencilIcon, Trash2, Archive, ChevronDown, ChevronUp } from 'lucide-react'
 import ProjectFiles from '@/containers/ProjectFiles'
 import ProjectCodebase from '@/containers/ProjectCodebase'
+import ProjectMemory from '@/containers/ProjectMemory'
 import DropdownModelProvider from '@/containers/DropdownModelProvider'
 import {
   DropdownMenu,
@@ -304,6 +305,9 @@ function ProjectPageContent() {
 
             {/* Codebase Section */}
             <ProjectCodebase projectId={projectId} />
+
+            {/* Project Memory Section */}
+            <ProjectMemory projectId={projectId} />
           </div>
         </div>
       </div>

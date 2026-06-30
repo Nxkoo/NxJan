@@ -378,62 +378,63 @@
       "dependencies": "Quais classes dependem de X?",
       "callPath": "Mostre o caminho de chamada até este método.",
       "implementationFile": "Qual arquivo implementa X?"
+    },
+    "linkedCodebases": "Codebases vinculados",
+    "activeCount": "Codebases: {{count}} ativos",
+    "singular": "1 codebase",
+    "plural": "{{count}} codebases",
+    "remove": {
+      "confirm": "Remover {{name}} deste projeto?"
     }
   },
-  "codebase": {
-    "title": "Codebase",
-    "description": "Vincule uma pasta local e indexe-a com a CLI do Codebase Memory para que as conversas possam pesquisar a estrutura do projeto.",
-    "addFolder": "Adicionar pasta",
-    "changeFolder": "Alterar pasta",
-    "index": "Indexar codebase",
-    "refresh": "Atualizar status",
-    "openFolder": "Abrir pasta",
-    "remove": "Remover codebase",
-    "probeCli": "Verificar CLI novamente",
-    "openSettings": "Configurações",
-    "toggleEnabled": "Ativar Codebase Memory neste projeto",
-    "reindex": {
-      "button": "Reindexar",
-      "confirm": "Reindexar {{name}}? Isso atualiza os metadados do Codebase Memory e pode demorar."
-    },
-    "empty": "Nenhuma pasta vinculada. Escolha uma pasta do projeto para habilitar conversas sobre o código.",
-    "status": {
-      "probing": "Verificando CLI…",
-      "cliMissing": "CLI ausente",
-      "notLinked": "Não vinculado",
-      "linked": "Indexado",
-      "indexing": "Indexando",
-      "pending": "Pendente",
-      "disabled": "Desativado",
-      "mcpDisabled": "MCP off",
-      "error": "Erro"
-    },
-    "cliMissing": {
-      "title": "codebase-memory-mcp ausente nesta build",
-      "description": "Jan empacota o motor do Codebase Memory — reinstale o Jan ou defina CODEBASE_MEMORY_MCP_PATH apontando para um binário próprio para habilitar a indexação."
-    },
-    "mcpDisabled": {
-      "title": "O servidor MCP está configurado, mas desativado",
-      "description": "Codebase Memory está indexado, mas o servidor MCP está desativado. Ative-o em Servidores MCP para permitir consultas sobre este codebase."
+  "projectMemory": {
+    "title": "Memória do projeto",
+    "description": "Guarde fatos, decisões e resumos do projeto. As conversas recebem um contexto compacto dessas entradas automaticamente.",
+    "add": "Adicionar entrada",
+    "empty": "Nenhuma memória guardada. Capture uma decisão, convenção ou resumo para que futuras conversas já tenham o contexto.",
+    "killSwitch": {
+      "label": "Injetar memória do projeto nas conversas",
+      "description": "Quando desligado, nenhuma entrada de memória é enviada ao modelo nas conversas deste projeto. As entradas continuam guardadas."
     },
     "fields": {
-      "folder": "Pasta",
-      "project": "Projeto",
-      "nodes": "Nós",
-      "edges": "Arestas",
-      "indexedAt": "Indexado",
-      "excluded": "Excluídos: {{dirs}}",
-      "lastError": "Último erro: {{error}}",
-      "notIndexedYet": "Ainda não indexado"
+      "title": "Título",
+      "content": "Conteúdo",
+      "tags": "Tags (separadas por vírgula)",
+      "pinned": "Fixar no topo",
+      "disabled": "Ocultar da conversa"
     },
-    "suggestions": {
-      "whereClassUsed": "Onde essa classe é usada?",
-      "rendererClasses": "Quais classes registram renderers?",
-      "architecture": "Me explique a arquitetura deste projeto.",
-      "dependencies": "Quais classes dependem de X?",
-      "callPath": "Mostre o caminho de chamada até este método.",
-      "implementationFile": "Qual arquivo implementa X?"
-    }
+    "actions": {
+      "add": "Adicionar",
+      "save": "Salvar",
+      "cancel": "Cancelar",
+      "edit": "Editar",
+      "pin": "Fixar",
+      "unpin": "Desafixar",
+      "hide": "Ocultar da conversa",
+      "show": "Mostrar na conversa",
+      "delete": "Excluir"
+    },
+    "status": {
+      "pinned": "Fixada",
+      "disabled": "Oculta",
+      "ready": "Injetada"
+    },
+    "placeholders": {
+      "title": "ex.: Usar SQLite para o cache offline",
+      "content": "Explique a decisão, convenção ou resumo em 1-3 frases.",
+      "tags": "convenção, decisão, resumo"
+    },
+    "validation": {
+      "required": "Título ou conteúdo é obrigatório."
+    },
+    "remove": {
+      "confirm": "Excluir esta entrada de memória? O modelo deixará de vê-la imediatamente."
+    },
+    "dialog": {
+      "addTitle": "Adicionar entrada de memória",
+      "editTitle": "Editar entrada de memória"
+    },
+    "footer": "{{count}} guardadas · {{pinned}} fixadas · kill switch: {{state}}"
   },
   "errorDialog": {
     "titleFallback": "Algo deu errado",

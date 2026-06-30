@@ -31,6 +31,7 @@ export const localStorageKey = {
   defaultEmbeddingModel: 'default-embedding-model',
   pausedDownloads: 'paused-downloads',
   projectCodebases: 'project-codebases',
+  projectMemory: 'project-memory',
   modelsDevCatalog: 'models-dev-catalog',
 }
 
