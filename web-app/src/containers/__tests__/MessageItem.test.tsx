@@ -27,6 +27,12 @@ vi.mock('@/components/ai-elements/chain-of-thought', () => ({
   ChainOfThought: ({ children }: any) => <div data-testid="cot">{children}</div>,
   ChainOfThoughtContent: ({ children }: any) => <div>{children}</div>,
   ChainOfThoughtHeader: () => <div>CoT Header</div>,
+  ChainOfThoughtStep: ({ label, children }: any) => (
+    <div data-testid="cot-step">
+      <span>{label}</span>
+      {children}
+    </div>
+  ),
 }))
 
 // Stub Tool
@@ -333,7 +339,36 @@ describe('MessageItem', () => {
     )
     expect(screen.getByTestId('tool')).toBeInTheDocument()
     expect(screen.getByTestId('tool-header')).toHaveTextContent('search')
+    expect(screen.getByText('Searching code')).toBeInTheDocument()
     expect(screen.getByTestId('cot')).toBeInTheDocument()
+  })
+
+  it('keeps reasoning and tool steps in one stable activity timeline while streaming', () => {
+    render(
+      <MessageItem
+        message={
+          makeMsg({
+            parts: [
+              { type: 'reasoning', text: 'thinking first' },
+              {
+                type: 'tool-get_code_snippet',
+                state: 'input-available',
+                toolCallId: 'tc1',
+                input: { qualified_name: 'Thing' },
+              },
+            ],
+          }) as any
+        }
+        isFirstMessage
+        isLastMessage
+        status={'streaming' as any}
+      />
+    )
+    expect(screen.getByTestId('cot')).toBeInTheDocument()
+    expect(screen.getByText('Thinking')).toBeInTheDocument()
+    expect(screen.getByText('thinking first')).toBeInTheDocument()
+    expect(screen.getByText('Reading snippet')).toBeInTheDocument()
+    expect(screen.getByTestId('tool')).toBeInTheDocument()
   })
 
   it('renders tool error when state is output-error', () => {

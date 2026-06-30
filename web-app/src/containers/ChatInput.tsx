@@ -1713,11 +1713,16 @@ const ChatInput = memo(function ChatInput({
   return (
     <div className="relative">
       {!effectiveAgentMode &&
-        !tokenCounterCompact &&
+        tokenCounterCompact &&
         !initialMessage &&
         (threadMessages?.length > 0 || prompt.trim().length > 0) && (
           <div className="flex w-full justify-end px-2 pb-2">
-            <TokenCounter messages={threadMessages || []} />
+            <TokenCounter
+              messages={threadMessages || []}
+              compact
+              tooltipSide="top"
+              className="max-w-full overflow-hidden truncate whitespace-nowrap"
+            />
           </div>
         )}
 
@@ -1750,7 +1755,7 @@ const ChatInput = memo(function ChatInput({
                  doubling up the stroke.
                  On the initial/home screen we use a softer dashed border
                  to match the trust note pill below. */
-              'relative z-20 px-0 pb-12 rounded-3xl bg-surface-3 shadow-sm',
+              'relative z-20 px-0 pb-2 rounded-3xl bg-surface-3 shadow-sm',
               initialMessage
                 ? 'border-2 border-dashed border-border-soft'
                 : 'border border-border-strong',
@@ -1958,15 +1963,13 @@ const ChatInput = memo(function ChatInput({
                 className
               )}
             />
-          </div>
-        </div>
 
-        <div className="absolute z-20 bg-transparent bottom-0 w-full p-2.5 ">
-          <div className="flex justify-between items-center w-full">
-            <div className="px-1 flex items-center gap-1.5 flex-1 min-w-0">
+            <div className="relative z-20 w-full bg-transparent px-2.5 pb-2.5 pt-1">
+          <div className="flex w-full flex-wrap items-end gap-2">
+            <div className="flex min-w-0 flex-1 basis-[min(100%,32rem)] items-center gap-1.5 px-1">
               <div
                 className={cn(
-                  'px-1 flex items-center w-full gap-1.5',
+                  'flex min-w-0 flex-1 flex-wrap items-center gap-1.5 px-1 [&_button]:shrink-0',
                   isStreaming && 'opacity-50 pointer-events-none'
                 )}
               >
@@ -1974,7 +1977,7 @@ const ChatInput = memo(function ChatInput({
                 {!effectiveAgentMode && (
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="secondary" size="icon-sm" className='rounded-xl mr-2 mb-1'>
+                    <Button variant="secondary" size="icon-sm" className='shrink-0 rounded-xl'>
                       <PlusIcon size={18} className="text-foreground" />
                     </Button>
                   </DropdownMenuTrigger>
@@ -2359,17 +2362,16 @@ const ChatInput = memo(function ChatInput({
               </div>
             </div>
 
-            <div className="flex items-center gap-2">
-              {tokenCounterCompact &&
+            <div className="ml-auto flex shrink-0 items-center gap-2">
+              {!tokenCounterCompact &&
                 !effectiveAgentMode &&
                 !initialMessage &&
                 (threadMessages?.length > 0 || prompt.trim().length > 0) && (
-                  <div className="flex-1 flex justify-center">
-                    <TokenCounter
-                      messages={threadMessages || []}
-                      compact={true}
-                    />
-                  </div>
+                  <TokenCounter
+                    messages={threadMessages || []}
+                    tooltipSide="top"
+                    className="shrink-0"
+                  />
                 )}
 
               {isStreaming ? (
@@ -2378,7 +2380,7 @@ const ChatInput = memo(function ChatInput({
                 <Button
                   variant="destructive"
                   size="icon-sm"
-                  className="rounded-xl mr-1 mb-1 border border-destructive"
+                  className="shrink-0 rounded-xl border border-destructive"
                   onClick={() => {
                         if (!currentThreadId) return
                         const queue = useMessageQueue.getState().getQueue(currentThreadId)
@@ -2403,11 +2405,13 @@ const ChatInput = memo(function ChatInput({
                   disabled={(!prompt.trim() && !hasSendableMedia) || ingestingAny}
                   data-test-id="send-message-button"
                   onClick={() => handleSendMessage(prompt)}
-                  className="rounded-xl mr-1 mb-1"
+                  className="shrink-0 rounded-xl"
                 >
                   <ArrowRight className="text-primary-foreground dark:text-foreground" />
                 </Button>
               )}
+            </div>
+          </div>
             </div>
           </div>
         </div>

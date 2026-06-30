@@ -29,6 +29,7 @@ interface TokenCounterProps {
   className?: string
   compact?: boolean
   additionalTokens?: number
+  tooltipSide?: 'top' | 'right' | 'bottom' | 'left'
 }
 
 const WARN_PCT = 85
@@ -66,6 +67,7 @@ export const TokenCounter = memo(function TokenCounter({
   className,
   compact = false,
   additionalTokens = 0,
+  tooltipSide = 'bottom',
 }: TokenCounterProps) {
   const { t } = useTranslation()
   const { calculateTokens, ...tokenData } = useTokensCount(messages)
@@ -151,6 +153,7 @@ export const TokenCounter = memo(function TokenCounter({
         tier={tier}
         textCls={textCls}
         className={className}
+        tooltipSide={tooltipSide}
       />
     )
   }
@@ -224,7 +227,7 @@ export const TokenCounter = memo(function TokenCounter({
           </div>
         </TooltipTrigger>
         <TooltipContent
-          side="bottom"
+          side={tooltipSide}
           align="center"
           sideOffset={6}
           showArrow={false}
@@ -407,6 +410,7 @@ interface CompactPillProps {
   tier: 'ok' | 'warn' | 'over'
   textCls: string
   className?: string
+  tooltipSide: 'top' | 'right' | 'bottom' | 'left'
 }
 
 /**
@@ -426,6 +430,7 @@ function CompactPill({
   tier,
   textCls,
   className,
+  tooltipSide,
 }: CompactPillProps) {
   const { t } = useTranslation()
   const { maxTokens, cost, costSource } = tokenData
@@ -483,7 +488,7 @@ function CompactPill({
           </div>
         </TooltipTrigger>
         <TooltipContent
-          side="bottom"
+          side={tooltipSide}
           align="center"
           sideOffset={6}
           showArrow={false}

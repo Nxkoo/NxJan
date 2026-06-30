@@ -148,27 +148,27 @@ export const ToolHeader = memo(
     return (
       <CollapsibleTrigger
         className={cn(
-          'cursor-pointer flex w-full items-start gap-2 rounded-2xl px-3 py-2 text-sm transition-colors',
+          'cursor-pointer flex w-full min-w-0 items-start gap-2 rounded-2xl px-3 py-2 text-sm transition-colors',
           !isOpen && 'hover:bg-surface-3',
           className
         )}
       >
         {awaitingApproval ? (
-          <ShieldAlertIcon className="size-4 text-amber-500" />
+          <ShieldAlertIcon className="size-4 shrink-0 text-amber-500" />
         ) : (
-          <WrenchIcon className="size-4" />
+          <WrenchIcon className="size-4 shrink-0" />
         )}
         <span className="min-w-0 flex-1 text-left">
           <span
             className={cn(
-              'block font-medium text-foreground',
+              'block truncate font-medium text-foreground',
               awaitingApproval && 'text-amber-600 dark:text-amber-400'
             )}
           >
             {statusText ?? getStatusText(state, toolName, awaitingApproval)}
           </span>
           {summary && (
-            <span className="mt-1 block normal-case text-muted-foreground">
+            <span className="mt-1 block min-w-0 overflow-hidden normal-case text-muted-foreground">
               {summary}
             </span>
           )}
@@ -196,7 +196,7 @@ export const ToolContent = memo(
       )}
       {...props}
     >
-      <div className="ml-4 space-y-3 border-l border-dashed border-border-soft pl-4">
+      <div className="ml-4 min-w-0 space-y-3 border-l border-dashed border-border-soft pl-4">
         {children}
       </div>
     </CollapsibleContent>

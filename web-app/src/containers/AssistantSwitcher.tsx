@@ -90,7 +90,7 @@ export function AssistantSwitcher({
             <Button
               variant="ghost"
               size="sm"
-              className="h-7 px-2 gap-1 min-w-0"
+              className="h-7 max-w-[11rem] min-w-0 shrink px-2 gap-1"
               aria-label="Switch assistant"
             >
               {activeAssistant?.avatar ? (
@@ -102,10 +102,13 @@ export function AssistantSwitcher({
               ) : (
                 <IconUser size={14} className="text-muted-foreground" />
               )}
-              <span className="text-sm font-medium truncate max-w-32">
+              <span className="min-w-0 truncate text-sm font-medium">
                 {activeAssistant?.name ?? t('common:noAssistant')}
               </span>
-              <IconChevronDown size={14} className="text-muted-foreground" />
+              <IconChevronDown
+                size={14}
+                className="shrink-0 text-muted-foreground"
+              />
             </Button>
           </DropdownMenuTrigger>
         </TooltipTrigger>

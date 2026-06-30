@@ -8,6 +8,8 @@ import {
   ChainOfThought,
   ChainOfThoughtContent,
   ChainOfThoughtHeader,
+  ChainOfThoughtStep,
+  type ChainOfThoughtStepStatus,
 } from '@/components/ai-elements/chain-of-thought'
 import {
   Tool,
@@ -56,6 +58,62 @@ const CONTENT_TYPE = {
   FILE: 'file',
   REASONING: 'reasoning',
 } as const
+
+function getToolName(part: { type: string }) {
+  return part.type.split('-').slice(1).join('-')
+}
+
+function humanizeToolName(toolName: string) {
+  return toolName
+    .replace(/^mcp__[^.]+[._-]/, '')
+    .replace(/[_-]+/g, ' ')
+    .replace(/\b\w/g, (letter) => letter.toUpperCase())
+}
+
+function getToolStepLabel(toolName: string) {
+  const normalized = toolName.toLowerCase()
+  if (
+    normalized.includes('search') ||
+    normalized.includes('query_graph') ||
+    normalized.includes('list_projects')
+  ) {
+    return 'Searching code'
+  }
+  if (
+    normalized.includes('snippet') ||
+    normalized.includes('read') ||
+    normalized.includes('file')
+  ) {
+    return 'Reading snippet'
+  }
+  if (normalized.includes('summar')) return 'Summarizing'
+  if (normalized.includes('index')) return 'Reindexing codebase'
+  if (normalized.includes('shell') || normalized.includes('command')) {
+    return 'Running command'
+  }
+  return `Using ${humanizeToolName(toolName)}`
+}
+
+function getActivityStatus({
+  groupIsStreaming,
+  isCurrentEntry,
+  part,
+}: {
+  groupIsStreaming: boolean
+  isCurrentEntry: boolean
+  part: any
+}): ChainOfThoughtStepStatus {
+  if (
+    part.type?.startsWith('tool-') &&
+    part.state !== 'output-available' &&
+    part.state !== 'output-error' &&
+    part.state !== 'output-denied'
+  ) {
+    return 'active'
+  }
+  if (groupIsStreaming && isCurrentEntry) return 'active'
+  return 'complete'
+}
 
 export type MessageItemProps = {
   message: UIMessage
@@ -411,7 +469,7 @@ export const MessageItem = memo(
         return null
       }
 
-      const toolName = part.type.split('-').slice(1).join('-')
+      const toolName = getToolName(part)
       const display = formatToolCallDisplay(toolName, part.input, part.output)
       const summaryItems = [
         display.project ? `Project: ${display.project}` : null,
@@ -432,7 +490,7 @@ export const MessageItem = memo(
              one-step-up background separates the card from the chat
              without competing with the composer. The header is the only
              thing that should "speak"; the body just sits inside. */
-          className="mb-2 rounded-2xl border border-border-soft bg-surface-2 p-1"
+          className="max-w-full overflow-hidden rounded-xl border border-border-soft bg-surface-2/70 p-1"
         >
           <ToolHeader
             title={display.title}
@@ -441,9 +499,11 @@ export const MessageItem = memo(
             statusText={display.title}
             summary={
               summaryItems.length > 0 ? (
-                <span className="flex flex-wrap gap-x-3 gap-y-1 text-[11px]">
+                <span className="flex min-w-0 flex-wrap gap-x-3 gap-y-1 text-[11px]">
                   {summaryItems.map((item) => (
-                    <span key={item}>{item}</span>
+                    <span className="max-w-full truncate" key={item}>
+                      {item}
+                    </span>
                   ))}
                 </span>
               ) : undefined
@@ -489,24 +549,17 @@ export const MessageItem = memo(
       // user's approval — collapsing it would hide the approval controls.
       const keepOpen = hasPendingToolCall || awaitingApproval
 
-      // While streaming, surface only the latest step (current reasoning
-      // paragraph or tool call) so each step replaces the previous one rather
-      // than the whole trace scrolling by. The full trace renders once done.
       const isMeaningfulEntry = ({ part }: PartEntry) => {
         if (part.type === CONTENT_TYPE.REASONING || part.type === CONTENT_TYPE.TEXT) {
           return Boolean(part.text && part.text.trim())
         }
-        return part.type.startsWith('tool-') && 'state' in part
+        return part.type === CONTENT_TYPE.FILE || (part.type.startsWith('tool-') && 'state' in part)
       }
       const meaningful = entries.filter(isMeaningfulEntry)
-      const visibleEntries =
-        groupIsStreaming && meaningful.length > 0
-          ? [meaningful[meaningful.length - 1]]
-          : entries
+      const visibleEntries = meaningful
 
-      // Streaming label reflects the current step, not whether the whole trace
-      // ever used a tool — otherwise it sticks on "Using tools…" once the model
-      // resumes reasoning after a tool call.
+      // Streaming label reflects the current step while the full timeline stays
+      // mounted, preventing the visual reset between thinking and tool use.
       const currentStepIsTool =
         meaningful.length > 0 &&
         meaningful[meaningful.length - 1].part.type.startsWith('tool-')
@@ -514,7 +567,7 @@ export const MessageItem = memo(
       return (
         <ChainOfThought
           key={groupKey}
-          className="w-full text-muted-foreground"
+          className="w-full max-w-full overflow-hidden text-muted-foreground"
           isStreaming={groupIsStreaming}
           shouldCollapse={hasFollowingContent && !keepOpen}
           forceOpen={keepOpen}
@@ -525,74 +578,110 @@ export const MessageItem = memo(
             completedVerb={hasTools ? 'Worked' : 'Thought'}
           />
           <ChainOfThoughtContent>
-            {visibleEntries.map(({ part, index: partIndex }) => {
+            {visibleEntries.map(({ part, index: partIndex }, entryIndex) => {
+              const isCurrentEntry = entryIndex === visibleEntries.length - 1
+              const stepStatus = getActivityStatus({
+                groupIsStreaming,
+                isCurrentEntry,
+                part,
+              })
+
               if (part.type === CONTENT_TYPE.REASONING) {
                 const isLastMsgPart =
                   partIndex === message.parts.length - 1
                 const partIsStreaming = isStreaming && isLastMsgPart
 
                 return (
-                  <div
+                  <ChainOfThoughtStep
                     key={`${message.id}-r-${partIndex}`}
-                    className="relative"
+                    label="Thinking"
+                    status={stepStatus}
                   >
-                    {partIsStreaming && (
-                      <div className="absolute top-0 left-0 right-0 h-8 bg-linear-to-br from-background mask-t-from-98% to-transparent pointer-events-none z-10" />
-                    )}
                     <div
-                      ref={partIsStreaming ? reasoningContainerRef : null}
-                      onScroll={
-                        partIsStreaming ? onReasoningScroll : undefined
-                      }
-                      className={twMerge(
-                        'w-full overflow-auto relative',
-                        partIsStreaming
-                          ? 'max-h-64 opacity-70 mt-2 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden'
-                          : 'h-auto opacity-100'
+                      className="relative"
+                    >
+                      {partIsStreaming && (
+                        <div className="absolute top-0 left-0 right-0 h-8 bg-linear-to-br from-background mask-t-from-98% to-transparent pointer-events-none z-10" />
                       )}
-                    >
                       <div
-                        dir="auto"
-                        className="select-text whitespace-pre-wrap wrap-break-word text-sm text-main-view-fg/70"
+                        ref={partIsStreaming ? reasoningContainerRef : null}
+                        onScroll={
+                          partIsStreaming ? onReasoningScroll : undefined
+                        }
+                        className={twMerge(
+                          'w-full overflow-auto relative',
+                          partIsStreaming
+                            ? 'max-h-64 opacity-70 mt-2 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden'
+                            : 'h-auto opacity-100'
+                        )}
                       >
-                        {part.text}
+                        <div
+                          dir="auto"
+                          className="select-text whitespace-pre-wrap wrap-break-word text-sm text-main-view-fg/70"
+                        >
+                          {part.text}
+                        </div>
                       </div>
+                      {partIsStreaming && !isReasoningAtBottom && (
+                        <Button
+                          className="absolute bottom-2 left-[50%] translate-x-[-50%] rounded-xl size-7 z-10 border"
+                          onClick={onReasoningScrollToBottom}
+                          size="icon"
+                          type="button"
+                          variant="outline"
+                        >
+                          <IconArrowDown className="size-3" />
+                        </Button>
+                      )}
                     </div>
-                    {partIsStreaming && !isReasoningAtBottom && (
-                    <Button
-                      className="absolute bottom-2 left-[50%] translate-x-[-50%] rounded-xl size-7 z-10 border"
-                      onClick={onReasoningScrollToBottom}
-                      size="icon"
-                      type="button"
-                      variant="outline"
-                    >
-                        <IconArrowDown className="size-3" />
-                      </Button>
-                    )}
-                  </div>
+                  </ChainOfThoughtStep>
                 )
               }
 
-              // Interstitial narration emitted between steps — fold into the trace
+              // Interstitial narration emitted between steps - fold into the trace.
               if (part.type === CONTENT_TYPE.TEXT) {
                 if (!part.text || part.text.trim() === '') return null
+                const hasEarlierTool = visibleEntries
+                  .slice(0, entryIndex)
+                  .some((entry) => entry.part.type.startsWith('tool-'))
                 return (
-                  <div
+                  <ChainOfThoughtStep
                     key={`${message.id}-it-${partIndex}`}
-                    dir="auto"
-                    className="select-text whitespace-pre-wrap wrap-break-word text-sm text-main-view-fg/70"
+                    label={hasEarlierTool ? 'Summarizing' : 'Thinking'}
+                    status={stepStatus}
                   >
-                    {part.text}
-                  </div>
+                    <div
+                      dir="auto"
+                      className="select-text whitespace-pre-wrap wrap-break-word text-sm text-main-view-fg/70"
+                    >
+                      {part.text}
+                    </div>
+                  </ChainOfThoughtStep>
                 )
               }
 
               if (part.type === CONTENT_TYPE.FILE) {
-                return renderFilePart(part, partIndex)
+                return (
+                  <ChainOfThoughtStep
+                    key={`${message.id}-f-${partIndex}`}
+                    label="Reading attachment"
+                    status={stepStatus}
+                  >
+                    {renderFilePart(part, partIndex)}
+                  </ChainOfThoughtStep>
+                )
               }
 
               // Tool part inside CoT
-              return renderToolInline(part, partIndex)
+              return (
+                <ChainOfThoughtStep
+                  key={`${message.id}-t-${partIndex}`}
+                  label={getToolStepLabel(getToolName(part))}
+                  status={stepStatus}
+                >
+                  {renderToolInline(part, partIndex)}
+                </ChainOfThoughtStep>
+              )
             })}
           </ChainOfThoughtContent>
         </ChainOfThought>
@@ -796,6 +885,7 @@ export const MessageItem = memo(
               </div>
 
               <TokenSpeedIndicator
+                className="hidden min-[1120px]:flex"
                 streaming={isStreaming}
                 metadata={metadata}
               />

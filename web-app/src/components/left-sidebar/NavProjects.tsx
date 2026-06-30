@@ -114,17 +114,19 @@ function ProjectItem({
   return (
     <Collapsible open={isExpanded} onOpenChange={() => onToggleExpand(item.id)}>
       <SidebarMenuItem>
-        <div className="group/project flex items-center w-full">
+        <div className="group/project flex items-center w-full min-w-0">
           <SidebarMenuButton
-            className="group-hover/project:bg-sidebar-accent group-hover/project:text-sidebar-accent-foreground"
+            className="min-w-0 flex-1 pr-14 group-hover/project:bg-sidebar-accent group-hover/project:text-sidebar-accent-foreground"
             onClick={() => onToggleExpand(item.id)}
           >
-            <FolderIcon className="text-foreground/70" size={18} />
-            <span className="font-medium">{item.name}</span>
+            <FolderIcon className="shrink-0 text-foreground/70" size={18} />
+            <span className="min-w-0 flex-1 truncate font-medium">
+              {item.name}
+            </span>
           </SidebarMenuButton>
           <CollapsibleTrigger asChild>
             <SidebarMenuAction
-              className="hover:bg-sidebar-foreground/8 data-[state=open]:rotate-180 transition-transform"
+              className="right-1 shrink-0 hover:bg-sidebar-foreground/8 data-[state=open]:rotate-180 transition-transform"
               aria-label={isExpanded ? t('common:projects.collapseProject') : t('common:projects.expandProject')}
             >
               <ChevronDown className="size-4" />

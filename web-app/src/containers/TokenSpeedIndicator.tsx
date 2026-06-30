@@ -7,6 +7,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover'
+import { cn } from '@/lib/utils'
 
 interface TokenUsage {
   inputTokens?: number
@@ -24,10 +25,11 @@ interface TokenSpeedMeta {
 interface TokenSpeedIndicatorProps {
   metadata?: Record<string, unknown>
   streaming?: boolean
+  className?: string
 }
 
 export const TokenSpeedIndicator = memo(
-  ({ metadata, streaming }: TokenSpeedIndicatorProps) => {
+  ({ metadata, streaming, className }: TokenSpeedIndicatorProps) => {
     const showTokenSpeed = useInterfaceSettings((s) => s.showTokenSpeed)
 
     const nonStreamingAssistantParam =
@@ -52,15 +54,20 @@ export const TokenSpeedIndicator = memo(
 
     if (showTokenSpeed) {
       return (
-        <div className="flex items-center gap-2 text-muted-foreground text-xs">
+        <div
+          className={cn(
+            'flex min-w-0 items-center gap-2 whitespace-nowrap text-muted-foreground text-xs',
+            className
+          )}
+        >
           {displaySpeed > 0 && (
-            <div className="flex items-center gap-1">
-              <Gauge size={16} />
-              <span>{displaySpeed} tokens/sec</span>
+            <div className="flex min-w-0 items-center gap-1">
+              <Gauge className="shrink-0" size={16} />
+              <span className="truncate">{displaySpeed} tokens/sec</span>
             </div>
           )}
           {displayTokenCount > 0 && (
-            <span className="text-muted-foreground">
+            <span className="truncate text-muted-foreground">
               ({displayTokenCount} tokens)
             </span>
           )}
@@ -74,7 +81,10 @@ export const TokenSpeedIndicator = memo(
           <button
             type="button"
             aria-label="Token speed details"
-            className="text-muted-foreground cursor-pointer hover:text-foreground transition-colors"
+            className={cn(
+              'text-muted-foreground cursor-pointer hover:text-foreground transition-colors',
+              className
+            )}
           >
             <Gauge size={16} />
           </button>
