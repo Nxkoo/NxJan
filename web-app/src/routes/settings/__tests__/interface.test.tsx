@@ -37,10 +37,6 @@ vi.mock('@/containers/FontSizeSwitcher', () => ({
   FontSizeSwitcher: () => <div data-testid="font-size-switcher">Font Size Switcher</div>,
 }))
 
-vi.mock('@/containers/AccentColorPicker', () => ({
-  AccentColorPicker: () => <div data-testid="accent-color-picker">Accent Color Picker</div>,
-}))
-
 vi.mock('@/containers/NotificationPositionSwitcher', () => ({
   NotificationPositionSwitcher: () => (
     <div data-testid="notification-position-switcher">Notification Position</div>
